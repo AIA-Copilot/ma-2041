@@ -1,0 +1,9 @@
+# MA-2041 Lab 1 - TypeSpec configuration for a Microsoft 365 Copilot declarative agent.
+# The emitter is the Microsoft package itself; it writes the declarative agent manifest
+# (and, when @actions is present, the API plugin manifest + OpenAPI document) into appPackage.
+emit:
+  - "@microsoft/typespec-m365-copilot"
+options:
+  "@microsoft/typespec-m365-copilot":
+    emitter-output-dir: "{project-root}/appPackage"
+    output-file: "declarative-agent.json"

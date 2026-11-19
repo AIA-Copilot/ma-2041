@@ -1,0 +1,14 @@
+[
+  {"id": "T-1001", "title": "VPN disconnects every 10 minutes", "body": "Cisco AnyConnect drops on Wi-Fi after sleep/wake.", "status": "open", "restricted": false, "assignee_group": "network-support"},
+  {"id": "T-1002", "title": "Cannot reset MFA on new phone", "body": "Authenticator app lost after phone swap, locked out of Entra ID.", "status": "open", "restricted": true, "assignee_group": "identity-support"},
+  {"id": "T-1003", "title": "Printer HP-204 offline on 3rd floor", "body": "Driver shows offline, other users on same floor unaffected.", "status": "closed", "restricted": false, "assignee_group": "desktop-support"},
+  {"id": "T-1004", "title": "Payroll export salary file exposed", "body": "CSV with salaries attached to wrong ticket by accident.", "status": "open", "restricted": true, "assignee_group": "hr-confidential"},
+  {"id": "T-1005", "title": "Laptop battery swells, needs replacement", "body": "Dell Latitude 5420, battery physically swollen.", "status": "open", "restricted": false, "assignee_group": "desktop-support"},
+  {"id": "T-1006", "title": "SharePoint site permissions broken after migration", "body": "Finance team site shows access denied post-tenant-migration.", "status": "open", "restricted": false, "assignee_group": "collab-support"},
+  {"id": "T-1007", "title": "Executive compensation review doc leaked link", "body": "Shared link to comp review spreadsheet sent externally by mistake.", "status": "open", "restricted": true, "assignee_group": "hr-confidential"},
+  {"id": "T-1008", "title": "Outlook search index corrupted", "body": "Search returns no results since last Windows update.", "status": "closed", "restricted": false, "assignee_group": "desktop-support"},
+  {"id": "T-1009", "title": "Teams calls dropping on guest network", "body": "Only affects guest Wi-Fi SSID, corp Wi-Fi is fine.", "status": "open", "restricted": false, "assignee_group": "network-support"},
+  {"id": "T-1010", "title": "New hire background check PII in ticket", "body": "SSN visible in attachment uploaded by mistake.", "status": "open", "restricted": true, "assignee_group": "hr-confidential"},
+  {"id": "T-1011", "title": "Conference room display won't pair", "body": "Surface Hub in Room 4B won't detect laptops over Miracast.", "status": "open", "restricted": false, "assignee_group": "desktop-support"},
+  {"id": "T-1012", "title": "Password spray alert on service account", "body": "Sentinel flagged repeated failed logins on svc-backup account.", "status": "open", "restricted": true, "assignee_group": "security-ops"}
+]

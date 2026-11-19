@@ -1,0 +1,18 @@
+# Adapted from pinned official basic-custom-engine-agent; local deploy only.
+# yaml-language-server: $schema=https://aka.ms/m365-agents-toolkits/v1.11/yaml.schema.json
+version: v1.11
+environmentFolderPath: ./env
+deploy:
+  - uses: cli/runNpmCommand
+    with:
+      args: ci --no-audit --no-fund
+  - uses: cli/runNpmCommand
+    with:
+      args: run build
+  - uses: file/createOrUpdateEnvironmentFile
+    with:
+      target: ./.localConfigs.playground
+      envs:
+        HOST_MODE: local
+        PROJECT_ENDPOINT: ${{PROJECT_ENDPOINT}}
+        MODEL_DEPLOYMENT_NAME: ${{MODEL_DEPLOYMENT_NAME}}

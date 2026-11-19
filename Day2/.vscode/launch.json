@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to Local Service",
+      "type": "node",
+      "request": "attach",
+      "port": 9239,
+      "restart": false,
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/lib/**/*.js"
+      ]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug in Microsoft 365 Agents Playground",
+      "configurations": [
+        "Attach to Local Service"
+      ],
+      "preLaunchTask": "Start App in Microsoft 365 Agents Playground",
+      "stopAll": true
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+[
+  {"username": "alice.tier1", "groups": ["helpdesk-tier1"]},
+  {"username": "bob.tier2", "groups": ["helpdesk-tier2"]},
+  {"username": "carla.network", "groups": ["helpdesk-tier1", "network-support"]},
+  {"username": "dave.hr", "groups": ["hr-confidential"]},
+  {"username": "erin.secops", "groups": ["security-ops"]},
+  {"username": "frank.desktop", "groups": ["helpdesk-tier1", "desktop-support"]},
+  {"username": "guest.contractor", "groups": []}
+]

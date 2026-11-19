@@ -1,0 +1,42 @@
+{
+  "name": "day2-toolkit-policy-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Toolkit basic-custom-engine-agent adaptation; local-only candidate",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "test": "tsx --test tests/*.test.ts",
+    "start": "node --env-file-if-exists=.localConfigs.playground lib/src/index.js",
+    "dev:teamsfx:playground": "node --env-file=.localConfigs.playground --inspect=9239 lib/src/index.js",
+    "dev:teamsfx:launch-playground": "agentsplayground start --app-endpoint http://127.0.0.1:3978/api/messages --channel-id emulator --host 127.0.0.1 --port 56150 --disable-telemetry",
+    "package:check": "tsx scripts/package.ts",
+    "preflight": "node --env-file-if-exists=.localConfigs.playground --import tsx scripts/preflight.ts",
+    "verify:azure": "node --env-file-if-exists=.localConfigs.playground lib/scripts/live-model.js",
+    "test:playground:fixture": "tsx scripts/playground-smoke.ts",
+    "blocked:provision": "node scripts/blocked.cjs"
+  },
+  "dependencies": {
+    "@azure/ai-projects": "2.11.0",
+    "@azure/identity": "4.13.0",
+    "@microsoft/agents-activity": "1.10.1",
+    "@microsoft/agents-hosting": "1.10.1",
+    "@microsoft/agents-hosting-express": "1.10.1",
+    "express": "5.2.1",
+    "openai": "7.60.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@microsoft/m365agentsplayground": "0.2.30",
+    "@types/adm-zip": "0.5.7",
+    "@types/express": "5.0.6",
+    "@types/node": "22.19.15",
+    "adm-zip": "0.5.16",
+    "ajv": "8.17.1",
+    "ajv-draft-04": "1.0.0",
+    "ajv-formats": "3.0.1",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3",
+    "yaml": "2.8.2"
+  }
+}
