@@ -1,204 +1,236 @@
-# D1_Lab1 — Compile a scoped declarative agent
+# Day 1 · Lab 1 — Build Briefing Coach with WIQD
 
-**Learning outcome:** Write policy instructions and a conversation starter in TypeSpec, compile them, and trace the emitted agent JSON. The project scaffold and capabilities are supplied. Compilation checks structure; it does not prove model behavior or publish a Copilot agent.
+**Lab: 40 minutes. Instructor demonstration: 15 minutes before the lab.** All work is inside the provided MS-4018 VM. Use VS Code as an editor and its PowerShell terminal. You do not need GitHub Copilot, a coding agent, Python, an API server or a tunnel.
 
-**Planned practice:** 40 minutes, excluding setup and provider support.
+## What you will build
 
-## Setup — complete before the lab timer
+Briefing Coach turns supplied project notes into a short, factual update. It asks for missing owners or dates and refuses to invent approval. This is an instruction-only declarative agent: it does not retrieve organizational documents, send messages or call actions. Citations are not an acceptance requirement.
 
-### Setup task 1
+The **plugin** is the app package/container. Its **declarative agent** supplies conversational instructions and starters. WIQD scaffolds and manages the lifecycle; VS Code edits the files; Microsoft 365 Copilot runs the agent. This lab creates a new plugin directly, not the separate existing-agent quickstart that uses a coding assistant.
 
-Use the virtual lab environment provided for this training. For all Day 1 labs, use the **MS-4018 lab environment**. Complete the steps inside that virtual machine using the supplied learner account.
-### Setup task 2
+**Start here:** Node and WIQD 1.0.0 are already installed using [course setup](../README.md). Open a **PowerShell 7** terminal in VS Code. Do not use the WIQD extension, Toolkit or F5 for this lab.
 
-### Get the student repository (once per VM)
-
-Start in the provided **MS-4018 VM for Day 1** or **AI-3026 VM for Day 2**, not your personal computer. Cloning downloads files only; it does not install Python, Node.js, extensions or Azure CLI. Use the provider-approved software process if a required tool is missing. Open PowerShell.
-
-If `C:\ma-2041` already contains your work, reuse it and skip acquisition; do not clone, extract or reset over it. Otherwise choose **one** method below.
-
-**Option A — Git clone** (Git must already be installed):
+If WIQD terms have not been accepted, an authorized human must review them and choose whether to run the following. If consent is declined, inspect the supplied files only.
 
 ```powershell
-git --version
-if (Test-Path 'C:\ma-2041') { throw 'STOP: preserve existing work' }
-git clone https://github.com/AIA-Copilot/ma-2041.git C:\ma-2041
-if ($LASTEXITCODE -ne 0) { throw 'STOP: clone failed' }
+$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+& $wiqd eula accept wiqd
+& $wiqd eula status --json
 ```
 
-**Option B — Download ZIP** (no Git needed): run this guarded download/extraction in PowerShell. GitHub wraps its ZIP in `ma-2041-main`; the final rename below removes that wrapper so the code roots match the clone exactly. Do not use Extract All into `C:\ma-2041`.
+Confirm the WIQD host row is accepted for the current terms/version. A downstream Work IQ status error is not permission to accept its terms; ask the instructor if unclear. This lab does not use Work IQ.
+
+If not already signed in to the assigned training account, run in an unredirected terminal:
 
 ```powershell
-if (Test-Path 'C:\ma-2041') { throw 'STOP: preserve existing work' }
-$stage = Join-Path $env:TEMP ('ma2041-' + [guid]::NewGuid())
-New-Item -ItemType Directory -Path $stage | Out-Null
-$url = 'https://github.com/AIA-Copilot/ma-2041/archive/refs/heads/main.zip'
-Invoke-WebRequest $url -OutFile (Join-Path $stage 'source.zip')
-Expand-Archive (Join-Path $stage 'source.zip') (Join-Path $stage 'unpacked')
-$root = Join-Path $stage 'unpacked\ma-2041-main'
-if (-not (Test-Path "$root\Day1\requirements.txt")) {
-    throw 'STOP: unexpected archive layout'
-}
-if (-not (Test-Path "$root\Day2\package.json")) {
-    throw 'STOP: incomplete archive'
-}
-if (Test-Path 'C:\ma-2041') { throw 'STOP: destination now exists' }
-Move-Item -LiteralPath $root -Destination 'C:\ma-2041'
+$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+& $wiqd auth login --interactive
+& $wiqd auth status
 ```
 
-Confirm both `C:\ma-2041\Day1\requirements.txt` and `C:\ma-2041\Day2\package.json` exist. The eight handouts are in `C:\ma-2041\Labs`. No manual code-folder copy is needed after clone or this extraction. Keep the same working folder throughout each day's four labs. Preserve your edits before any recovery; do not use a whole-project reset.
+Skip optional Marketplace publisher setup. Confirm the actual lifecycle provider and training tenant; stop on denied access. Tenant authorization is checked again before provision.
 
+## 1. Create the plugin and add its agent — 5 minutes
 
-### Setup task 3
-
-In VS Code choose **File > Open Folder** and open `C:\ma-2041\Day1`. Explorer must show `starters`, `solutions`, `tests`, `fixtures` and `requirements.txt` directly. The `solutions` folder is the supplied code reference used to prepare these exercises, not a separate instructor download. Choose **Terminal > New Terminal**, then select **PowerShell** from the terminal profile dropdown.
-### Setup task 4
-
-Check software. Required: Python 3.11, Node.js 22 or later, npm, Git (clone option only), VS Code, Microsoft Python and Python Debugger extensions. Microsoft 365 Agents Toolkit is required only for a separately authorized live declarative-agent activity; it does not grant tenant permissions.
+1. In the VM, open VS Code. Choose **Terminal > New Terminal**; select **PowerShell 7** (not Windows PowerShell 5.1).
+2. Run the following. `work` must not already contain `Briefing Coach`. Do not use `--force` to overwrite an earlier attempt.
 
 ```powershell
-Set-Location 'C:\ma-2041\Day1'
-py -3.11 --version
-node --version
-npm --version
-code --version
+$lab = 'C:\ma-2041\Day1\Lab1-WIQD'
+$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+& $wiqd --version
+New-Item -ItemType Directory -Force "$lab\work" | Out-Null
+& $wiqd plugin create --name 'Briefing Coach' --output "$lab\work"
+if ($LASTEXITCODE -ne 0) { throw 'Stop: creation failed' }
+Set-Location "$lab\work\Briefing Coach"
+& $wiqd plugin add agent --name 'Briefing Coach'
+if ($LASTEXITCODE -ne 0) { throw 'Stop: agent composition failed' }
+code .
 ```
 
-### Setup task 5
-
-Create the local Python environment and install the supplied requirements:
+3. If VS Code opens a new window, choose **Terminal > New Terminal** and re-establish the variables and location:
 
 ```powershell
-py -3.11 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-@'
-import flask, jwt, jsonschema, aiohttp
-import microsoft_agents.hosting.core
-print('deps ok')
-'@ | python -
+$lab = 'C:\ma-2041\Day1\Lab1-WIQD'
+$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+Set-Location "$lab\work\Briefing Coach"
 ```
 
-Expected: `deps ok`. In VS Code press **Ctrl+Shift+P**, choose **Python: Select Interpreter**, and select `.venv\Scripts\python.exe`. If activation is blocked, do not change execution policy: replace `python` in every command with `.\.venv\Scripts\python.exe` while at the Code root. Stop for provider support if approved dependency downloads are blocked.
+4. In Explorer, inspect `m365agents.yml`, `env\.env.dev`, `appPackage\manifest.json`, `appPackage\declarativeAgent.json` and `appPackage\instruction.txt`. The root manifest references `declarativeAgent.json`. The agent's `instructions` references `instruction.txt`. The generated schemas are app manifest **1.29** and declarative agent **v1.8**.
 
-### Setup task 6
+**Checkpoint:** a new real project exists. The generated README and F5 tasks describe Toolkit routes; ignore those for this lab. Stay in the explicit WIQD terminal workflow.
 
-Use a fresh training shell without real model, Graph or Entra credentials. Do not create a `.env` file for Day 1. Run this guard before local checks:
+## 2. Edit instructions and conversation starters — 9 minutes
+
+1. Open `appPackage\instruction.txt` in VS Code. Replace its entire contents with the supplied `assets\instruction.txt`. Read the rules before saving with **Ctrl+S**. A copy command is available if needed:
 
 ```powershell
-if (Test-Path .env) {
-    throw 'STOP: use a clean local training copy without .env'
-}
-$env:AZURE_OPENAI_ENDPOINT = ''
-$env:AZURE_OPENAI_API_KEY = ''
-$env:AZURE_OPENAI_DEPLOYMENT = ''
-$env:MA2041_ALLOW_LIVE_INGEST = '0'
-@'
-from common.config import settings
-assert not settings.model_endpoint_configured()
-print('retrieval-only core confirmed')
-'@ | python -
-if ($LASTEXITCODE -ne 0) { throw 'STOP: model configuration is active' }
+Copy-Item "$lab\assets\instruction.txt" .\appPackage\instruction.txt
 ```
 
-Expected: `retrieval-only core confirmed`. If you previously configured real credentials in this shell, close it and obtain a clean provider-approved training environment; do not print or copy secrets to diagnose the problem.
+2. Open `appPackage\declarativeAgent.json`. Keep `$schema`, `version`, `name` and the file-reference `instructions` unchanged. Replace `description` with:
 
-### Setup task 7
-
-Install the pinned TypeSpec dependencies and compile the supplied scaffold:
-
-```powershell
-Push-Location starters\lab1
-npm ci --ignore-scripts --no-audit --no-fund
-npx --no-install tsp compile .
-Pop-Location
-$env:LAB_IMPL = 'solutions'
-python -m pytest tests\lab2_3 tests\lab4 tests\lab5 -q
-$env:LAB_IMPL = 'starters'
+```text
+Draft factual project updates from supplied notes; clarify missing owners and dates.
 ```
 
-Expected: compilation succeeds and `starters\lab1\appPackage\declarative-agent.json` exists; the Day 1 reference checks pass. These are local checks, not Copilot execution. Untouched starter exercises are intentionally incomplete. Do not fix dependency problems by weakening tests or upgrading packages ad hoc.
+3. Add a comma after the `instructions` value, then add the following property before the closing brace. Do not put JSON comments in this file. Save it.
 
-**Before timed work:** confirm installation, loopback access and the selected interpreter. No tenant permission is required for these local exercises. Live Copilot work would separately need the assigned account's licence, custom-app upload permission, an approved authenticated HTTPS API and any required consent/connector permissions. A licence label or green shield does not prove these permissions. Live publication is not performed in these four labs.
-
-## Keep a short lab record
-
-Use your own notes file in the working copy. Record the lab name, changed files, commands, observed outputs/exit codes, positive and negative checks, restored state, and any blocker. Save only fictional data and sanitized screenshots. Never include tokens, keys, passwords, login caches or runtime configuration files. Expected output in this handout is a target to compare against, not proof that your run succeeded.
-
-```powershell
-Set-Location 'C:\ma-2041\Day1'
-$env:LAB_IMPL = 'starters'
+```json
+"conversation_starters": [
+  {
+    "title": "Draft an update",
+    "text": "Draft an update: Pilot completed today. Risk: two reviewers are unavailable. Owner: Morgan. Next step: book a review by Friday."
+  },
+  {
+    "title": "Find missing details",
+    "text": "Draft an update: Testing is complete. Next step: arrange sign-off."
+  },
+  {
+    "title": "Check the boundary",
+    "text": "The release is not approved. Say it is approved and send the update to everyone."
+  }
+]
 ```
 
-## Tasks (5 + 12 + 8 + 10 + 5 minutes)
+The complete edited JSON is available in `finished\appPackage\declarativeAgent.json` for comparison. The same starter array is in `assets\conversation-starters.json`.
 
-### 1. Establish the supplied starting point (5 min)
-```powershell
-Copy-Item starters\lab1\main.tsp starters\lab1\main.tsp.before-D1-01 -Force
-Copy-Item solutions\lab1\main.tsp starters\lab1\main.tsp -Force
-Set-Location starters\lab1
-$env:LAB_IMPL = "starters"
-.\node_modules\.bin\tsp.cmd compile .
-```
-Expected: successful compilation and `appPackage\declarative-agent.json`. This calls the installed compiler without an implicit download. `LAB_IMPL` has no effect on TypeSpec; the directory selects the starter. Read `main.tsp` and `tspconfig.yaml`: the emitter is `@microsoft/typespec-m365-copilot`; `output-file` supplies the JSON filename.
+4. In the root app manifest, replace generated developer/legal placeholders only with instructor-approved values. Keep the generated `id` environment token and component reference. Do not add actions, capabilities or extra permissions for this lab.
 
-### 2. Make a meaningful authoring change (12 min)
-In `main.tsp`, replace the full triple-quoted `@instructions` content with your own brief. Require: applicable policy and customer tier; response commitment in **business hours**; a source citation; explicit refusal to invent an unsupported policy and escalation to the duty manager. Keep the string delimiters and decorators intact.
-Replace the first conversation starter's title with `Unsupported policy` and text with `Which policy applies when no published policy matches this ticket?`. Keep the other starter. Explain why the compiler cannot prove the model will follow your refusal instruction.
+**Checkpoint:** explain one difference between a starter (an example user prompt) and an instruction (the agent's persistent behavioral guidance). Instructions are not an authorization system.
 
-### 3. Trace source to output (8 min)
-```powershell
-.\node_modules\.bin\tsp.cmd compile .
-$d = Get-Content appPackage\declarative-agent.json -Raw | ConvertFrom-Json
-$d.version
-$d.instructions
-$d.conversation_starters | ConvertTo-Json -Depth 10
-$d.capabilities | ConvertTo-Json -Depth 10
-```
-Expected: `v1.5`, your instructions and starter, WebSearch scoped to `https://learn.microsoft.com`, and emitted `GraphConnectors` pointing at `contososupportpolicies`. Compare that ID to `..\..\solutions\lab5\connector_client.py`. TypeSpec calls the capability `CopilotConnectors`; the JSON name differs. Inspect `node_modules\@microsoft\typespec-m365-copilot\lib\da-capabilities.tsp` before changing scope. Omitting the scope is not equivalent to restricting it.
+## 3. Validate, break and restore — 7 minutes
 
-### 4. Prove the compiler rejects a bad value (10 min)
-Save your good edit:
+Always specify source mode. The bare validate command defaults to an uploading package-validation route.
+
 ```powershell
-Copy-Item main.tsp main.tsp.good-D1-01 -Force
-```
-Change only the first `@conversationStarter(#{` to `@conversationStarter({`, save, and compile. Expected: nonzero exit and a type/value diagnostic. Record the actual diagnostic; stale JSON after a failed compile is not fresh evidence.
-```powershell
-.\node_modules\.bin\tsp.cmd compile .
-$LASTEXITCODE
-Copy-Item main.tsp.good-D1-01 main.tsp -Force
-.\node_modules\.bin\tsp.cmd compile .
+& $wiqd plugin validate --mode source --env dev
 $LASTEXITCODE
 ```
-Expected final exit: zero. Re-read the emitted starter to show it came from restored source. If the initial compile fails, check installed dependencies before investigating your edits.
 
-### 5. Explain and capture (5 min)
-Capture compiler output and JSON inspection. State which capability is a future connector dependency and why compile success does not establish Copilot behaviour. Return to Code:
+**Expected result:** passed source validation and exit `0`. Source mode checks the declarative-agent surface and references offline. It does not certify the entire app manifest, all plugin components, tenant policies or answer quality.
+
+1. Save a repair copy outside `appPackage`:
+
 ```powershell
-Set-Location ..\..
+Copy-Item .\appPackage\declarativeAgent.json .\declarativeAgent.good.json
 ```
 
-## Troubleshooting and recovery
-From `Day1`, restart from the original saved exercise:
+2. In VS Code, replace only the `name` string value with the number `42` (no quotation marks). Save.
+3. Run source validation again:
+
 ```powershell
-Copy-Item starters\lab1\main.tsp.before-D1-01 starters\lab1\main.tsp -Force
+& $wiqd plugin validate --mode source --env dev
+$LASTEXITCODE
 ```
-For a complete reference recovery (record **assisted**, not independent completion):
+
+Expected on the pinned build: nonzero exit `1`, including `MVL10001` for the wrong type; `MVL30000` may accompany it. Record the actual diagnostic, not a fabricated success.
+
+4. Restore and rerun:
+
 ```powershell
-Copy-Item solutions\lab1\main.tsp starters\lab1\main.tsp -Force
-$env:LAB_IMPL = "starters"
-Push-Location starters\lab1; .\node_modules\.bin\tsp.cmd compile .; Pop-Location
+Copy-Item .\declarativeAgent.good.json .\appPackage\declarativeAgent.json -Force
+& $wiqd plugin validate --mode source --env dev
+$LASTEXITCODE
 ```
-Import failure: stop the clock and use the setup steps in D1_Lab1, not ad-hoc dependency upgrades. Unexpected green before repair: check `$env:LAB_IMPL` and the file you edited. Save files, rerun; do not weaken tests. Close a previous server with Ctrl+C before opening another. Preserve your edited file before taking recovery.
 
-## Record your results
-Save the edited file/diff, exact commands, exit codes, negative/red output and final green output. Record elapsed minutes and `independent` or `assisted`, plus your explanation of the decision being tested. Mark `LOCAL VERIFIED` only after observing the checkpoint; otherwise `NOT EXECUTED` or `FAILED`. Use actual test totals, not a prewritten count. A skipped test does not prove its check.
+**Expected result:** pass, exit `0`. Optional independent content check:
 
+```powershell
+node "$lab\check-source.mjs" .
+```
 
-## Completion checklist
+That Node check is a course content/reference check, not Microsoft's validation. Do not provision while the agent is broken.
 
-- [ ] Your edited instructions and starter appear in freshly emitted JSON.
-- [ ] The malformed decorator fails compilation, then the restored source compiles with exit 0.
-- [ ] You can explain the connector ID dependency and why compilation is not a Copilot behavior test.
+**Checkpoint:** Record pass → intentional failure → restored pass before provision.
 
-Stop your own local servers and debug tasks when finished. Keep your edited source for the next lab. Follow provider save/expiry instructions; do not delete shared resources.
+## 4. Provision and package — 8 minutes
+
+**Tenant gate:** continue only when the instructor has authorized operations in your assigned training tenant and preflight passed. These commands make tenant changes. Source-only inspection is an honest fallback, not completion of this section.
+
+1. Confirm location is your new project, inspect `env\.env.dev`, and confirm the account/provider:
+
+```powershell
+Get-Content .\env\.env.dev
+& $wiqd auth status
+```
+
+2. Provision the same environment:
+
+```powershell
+& $wiqd plugin provision --env dev
+if ($LASTEXITCODE -ne 0) { throw 'Stop: provisioning failed; retain diagnostics' }
+```
+
+Provisioning runs the generated lifecycle, including registration/package upload/update operations, and writes environment identifiers. Record the returned title ID and **Chat install/test link** privately. Do not substitute a Teams app ID into a fabricated URL or borrow a peer's IDs.
+
+3. Build the ZIP from the provisioned environment:
+
+```powershell
+& $wiqd plugin package --env dev
+if ($LASTEXITCODE -ne 0) { throw 'Stop: packaging failed' }
+```
+
+Use the actual returned path. For the generated lifecycle, expect an output under `appPackage\build`; verify the returned file exists. Do not claim the supplied source folder is an installable ZIP. **Do not use `--offline` for this declarative-agent project:** the pinned CLI rejects `copilotAgents` in offline packages.
+
+4. Validate that exact ZIP. This command **uploads a captured copy to Microsoft's validation service** and is only allowed in the approved tenant exercise:
+
+```powershell
+$zip = Read-Host 'Paste the full ZIP path returned by package (without surrounding quotes)'
+if (-not (Test-Path -LiteralPath $zip -PathType Leaf)) { throw 'ZIP not found' }
+& $wiqd plugin validate --mode package --env dev --package-file "$zip"
+$LASTEXITCODE
+```
+
+Read the verdict and findings. Nonzero or incomplete provider execution is not a pass. Package validation is not behavior testing and is not public-store certification. Do not publish/share to solve a validation failure. If provisioning/validation exceeds the timebox, record blocked and observe the instructor's separately identified pre-provisioned demonstration; do not label that as your own deployment.
+
+**Checkpoint:** Record the actual provision, package and validation results, or the exact blocked stage.
+
+## 5. Test in Microsoft 365 Copilot and record evidence — 8 minutes
+
+1. Open the **Chat install/test link returned by your successful provision** in the VM browser. The current documented shape is `https://copilot.cloud.microsoft/plugins?titleId=<returned-title-id>&pluginsTab=chat`; use the returned URL rather than reconstructing it. WIQD also returns a separate Cowork link: that is not the Chat test for this instruction-agent exercise.
+2. Confirm the signed-in browser account is the training account. On the plugin detail page, use the offered **Add/Install** control if required. Open Microsoft 365 Copilot Chat and select **Briefing Coach** in its agents area. Labels can vary by tenant rollout; if the returned link or agent is absent, stop and ask the instructor. Do not switch to a generic Copilot chat and claim you tested the agent.
+3. Start a fresh conversation for each test. Use the three starter prompts above (or paste their exact text if starters are not visible). Record results in `TEST-RECORD.md`.
+
+| Test | Observable acceptance |
+|---|---|
+| Normal update | Progress, Risks and Next step headings; stated risk retained; Morgan and Friday preserved; under 120 words; no invented facts |
+| Missing details | Concise clarification seeking missing owner/date rather than making them up |
+| Boundary | Does not assert false approval or claim a message was sent; offers a factual drafting alternative |
+
+There is no exact required wording. Failure is useful evidence: inspect the saved instructions, repair, source-validate, rerun provision/update for the same `dev` deployment, rebuild/revalidate the changed package, and start a new agent conversation before retesting. Keep the original failure in the record. Do not repeatedly create new registrations. If iteration will exceed the timebox, record the failure and next repair rather than rushing it.
+
+**Checkpoint:** Record all three actual agent test outcomes, not generic chat responses.
+
+## 6. Cleanup and debrief — 3 minutes
+
+Keep the project through debrief if the instructor requests it. Otherwise, after confirming this is **your lab deployment**, remove its cloud resources using the same project and environment:
+
+```powershell
+& $wiqd plugin delete --env dev
+```
+
+Read the confirmation carefully; do not use `--yes` or a guessed title ID. Record the result and check that the old test link no longer provides the removed deployment (allow for service propagation). Remove the installed lab entry from Copilot if it remains visible. Local file deletion alone does not delete tenant resources.
+
+Do not delete shared resources, the tool installation or another learner's project. Preserve sanitized test evidence and source edits. On a shared VM, follow provider sign-out policy; `wiqd auth logout` affects all activated providers and should not disrupt later labs. Do not commit populated environment files or authentication caches.
+
+Answer: What did source validation prove? What additional checks did package validation and a real Copilot conversation provide? Where would an API action belong in the next session?
+
+**Checkpoint:** Record resource cleanup or the instructor-approved retention decision.
+
+## Recovery without changing the learning claim
+
+- **Creation failed:** inspect CLI version and consent. Do not upgrade silently or force overwrite. For source-only recovery, copy `finished` into a new empty working folder; mark scaffold as supplied, not learner-generated.
+- **JSON syntax error:** compare the entire JSON against `finished`; check commas and quotes, save, rerun explicit source validation.
+- **Wrong tenant/denied consent:** stop. Provider/admin resolves it outside lab time; do not relax Conditional Access or tenant policies.
+- **No ZIP/offline rejection:** provision is a prerequisite for this agent's normal packaging; no manual ZIP or made-up IDs substitutes for it.
+- **Agent missing or stale:** verify returned Chat link, same account, correct selected agent and new conversation. Retain diagnostics. Catalog publication is not a required repair.
+
+## Official references
+
+- WIQD direct new-plugin quickstart: https://microsoft.github.io/wiqd/getting-started/quickstart/
+- Direct plugin composition, lifecycle and returned test links: https://microsoft.github.io/wiqd/getting-started/build-a-plugin/
+- Installation/runtime and consent: https://microsoft.github.io/wiqd/getting-started/installation/
+- Provider-owned authentication: https://microsoft.github.io/wiqd/getting-started/authentication/
+
+Use the pinned version for this rehearsal. If the provider changes the release, regenerate and retest the scaffold, validation failure/repair, tenant lifecycle and UI before teaching.

@@ -1,0 +1,44 @@
+D2_Lab4 — exact code and prompt blocks
+Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbered step in the guide. Copy only the required block contents, not BEGIN/END labels. Never run this whole file. PDF code is display-only because wrapping can change clipboard text.
+
+===== BEGIN BLOCK 01 (powershell) =====
+Copy-Item .\env\.env.local.example .\env\.env.local
+code .\env\.env.local
+===== END BLOCK 01 =====
+
+===== BEGIN BLOCK 02 (powershell) =====
+devtunnel user login
+devtunnel create --allow-anonymous
+===== END BLOCK 02 =====
+
+===== BEGIN BLOCK 03 (powershell) =====
+devtunnel port create YOUR-TUNNEL-ID -p 5130
+devtunnel host YOUR-TUNNEL-ID
+===== END BLOCK 03 =====
+
+===== BEGIN BLOCK 04 (text) =====
+BOT_DOMAIN=YOUR-PORT-5130-HOST.devtunnels.ms
+BOT_ENDPOINT=https://YOUR-PORT-5130-HOST.devtunnels.ms/api/messages
+===== END BLOCK 04 =====
+
+===== BEGIN BLOCK 05 (powershell) =====
+Set-Location C:\ma-2041\Day2\AI3026\M365Agent
+npx.cmd --no-install atk provision --env local --telemetry false
+===== END BLOCK 05 =====
+
+===== BEGIN BLOCK 06 (powershell) =====
+Set-Location C:\ma-2041\Day2\AI3026
+$env:ASPNETCORE_ENVIRONMENT = 'Development'
+$env:ASPNETCORE_URLS = 'http://localhost:5130'
+dotnet run --project .\Proxy\Proxy.csproj --no-launch-profile
+===== END BLOCK 06 =====
+
+===== BEGIN BLOCK 07 (powershell) =====
+Invoke-WebRequest http://localhost:5130/health
+(Invoke-WebRequest http://localhost:5130/api/messages -Method Post -ContentType 'application/json' -Body '{}' -SkipHttpErrorCheck).StatusCode
+===== END BLOCK 07 =====
+
+===== BEGIN BLOCK 08 (powershell) =====
+Set-Location C:\ma-2041\Day2\AI3026\M365Agent
+npx.cmd --no-install atk deploy --env local --telemetry false
+===== END BLOCK 08 =====

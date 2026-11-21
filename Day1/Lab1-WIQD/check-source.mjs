@@ -1,0 +1,20 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+const root = path.resolve(process.argv[2] || 'finished');
+const read = f => fs.readFileSync(path.join(root, f), 'utf8');
+const app = JSON.parse(read('appPackage/manifest.json'));
+const da = JSON.parse(read('appPackage/declarativeAgent.json'));
+assert.equal(app.copilotAgents.declarativeAgents[0].file, 'declarativeAgent.json');
+assert.equal(da.version, 'v1.8');
+assert.equal(typeof da.name, 'string');
+assert.equal(da.instructions, "$[file('instruction.txt')]");
+assert.equal(da.conversation_starters.length, 3);
+for (const s of da.conversation_starters) { assert.equal(typeof s.title, 'string'); assert.equal(typeof s.text, 'string'); }
+const instructions = read('appPackage/instruction.txt');
+for (const phrase of ['Progress, Risks, Next step', '120 words', 'clarification question', 'Do not send']) assert.ok(instructions.includes(phrase), phrase);
+assert.equal(da.actions, undefined);
+assert.equal(da.capabilities, undefined);
+assert.match(read('env/.env.dev'), /AGENT_SCOPE=shared/);
+assert.match(read('m365agents.yml'), /environmentFolderPath: .\/env/);
+console.log('PASS: local content/reference contract only; not WIQD, package or tenant acceptance.');

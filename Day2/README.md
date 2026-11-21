@@ -1,5 +1,27 @@
-# Day 2 student code
+# Day 2 — carry one Foundry agent into C# and Microsoft 365
 
-Open `C:\ma-2041\Day2` in VS Code. Start with [D2_Lab1](../Labs/D2_Lab1.pdf), then continue through Lab 4. See [setup](../README.md).
+Use the provided **AI3026 VM**, VS Code and **PowerShell 7**. Keep the same modern Foundry agent name and saved grounded version across all four labs. No Python is required.
 
-Install from the lockfile with `npm ci`, then run `npm run build`, `npm test` and `npm run package:check`. Optional checkpoints start red by design. Toolkit F5 and Azure require approved VM/project access; fixture tests do not prove live acceptance. The dummy-ID validation ZIP must not be uploaded. No provision, publish or cloud deployment is authorized. Preserve THIRD-PARTY-LICENSE.txt.
+## Start
+
+1. Open `C:\ma-2041\Day2\AI3026\AI3026.code-workspace` in VS Code.
+2. Confirm the instructor has prepared .NET 10 SDK, Azure CLI and the lab dependencies using [instructor preflight](../docs/INSTRUCTOR-PREFLIGHT.md). If tools or the course copy are missing, stop for preparation; [root setup](../README.md) covers safe acquisition.
+3. Follow the guides in order:
+
+| Guide | Result to carry forward |
+|---|---|
+| [Lab 1 — Build the agent](../docs/D2_Lab1.md) | Project endpoint, modern agent name, baseline instructions/tests |
+| [Lab 2 — Ground and evaluate](../docs/D2_Lab2.md) | Attached policy, evaluation evidence, saved grounded version |
+| [Lab 3 — Test the C# bridge](../docs/D2_Lab3.md) | Intentional failing/passing boundary test and actual same-agent live probe |
+| [Lab 4 — Teams/Copilot](../docs/D2_Lab4.md) | Read-only architecture review while Toolkit is on HOLD |
+
+**Checkpoint:** your private evidence distinguishes portal behavior, offline tests, live C# invocation, Teams and Copilot. One does not prove another.
+
+## Stop rules
+
+- Resource creation/model invocation needs the provider-approved subscription, project, permissions and spend authority.
+- Lab 4's pinned Toolkit lock retains **five affected packages (two high, three moderate)**. Do not install/rebuild or run Toolkit until tested supported remediation passes independent security review. Read-only review is the current route, not channel acceptance.
+- Even after security release, Lab 4 requires Lab 3's real grounded C# answer plus tenant/tunnel/Bot permission. A failed live probe blocks channel deployment.
+- The C# proxy uses the developer's Azure CLI identity, not the Teams user's identity. Use fictional files and your personal lab installation only. Keep `/api/messages` authentication enabled.
+
+This is a C#/.NET 10 adaptation, not the unchanged classic proxy. [Compatibility](AI3026/COMPATIBILITY.md) explains modern name/version versus classic `asst_` IDs; [source/asset provenance](AI3026/SOURCES.md) retains attribution. Local tests are not native-VM or live-tenant acceptance. Hosting remains on the VM through an approved tunnel, not Azure App Service.

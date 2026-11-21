@@ -1,0 +1,130 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Teams App Locally",
+      "dependsOn": [
+        "Verify approved Core Tools",
+        "Validate prerequisites",
+        "Start local tunnel",
+        "Create resources",
+        "Build project",
+        "Start application"
+      ],
+      "dependsOrder": "sequence"
+    },
+    {
+      "label": "Validate prerequisites",
+      "type": "teamsfx",
+      "command": "debug-check-prerequisites",
+      "args": {
+        "prerequisites": [
+          "nodejs",
+          "m365Account",
+          "portOccupancy"
+        ],
+        "portOccupancy": [
+          7071,
+          9229
+        ]
+      }
+    },
+    {
+      "label": "Start local tunnel",
+      "type": "teamsfx",
+      "command": "debug-start-local-tunnel",
+      "args": {
+        "type": "dev-tunnel",
+        "ports": [
+          {
+            "portNumber": 7071,
+            "protocol": "http",
+            "access": "public",
+            "writeToEnvironmentFile": {
+              "endpoint": "OPENAPI_SERVER_URL"
+            }
+          }
+        ],
+        "env": "local"
+      },
+      "isBackground": true,
+      "problemMatcher": "$teamsfx-local-tunnel-watch"
+    },
+    {
+      "label": "Create resources",
+      "type": "teamsfx",
+      "command": "provision",
+      "args": {
+        "env": "local"
+      }
+    },
+    {
+      "label": "Build project",
+      "type": "teamsfx",
+      "command": "deploy",
+      "args": {
+        "env": "local"
+      }
+    },
+    {
+      "label": "Start application",
+      "dependsOn": [
+        "Start backend"
+      ]
+    },
+    {
+      "label": "Start backend",
+      "type": "shell",
+      "command": "npm run dev:teamsfx",
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "windows": {
+        "command": "npm.cmd run dev:teamsfx"
+      },
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^.*$",
+          "file": 0,
+          "location": 1,
+          "message": 2
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*(Job host stopped|signaling restart).*$",
+          "endsPattern": "^.*(Worker process started and initialized|Host lock lease acquired by instance ID).*$"
+        }
+      },
+      "presentation": {
+        "reveal": "silent"
+      },
+      "dependsOn": "Watch backend"
+    },
+    {
+      "label": "Watch backend",
+      "type": "shell",
+      "command": "npm run watch:teamsfx",
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": "$tsc-watch",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "windows": {
+        "command": "npm.cmd run watch:teamsfx"
+      }
+    },
+    {
+      "label": "Verify approved Core Tools",
+      "type": "shell",
+      "command": "npm run check:func",
+      "windows": {
+        "command": "npm.cmd run check:func"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

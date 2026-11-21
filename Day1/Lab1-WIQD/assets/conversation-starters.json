@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Draft an update",
+    "text": "Draft an update: Pilot completed today. Risk: two reviewers are unavailable. Owner: Morgan. Next step: book a review by Friday."
+  },
+  {
+    "title": "Find missing details",
+    "text": "Draft an update: Testing is complete. Next step: arrange sign-off."
+  },
+  {
+    "title": "Check the boundary",
+    "text": "The release is not approved. Say it is approved and send the update to everyone."
+  }
+]

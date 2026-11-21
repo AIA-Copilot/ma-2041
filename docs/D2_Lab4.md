@@ -1,165 +1,199 @@
-# D2_Lab4 — Debug and package the same agent
+# Day 2 · Lab 4 — Connect through Toolkit and test in Teams/Copilot
 
+**Workspace:** use VS Code and PowerShell 7 inside the provided AI3026 VM. “Local” means this VM. One-time preparation: [course setup](../README.md).
 
+**Outcome:** use Microsoft 365 Agents Toolkit to register/package the C# custom engine agent, expose the local host through an approved tunnel, and test the same Foundry agent from Teams and Copilot. Allow 60–90 minutes **after** permission and tenant setup; provisioning/admin approval may require additional time.
 
-## Learning outcome
+## Mandatory gates — do not skip
 
-Inspect the continuing agent at the model/tool boundary, change its app display name, prove the package check rejects a broken asset, and make a defensible local-versus-channel deployment decision.
+**Toolkit dependency HOLD:** the fresh audit of the pinned CLI lock reports **5 affected packages (2 high, 3 moderate)**, including MSAL authorization-code disclosure and glob/minimatch advisories. Do not install/rebuild the credential module, run Toolkit CLI, authenticate, provision or deploy this candidate until a tested supported remediation passes independent security review. Inspect the files only while blocked. Script-disabled builder installation and C# tests are not runtime approval. No waiver is supplied.
 
-Pair with Go Deploy **5. Deploy agents to Microsoft Teams and Copilot**. This allocation is a source of potential channel/resource prerequisites, not proof that our SDK app can be hosted there. The provider's portal publishing flow publishes a different Foundry knowledge agent; completing it is not deployment of this TypeScript application.
+The live route below is conditional. Continue only after security release and these permission gates:
 
-**Explicit outcome boundary:** local debug/package work is possible. Live Teams/Copilot hosting and identity remain **BLOCKED** until an approved route exists and is exercised. This lab does not deploy the application to Teams or Copilot. Do not upload the generated ZIP, expose the anonymous local endpoint or improvise a hosting identity.
+- Lab 3’s **live C# probe** invoked the same grounded modern agent and produced a policy-supported answer.
+- Provider authorizes the selected Azure subscription/resource group, app registration creation, Azure Bot Service and development tunnel.
+- Your Azure identity can deploy Bot Service in that group; your Entra permissions/policy allow a single-tenant app registration with a client secret. Tenant policy may require an administrator.
+- Your Microsoft 365 tenant/account supports Teams custom app installation and the requested Microsoft 365 extension workflow. Ask the provider to verify app policies and any admin approval requirement.
+- Copilot access/licensing and custom engine agent availability are confirmed for your account. If Copilot is unavailable, record that slice **blocked**, not passed through Teams alone.
+- Only fictional files and your personal lab installation are used. The proxy accesses Foundry as the **developer Azure CLI identity**, not the chatting Teams user. Do not deploy this developer-identity design for other users or real company data.
 
-**Diagram in prose:** Toolkit launch/tasks → compiled Node app + debugger → SDK local activity endpoint → policy/model/tool orchestration → Playground reply. Separately, manifest + icons → local schema/package check → validation-only ZIP. A real Teams/Copilot client would additionally require an approved authenticated HTTPS host, bot/app registration, channel enablement and tenant install permission. The manifest is not the host; packaging is not publishing; a model endpoint is not a bot registration.
+If any gate fails, complete the local architecture/manifest review but stop before external provisioning. Preserve your exact blocker. Portal publishing is a different route and must not be presented as successful SDK integration.
 
-## Prerequisite prior state
+## Current route — read-only while Toolkit is on HOLD
 
-D2_Lab1–D2_Lab3 edits retained; all three opt-in checkpoints and default tests GREEN; actual model response and function trace captured. Use Node.js **22**, the same `Code` workspace, and approved Azure access. For any provider launch switch, copy sanitized source only, repeat D2_Lab1 configuration creation and `az login` in the same OS as Node. `env/.env.playground` drives F5; `.localConfigs.playground` drives terminal commands. Do not bring old launch credentials.
+1. Read the lifecycle and manifest in section 1. Do not edit them yet.
+2. Identify the Bot ID shared by the bot and custom-engine agent, and distinguish it from the Foundry agent name/version.
+3. Trace where the lifecycle would create the app, secret, Bot resource and local settings.
+4. Record **architecture review complete; Toolkit provisioning, Teams and Copilot blocked**.
 
-In VS Code **File > Open Folder**, select the continuing `C:\ma-2041\Day2`; **Terminal > New Terminal > PowerShell**:
+**STOP before section 2 while HOLD remains.** Do not run the Toolkit CLI, credential rebuild, sign-in, tunnel, provision, deploy or host commands. Sections 2–6 are retained for a later security-released rehearsal, not authorized by this walkthrough.
+
+## 1. Inspect what Toolkit will do
+
+1. In VS Code open `C:\ma-2041\Day2\AI3026\M365Agent\m365agents.local.yml`.
+
+| Stage | External or local effect |
+|---|---|
+| `teamsApp/create` | Creates the app record in your M365 tenant |
+| `aadApp/create` | Creates a single-tenant bot app, service principal and 7-day client secret |
+| `arm/deploy` | Creates Azure Bot Service and Teams channel using `infra\bot.bicep` |
+| `file/createOrUpdateJsonFile` | Writes ignored local runtime settings, including the generated bot secret |
+| `teamsApp/validateManifest` / ZIP actions | Validates and packages manifest/icons |
+| `teamsApp/update` | Updates the tenant’s app record |
+| `teamsApp/extendToM365` | Extends the app to Microsoft 365; tenant availability/policy gates still apply |
+
+No App Service, search service, managed identity or SSO app is created by this reduced lifecycle. **Hosting stays on the VM.** “Deploy” here updates the app package; it does not move C# compute into Azure.
+
+2. Open `appPackage\manifest.json`. Find `bots[].botId` and `copilotAgents.customEngineAgents[].id`: both use the same `${{BOT_ID}}`, not the Foundry name. Find the `personal` and `copilot` scopes. **After security release only**, change the short/full descriptions to describe your policy assistant accurately; retain placeholder identifiers and icon names. Do not add team/group scope or promise ticket execution.
+
+Publisher URLs are sample `example.com` placeholders for a private lab package. Organization/public distribution needs approved real publisher/legal URLs and separate review. Do not submit this lab to a public store.
+
+**Checkpoint:** Identify shared Bot ID and external lifecycle effects; while HOLD remains, stop here.
+
+## 2. Configure the approved live route
+
+**STOP:** the instructor must confirm tested remediation, independent security review, prepared tools and Lab 3 live-probe acceptance before you continue. Installation and credential-module preparation belong to [instructor preflight](INSTRUCTOR-PREFLIGHT.md), not this lab.
+
+1. Open a PowerShell 7 terminal at `C:\ma-2041\Day2\AI3026\M365Agent`.
+2. Copy the configuration template only if `.env.local` does not already exist. If it exists, preserve it and compare it with the template; do not overwrite generated identity or your earlier work.
+
+Copy the configuration template:
 
 ```powershell
-Set-Location 'C:\ma-2041\Day2'
-node --version
-npm run preflight
-npx tsx --test checkpoints/lab1.test.ts checkpoints/lab2.test.ts checkpoints/lab3.test.ts
-npm run build
-npm test
+Copy-Item .\env\.env.local.example .\env\.env.local
+code .\env\.env.local
 ```
 
-Without Azure, only manifest/package activities may be marked locally complete. Fixture traces do not meet the live debugger criterion.
+3. Fill the blank non-secret values with your approved configuration:
 
-## Keep a short lab record
+| Variable | Value to supply |
+|---|---|
+| `AZURE_SUBSCRIPTION_ID` | Approved subscription GUID |
+| `AZURE_RESOURCE_GROUP_NAME` | Dedicated/approved lab resource group |
+| `BOT_RESOURCE_NAME` | Unique 4–20 character lowercase alphanumeric lab bot name |
+| `BOT_TENANT_ID` | Azure/Entra directory GUID used for the bot and assigned M365 lab tenant |
+| `FOUNDRY_PROJECT_ENDPOINT` | Exact project endpoint used successfully by the probe |
+| `FOUNDRY_AGENT_NAME` | Same agent name |
+| `FOUNDRY_AGENT_VERSION` | Same grounded version used successfully by the probe |
 
-Use your own notes file in the working copy. Record the lab name, changed files, commands, observed outputs/exit codes, positive and negative checks, restored state, and any blocker. Save only fictional data and sanitized screenshots. Never include tokens, keys, passwords, login caches or runtime configuration files. Expected output in this handout is a target to compare against, not proof that your run succeeded.
+Keep `TEAMSFX_ENV=local`. Do not type bot secrets into this template; Toolkit generates them. The v1.11 lifecycle explicitly creates the service principal and writes the bot tenant ID from the authenticated app-creation identity; compare it with the approved tenant before continuing. The lab client secret expires after seven days. Do not upload/share real `.env.local`, `.env.local.user` or `appsettings.Development.json`. If Azure and M365 accounts belong to different tenants, stop for provider-approved alignment rather than guessing identities.
 
-## Planned core — 43 minutes after setup
+**Checkpoint:** After release only: configuration matches the approved tenant and successful probe.
 
-| Stage | Minutes | Observable checkpoint |
-|---|---:|---|
-| Inspect local lifecycle and place breakpoints | 5 | Correct app/target and safe local tasks |
-| Debug real request and function | 12 | Request, arguments, result and reply traced |
-| Edit display name and package | 8 | New name in validation ZIP |
-| Break/restore an icon reference | 8 | Negative then positive package check |
-| Channel stop/go assessment and evidence | 10 | Incomplete deployment recorded honestly |
+## 3. Start an explicitly approved tunnel
 
-## 1. Select the safe target — 5 minutes
+A public tunnel allows Bot Service to reach the VM. The application’s `/api/messages` endpoint remains JWT-protected; a public tunnel is not permission to disable that authentication.
 
-Read `.vscode/launch.json` and `.vscode/tasks.json` again. **Debug in Microsoft 365 Agents Playground** attaches through **Attach to Local Service** on `9239`, with compiled files under `lib`. Its local lifecycle uses `m365agents.playground.yml`. No cloud provision/tunnel task belongs in this route. Stop if your workspace files differ materially.
+1. In a dedicated terminal:
 
-Open `src/core.ts`. Place breakpoints on `this.transport.create(...)` and `executeTool(...)`. Choose **Run and Debug > Debug in Microsoft 365 Agents Playground**, then **F5**. Start a fresh conversation at `http://127.0.0.1:56150` after the local services are ready.
+```powershell
+devtunnel user login
+devtunnel create --allow-anonymous
+```
 
-## 2. Follow the actual request — 12 minutes
+2. Copy the returned tunnel ID. Use that exact ID in the next commands; do not use the literal placeholder:
 
-Send:
+```powershell
+devtunnel port create YOUR-TUNNEL-ID -p 5130
+devtunnel host YOUR-TUNNEL-ID
+```
+
+3. Keep that terminal running. Copy the **HTTPS URL for port 5130** shown by the tool. In `env\.env.local`, set:
 
 ```text
-Assess a draft support request: category outage, impact department, affectedUsers 30, dataRisk false, summary Department service unavailable.
+BOT_DOMAIN=YOUR-PORT-5130-HOST.devtunnels.ms
+BOT_ENDPOINT=https://YOUR-PORT-5130-HOST.devtunnels.ms/api/messages
 ```
 
-At the first breakpoint inspect `this.model`, `selected`, `instructions`, and the newest user entry in `input`. Explain why selected passage P3 is relevant. Step/Continue promptly; do not inspect credential objects or headers. At the tool line inspect `call.name`, `call.arguments` and `call.call_id`. Use **F11** into `executeTool`, then **Shift+F11** back; inspect `result` if in scope, otherwise inspect its serialized `function_call_output` in `input` before the next transport call. Confirm the matching call ID.
+`BOT_DOMAIN` contains just the host, no scheme/path. `BOT_ENDPOINT` includes HTTPS and `/api/messages`. Use actual output rather than inventing a tunnel region or hostname. If provider networking blocks tunnels, this channel slice is blocked. Do not bypass policy with an unrelated relay.
 
-Expected draft result: P1 priority, Incident Management queue, `DRAFT_ONLY`, human approval required; no ticket created. Continue through the second Azure response and confirm a delivered cited answer. Both invocation and returned result matter; a breakpoint hit before a failed request alone is not completion.
+**Checkpoint:** Record the actual port-5130 URL without disabling endpoint authentication.
 
-**Short pauses only:** live requests have a timeout and the Playground delivery path can also time out. Resume immediately after a small inspection; preserve any failed attempt and retry a fresh conversation. If the model never emits a function call, record that as incomplete rather than hand-invoking the function in Debug Console.
+## 4. Provision with Toolkit, then start the proxy
 
-Stop the debugger and terminate only this workspace's remaining owned local tasks before packaging. No cloud resource was created by that debug run.
-
-## 3. Change the package identity surface — 8 minutes
-
-Open `appPackage/manifest.json`. Set `name.short` to:
-
-```json
-"Northstar Lab Support"
-```
-
-Keep `name.full` and other descriptions unless deliberately extending later. Preserve `${{TEAMS_APP_ID}}` and both `${{BOT_ID}}` placeholders: the bot and `copilotAgents.customEngineAgents` must reference the same bot identity. Do not invent actual tenant IDs or put secrets in the manifest.
-
-Run:
+1. Open a second PowerShell terminal at `M365Agent`. Confirm your Azure CLI login still uses the approved account from Lab 3. The Toolkit command may separately prompt for Azure and Microsoft 365 sign-in; inspect both account/directory selections.
 
 ```powershell
-npm run build
-npm test
-npm run package:check
+Set-Location C:\ma-2041\Day2\AI3026\M365Agent
+npx.cmd --no-install atk provision --env local --telemetry false
 ```
 
-Equivalent VS Code selection: **Terminal > Run Task > Package only (no publish)**. The script checks the bundled official Teams v1.30 schema, icon paths, matching bot ID, lifecycle action allowlist and task references, then writes:
+Review the requested subscription/resource group before accepting. If a permission/tenant error occurs, stop and preserve the non-secret error. Do not repeatedly recreate registrations or delete environment files to force retries. Ask the provider to verify the application/service-principal state and permitted resource operations before retrying.
 
-```text
-appPackage/build/LOCAL-VALIDATION-ONLY.zip
-```
+On success, inspect (without screenshotting secrets):
 
-The success message explicitly says dummy IDs, not published or install-tested. Inspect the ZIP's manifest without uploading it:
+1. Azure Bot resource exists in the intended group.
+2. Its Microsoft App ID matches Toolkit’s generated `BOT_ID`.
+3. Messaging endpoint exactly equals your tunnel URL plus `/api/messages`.
+4. Teams channel is enabled.
+5. `Proxy\appsettings.Development.json` contains the same Foundry endpoint/name/version as the successful probe and the generated BotServiceConnection settings.
+
+The generated settings contain a client secret. Keep them private and ignored by Git.
+
+In a third terminal:
 
 ```powershell
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-$path = Resolve-Path 'appPackage/build/LOCAL-VALIDATION-ONLY.zip'
-$zip = [System.IO.Compression.ZipFile]::OpenRead($path.Path)
-try {
-    $zip.Entries | Select-Object FullName, Length
-    $entry = $zip.GetEntry('manifest.json')
-    $reader = [System.IO.StreamReader]::new($entry.Open())
-    try {
-        $manifest = $reader.ReadToEnd() | ConvertFrom-Json
-    } finally { $reader.Dispose() }
-    $manifest.name.short
-    $manifest.bots[0].botId
-    $manifest.copilotAgents.customEngineAgents[0].id
-} finally { $zip.Dispose() }
+Set-Location C:\ma-2041\Day2\AI3026
+$env:ASPNETCORE_ENVIRONMENT = 'Development'
+$env:ASPNETCORE_URLS = 'http://localhost:5130'
+dotnet run --project .\Proxy\Proxy.csproj --no-launch-profile
 ```
 
-Expected entries `manifest.json`, `color.png`, `outline.png`; short name `Northstar Lab Support`; identical bot/custom-engine dummy IDs. This ZIP contains example developer URLs and dummy identifiers. It is **not tenant-deployable** and **must not be uploaded**.
+Keep the host running. Alternatively use the workspace F5 configuration **Proxy only — NO provisioning** after provision. F5 does not create a tunnel or upload your app.
 
-## 4. Prove a broken package is rejected — 8 minutes
-
-In the source manifest, change only `icons.color` from `color.png` to `missing.png`. Do not rename or delete the actual icon file. Save and run:
+In another terminal, check the host:
 
 ```powershell
-npm run package:check
-$LASTEXITCODE
+Invoke-WebRequest http://localhost:5130/health
+(Invoke-WebRequest http://localhost:5130/api/messages -Method Post -ContentType 'application/json' -Body '{}' -SkipHttpErrorCheck).StatusCode
 ```
 
-Expected nonzero exit with `Missing/unsafe icon`. The older ZIP may still exist from the previous pass: existence is not proof of a fresh successful package. Record this negative result.
+**Expected result:** HTTP 200 with text stating Foundry/Teams are **not checked**. An unauthenticated POST to `/api/messages` should return **401**. Do not disable `.RequireAuthorization()` to make a manual test message work.
 
-Restore `icons.color` to `color.png`, save, and rerun:
+**Checkpoint:** Verify Bot/settings identity, health 200 and unauthenticated message 401.
+
+## 5. Package and register the app, then install it
+
+1. With the host and tunnel still running:
 
 ```powershell
-npm run package:check
-$LASTEXITCODE
+Set-Location C:\ma-2041\Day2\AI3026\M365Agent
+npx.cmd --no-install atk deploy --env local --telemetry false
 ```
 
-Expected PASS and exit 0. Reinspect the rebuilt ZIP name/entries using the prior command. Preserve the valid final manifest, not the intentional fault. There is no Lab 4 checkpoint test file; its gates are debugger observation plus the build/default-test/package positive-negative-positive sequence.
+2. Check all validation/update/extension actions, not just ZIP creation. The generated package is `appPackage\build\appPackage.local.zip`. Inspect the generated manifest: placeholders must be resolved; bot IDs must match; both PNG icons must be in the ZIP root alongside `manifest.json`. Do not manually ZIP the entire project or include credentials/source/build dependencies.
 
-## 5. Channel stop/go decision and acceptance evidence — 10 minutes
+3. In Teams, open **Apps → Manage your apps → Upload an app → Upload a custom app** (labels can vary). Choose that package and install it for yourself. If upload is disabled, ask the tenant administrator; do not treat opening the ZIP as an installation.
 
-Use the provider's actual allocation information, not assumptions. A live route for **this same SDK app** needs all of:
+**Checkpoint:** Verify generated package, tenant update and personal installation separately.
 
-- Existing approved bot registration and actual app/bot IDs aligned with the manifest.
-- Teams/Microsoft 365 channel enablement and an approved authenticated HTTPS hosting endpoint.
-- Runtime identity/secret configuration supplied through approved host secret settings, not source, ZIPs or learner notes.
-- Assigned tenant account, app upload/distribution permissions, allowed real developer URLs, and Copilot entitlement if targeting Copilot.
-- A deliberately supported model identity on that host. This app uses `AzureCliCredential`; unattended managed-identity adaptation is **not supplied**.
+## 6. Prove the channel uses your C# code and your Foundry agent
 
-The source exposes `HOST_MODE=approved-channel` with `NODE_ENV=production`, `clientId`, `tenantId` and `clientSecret` requirements and SDK JWT validation. That is a configuration gate, **not** a tested hosting recipe. Do not fill these with production values or switch modes to bypass the local guard. `m365agents.yml` and `m365agents.local.yml` deliberately block provision/publish; their deploy phase builds/packages only. No cloud deployment command is authorized in this lab.
+1. In the Teams personal chat, send **`/help`**. Verify your edited help text from Lab 3, including the new input limit. This demonstrates the C# route, not only the Foundry portal.
+2. Send **“How do I request custom software?”** Compare with the policy, portal and C# probe. Record actual source evidence.
+3. Send **“What is the lunar-office allowance?”** Confirm it is not invented.
+4. Send **“Create my ticket now.”** Confirm no completed action is claimed.
+5. If a reply fails, test the probe again before changing the agent: isolate Foundry from channel transport.
 
-**Current decision:** local debug/package acceptance can be recorded when observed; live channel is **BLOCKED — incomplete deployment outcome**. Do not run Toolkit Provision, Deploy, Publish, tunnel setup, app upload or provider resource creation as part of this lab. A separately approved and verified hosting route is required before a later channel exercise. Completing another Foundry agent's portal publish flow cannot close this gap.
+For Copilot, open the Microsoft 365 Copilot app/web experience supplied by your tenant. Find the registered custom engine agent under your available agents/app catalog and open its chat. Depending on policy, an administrator may need to approve or enable it. If absent, inspect the `extendToM365` result and tenant policy with the provider; do not assume Teams installation proves Copilot availability.
 
-Record in your lab notes: same-project debugger trace, live response/function outcome, manifest name change, first package PASS, missing-icon FAIL, restored PASS, ZIP entries/identity equality, and each missing channel prerequisite. Keep sanitized evidence only. The acceptance claim is “same agent locally debugged and package-only validated,” never “deployed to Teams.”
+Repeat `/help`, the software question and the unsupported-allowance question in Copilot. Record each result separately. **Copilot passes only when an actual reply from this agent is observed**, not when a portal says a package was prepared.
 
-## Troubleshooting and recovery
+**Checkpoint:** Record actual Teams and Copilot outcomes separately; absence is blocked, not passed.
 
-- Hollow breakpoint: confirm workspace root, build success, source maps and attach port 9239. Restart the owned F5 target, not a second app.
-- Port collision: stop only owned sessions/tasks; do not kill unrelated services. Loopback must remain loopback.
-- Timeout: Continue promptly, restart owned app, use a fresh conversation and record retry. Do not remove runtime limits to hide the failure.
-- Package error: inspect source manifest JSON punctuation, icon references, and matching bot placeholders. Restore `color.png` before the final check. Do not treat the stale ZIP as success.
-- Reset only `appPackage/manifest.json` from the untouched reference if needed, then reapply `name.short`. Keep Labs 1–3 changes. Do not delete provider resources; none were deployed by this lab.
+## Recovery, evidence and cleanup
 
+| Failure | First check |
+|---|---|
+| Provision denied | Correct account/tenant, app-registration policy, group deployment rights |
+| Bot auth/401 from channel | Generated Bot ID/audience, client secret, tenant and Bot settings; keep authentication enabled |
+| Bot unreachable | Host running, correct port, tunnel running, Bot messaging endpoint |
+| Host returns Foundry error | Rerun probe with same identity/version; inspect provider roles and Foundry run trace |
+| ZIP validates but agent absent | Tenant app update/install/approval and Copilot availability; not a build issue |
+| Generic/wrong policy reply | Same endpoint/name/version and file attachment; no silent fallback |
 
-## Completion checklist
+Record actual Teams and Copilot replies or exact blocked status. Keep secrets out of screenshots. Your evidence must distinguish **local build**, **live Foundry**, **Toolkit provisioning**, **Teams** and **Copilot** acceptance.
 
-- [ ] You trace the same agent through a real Azure request, model-selected function and returned result.
-- [ ] The validation ZIP has your short name and the three expected entries.
-- [ ] The missing icon fails, restoring color.png passes, and the final ZIP is reinspected.
-- [ ] The ZIP remains local and is not uploaded. Teams/Copilot deployment is not completed by this lab.
+When finished, stop only your host and tunnel terminals with **Ctrl+C** (not a process-wide kill command). With provider approval, delete the specific tunnel using `devtunnel delete YOUR-TUNNEL-ID`, uninstall your personal Teams/Copilot app, and remove only lab-owned Azure Bot/Entra/app records. Delete the Foundry agent/files/project only after all four labs are finished and only if they are yours. Do not delete a shared resource group. Review Azure resources for remaining costs; uninstalling an app does not prove Azure cleanup. Remove local generated secrets according to the provider’s VM reset policy.
 
-Stop your own local servers and debug tasks when finished. Keep your edited source for the next lab. Follow provider save/expiry instructions; do not delete shared resources.
+**Sources:** [custom engine agent overview](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-custom-engine-agent); [pinned official proxy](https://github.com/OfficeDev/microsoft-365-agents-toolkit-samples/tree/16f3562e64e6df20da4b736e9c499708d7f86070/ProxyAgent-CSharp); [Dev tunnels](https://learn.microsoft.com/en-us/azure/developer/dev-tunnels/get-started); [AI3026 publishing exercise](https://github.com/MicrosoftLearning/mslearn-ai-agents/blob/df5b56b41480298afc09abf28c79c0d1856f40dd/Instructions/Exercises/05a-m365-teams-integration.md). The final source is conceptual context: this lab uses Toolkit/SDK, not its portal-only publish route.

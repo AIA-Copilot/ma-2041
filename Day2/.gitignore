@@ -1,7 +1,0 @@
-node_modules/
-lib/
-.localConfigs*
-!.localConfigs.playground.example
-env/*.user
-appPackage/build/
-*.log

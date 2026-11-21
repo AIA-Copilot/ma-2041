@@ -1,0 +1,68 @@
+D1_Lab2 — exact code and prompt blocks
+Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbered step in the guide. Copy only the required block contents, not BEGIN/END labels. Never run this whole file. PDF code is display-only because wrapping can change clipboard text.
+
+===== BEGIN BLOCK 01 (powershell) =====
+Set-Location C:\ma-2041\Day1\Lab2-RestaurantAPI
+code .
+node --version
+npm.cmd run build
+npm.cmd test
+npm.cmd run check:func
+===== END BLOCK 01 =====
+
+===== BEGIN BLOCK 02 (powershell) =====
+'{"IsEncrypted":false,"Values":{"FUNCTIONS_WORKER_RUNTIME":"node"}}' | Set-Content local.settings.json -Encoding ascii
+npm.cmd start
+===== END BLOCK 02 =====
+
+===== BEGIN BLOCK 03 (powershell) =====
+Invoke-RestMethod 'http://localhost:7071/api/dishes?course=lunch'
+Invoke-RestMethod 'http://localhost:7071/api/dishes?course=lunch&allergens=dairy,gluten'
+$body = @{ dishes = @(@{name='spaghetti';quantity=1}, @{name='iced tea';quantity=1}) } | ConvertTo-Json -Depth 5
+Invoke-RestMethod 'http://localhost:7071/api/orders' -Method Post -ContentType 'application/json' -Body $body
+===== END BLOCK 03 =====
+
+===== BEGIN BLOCK 04 (powershell) =====
+try {
+  Invoke-RestMethod 'http://localhost:7071/api/orders' -Method Post -ContentType 'application/json' -Body '{"dishes":[{"name":"spaghetti","quantity":-1}]}'
+} catch {
+  $_.Exception.Response.StatusCode.value__
+}
+===== END BLOCK 04 =====
+
+===== BEGIN BLOCK 05 (powershell) =====
+Copy-Item checkpoints/ai-plugin.json appPackage/ai-plugin.json
+Copy-Item checkpoints/declarativeAgent.json appPackage/declarativeAgent.json
+Copy-Item checkpoints/instruction.txt appPackage/instruction.txt
+===== END BLOCK 05 =====
+
+===== BEGIN BLOCK 06 (json) =====
+"actions": [
+  {
+    "id": "menuPlugin",
+    "file": "ai-plugin.json"
+  }
+]
+===== END BLOCK 06 =====
+
+===== BEGIN BLOCK 07 (yaml) =====
+servers:
+  - url: ${{OPENAPI_SERVER_URL}}/api
+    description: Il Ristorante API server
+===== END BLOCK 07 =====
+
+===== BEGIN BLOCK 08 (text) =====
+What's for lunch today?
+===== END BLOCK 08 =====
+
+===== BEGIN BLOCK 09 (text) =====
+1x spaghetti, 1x iced tea
+===== END BLOCK 09 =====
+
+===== BEGIN BLOCK 10 (text) =====
+Order one item called nonexistent dish.
+===== END BLOCK 10 =====
+
+===== BEGIN BLOCK 11 (powershell) =====
+Get-NetTCPConnection -LocalPort 7071,9229 -ErrorAction SilentlyContinue
+===== END BLOCK 11 =====

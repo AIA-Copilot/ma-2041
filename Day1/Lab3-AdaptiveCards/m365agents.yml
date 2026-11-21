@@ -1,0 +1,3 @@
+version: v1.7
+environmentFolderPath: ./env
+# This course uses F5 / local only. No Azure deployment lifecycle.

@@ -1,0 +1,43 @@
+D1_Lab3 — exact code and prompt blocks
+Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbered step in the guide. Copy only the required block contents, not BEGIN/END labels. Never run this whole file. PDF code is display-only because wrapping can change clipboard text.
+
+===== BEGIN BLOCK 01 (powershell) =====
+Set-Location C:\ma-2041\Day1\Lab3-AdaptiveCards
+code .
+npm.cmd run build
+npm.cmd test
+npm.cmd run check:func
+===== END BLOCK 01 =====
+
+===== BEGIN BLOCK 02 (json) =====
+{
+  "title": "Order ID:",
+  "value": "${order_id} "
+}
+===== END BLOCK 02 =====
+
+===== BEGIN BLOCK 03 (json) =====
+{
+  "data_path": "$.dishes",
+  "properties": {
+    "title": "$.name",
+    "subtitle": "$.description"
+  }
+}
+===== END BLOCK 03 =====
+
+===== BEGIN BLOCK 04 (powershell) =====
+node scripts/apply-cards.mjs
+===== END BLOCK 04 =====
+
+===== BEGIN BLOCK 05 (powershell) =====
+Copy-Item checkpoints/ai-plugin.cards.json appPackage/ai-plugin.json
+===== END BLOCK 05 =====
+
+===== BEGIN BLOCK 06 (text) =====
+What's for lunch today?
+===== END BLOCK 06 =====
+
+===== BEGIN BLOCK 07 (text) =====
+1x spaghetti, 1x iced tea
+===== END BLOCK 07 =====

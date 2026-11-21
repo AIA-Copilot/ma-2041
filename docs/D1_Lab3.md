@@ -1,114 +1,153 @@
-# D1_Lab3 — Authenticate first, authorize each record
+# Day 1 · Lab 3 — Show API results with Adaptive Cards
 
-**Learning outcome:** Repair scope and record-level authorization while preserving supplied signature, issuer, audience and expiry validation. Distinguish authentication failures from permission denials. This exercise uses synthetic tokens locally, not a real OAuth sign-in.
+**Workspace:** use VS Code and PowerShell 7 inside the provided MS-4018 VM. “Local” means this VM. One-time preparation: [course setup](../README.md).
 
-**Planned practice:** 40 minutes, excluding setup and provider support.
 
-## Starting folder and prerequisites
+**Outcome:** build and inspect dish/order card templates, bind them to API response semantics, and verify a dish card in a Copilot citation plus an order card in the response itself.
 
-Continue in the Day 1 VM copy with the Python 3.11 environment and pinned dependencies installed in Lab 1. In VS Code open **File > Open Folder > `C:\ma-2041\Day1`**. Use **Terminal > New Terminal > PowerShell**. All commands below start at this Code root unless a step changes directory.
+**Allow:** 50 minutes of practice after Lab 2 and provider preflight (planning budget, not measured completion). Use the same approved anonymous restaurant tunnel and Microsoft 365 account gates.
+
+**Start gate:** the instructor must confirm [provider preflight](INSTRUCTOR-PREFLIGHT.md) before runtime work. If tools or approval are missing, stop; do not install or bypass policy during this lab.
+
+**Official exercise:** [Return rich responses with Adaptive Cards](https://learn.microsoft.com/en-us/training/modules/copilot-declarative-agent-action-api-plugin-adaptive-cards-vsc/3-exercise-return-rich-responses-adaptive-cards). This is the official Cards starter, not a different API or scenario. The complete exercise card files and preview data are supplied under `cards`.
+
+## 1. Switch projects cleanly (3 minutes)
+
+1. Stop Lab 2 debugging and terminate its tunnel/host tasks. Do not run both projects on the same ports.
+2. Open and check the prepared Lab 3 project:
 
 ```powershell
-Set-Location 'C:\ma-2041\Day1'
-.\.venv\Scripts\Activate.ps1
-$env:LAB_IMPL = 'starters'
-$env:MA2041_ALLOW_LIVE_INGEST = '0'
-if (Test-Path .env) { throw 'STOP: Day 1 requires a clean copy without .env' }
+Set-Location C:\ma-2041\Day1\Lab3-AdaptiveCards
+code .
+npm.cmd run build
+npm.cmd test
+npm.cmd run check:func
 ```
 
-If activation is blocked, select `.venv\Scripts\python.exe` with **Python: Select Interpreter** and use `.\.venv\Scripts\python.exe` instead of `python` at the Code root. Use a fresh training shell with no real model, Graph or Entra credentials. Keep all fixture servers on loopback; no tenant writes or tunnels are part of this lab. `LAB_IMPL` selects the implementation for pytest; an explicit script path selects the implementation for a direct command.
+**Expected result:** build and tests succeed. Confirm `appPackage/ai-plugin.json` already contains `getDishes` and `placeOrder`, and `declarativeAgent.json` already references the plugin. The same corrected API contract applies: `GET /dishes` returns `{ "dishes": [...] }`, `POST /orders` is plural, quantities are integers 1–100 inclusive, and multiple excluded allergens use a single comma-separated query value. This is where Lab 2 ended, before cards. The initial plugin deliberately has no `static_template`; you add that now.
 
-## Keep a short lab record
+Verify **Adaptive Card Previewer** is available; ask the instructor if it is missing. This is a design preview tool, not the Copilot runtime. You still need the live Copilot checks at the end.
 
-Use your own notes file in the working copy. Record the lab name, changed files, commands, observed outputs/exit codes, positive and negative checks, restored state, and any blocker. Save only fictional data and sanitized screenshots. Never include tokens, keys, passwords, login caches or runtime configuration files. Expected output in this handout is a target to compare against, not proof that your run succeeded.
+**Checkpoint:** Only the Lab 3 project is active; baseline plugin has no cards.
 
-## Tasks (5 + 12 + 10 + 8 + 5 minutes)
+## 2. Inspect and preview the dish card (10 minutes)
 
-### 1. Load the bounded starting point (5 min)
+1. Open `cards/dish.json` and `cards/dish.data.json` side by side. The data is the official exercise's Caprese Salad sample. The card has `type: AdaptiveCard` and version `1.5`.
+
+2. Use the **Preview Adaptive Card** CodeLens or Command Palette command with `dish.json` active. If the extension asks for a data file, choose the supplied `dish.data.json`. The official flow can also create a file with **Adaptive Card: New Data File**; do not overwrite the prepared data accidentally.
+
+3. Trace these bindings:
+
+| Template expression | Data meaning | What you should see |
+|---|---|---|
+| `${image_url}` | Dish image URL | Image, if the VM can reach the remote sample asset |
+| `${name}` | Dish name | Caprese Salad |
+| `${description}` | Dish description | Wrapped descriptive text |
+| `${if(count(allergens) > 0, join(allergens, ', '), 'none')}` | List formatting and empty-list behavior | `dairy` for the supplied sample |
+| `${formatNumber(price, 2)}` | Two decimal places | Price rendered with two decimals |
+
+The wrapper is a Container, with Image/TextBlock elements inside. `wrap: true` prevents the description being forced onto one line. The preview data is deliberately a **single dish**, not the entire `{dishes:[...]}` API envelope; the plugin's `data_path` selects each dish at runtime.
+
+4. **Make and verify an edit:** change the fixture's `allergens` array to `[]` and save. The preview should show `none`. Restore `["dairy"]` before continuing. This is a formatting test, not an API change. Change the title's weight or spacing, inspect the result, then keep a readable version.
+
+If a binding appears literally as `${name}`, verify that preview data is selected and valid JSON. If only the image is missing, test the image URL in the VM browser; do not diagnose every remote-image failure as a broken card schema. Text/data binding must still be correct.
+
+**Checkpoint:** Record empty-allergen rendering and restore the supplied fixture.
+
+## 3. Inspect and preview the order card (7 minutes)
+
+1. Open `cards/order.json` with `cards/order.data.json`. The fixture contains a fictional order ID, `confirmed` status and total. Use Preview Adaptive Card again.
+
+The FactSet maps these values:
+
+```json
+{
+  "title": "Order ID:",
+  "value": "${order_id} "
+}
+```
+
+The trailing space after `${order_id}` is intentional in the Learn exercise: it works around number rendering behavior in the preview. Remove the space temporarily and observe whether your current preview reproduces the issue; restore it regardless so the supplied exercise checkpoint remains consistent. Do not silently change the fixture's number into a fabricated live order result.
+
+2. Verify all three facts—ID, status and formatted total—are visible. The fixture's ID and total are preview inputs only; actual Copilot output will use the API's runtime response.
+
+3. **Deliberate broken-binding repair (3 minutes):** in the dish card change `${name}` to `${dish_name}` while leaving the fixture unchanged. Preview the missing title, explain the mismatch, then restore `${name}` and verify the title returns. Do not ship the broken card. This takes the total practice budget to 50 minutes.
+
+**Checkpoint:** both cards preview with resolved text, and long descriptions remain readable. A screenshot of this preview is design evidence only.
+
+## 4. Embed both cards in the API plugin (7 minutes)
+
+1. Open `appPackage/ai-plugin.json`. Find the function object whose `name` is `getDishes`, then its `capabilities.response_semantics`:
+
+```json
+{
+  "data_path": "$.dishes",
+  "properties": {
+    "title": "$.name",
+    "subtitle": "$.description"
+  }
+}
+```
+
+2. Add a `static_template` property at this same level and make its value the full **object** from `cards/dish.json`, not a filename or quoted JSON string. For `placeOrder`, add the full `cards/order.json` object under that function's response semantics. Keep its `data_path` as `$` because the response is one order object.
+
+For a reproducible edit without brace/copy errors, the supplied utility performs those exact two insertions using your current card files:
+
 ```powershell
-Copy-Item starters\lab4\token_validation.py starters\lab4\token_validation.py.before-D1-03 -Force
-Copy-Item solutions\lab4\token_validation.py starters\lab4\token_validation.py -Force
+node scripts/apply-cards.mjs
 ```
-Read `validate_bearer_token`, `require_scope`, `authorize_ticket` and `caller_groups`. Leave authentication intact. Replace only the executable bodies of `require_scope` and `authorize_ticket` with `raise NotImplementedError("D1-03 authorization")` (retain signatures). Run:
+
+3. Open the resulting plugin and locate both `static_template` objects. Confirm function names, `run_for_functions`, runtime spec path and `auth: None` remain unchanged. The standalone `cards` files are authoring inputs; the **embedded** copies in the plugin are what Copilot receives. If you change a card later, rerun the utility to update those copies before F5.
+
+If your plugin editing fails, `checkpoints/ai-plugin.cards.json` is the complete official-card checkpoint. Copy it only as a deliberate recovery; it overwrites your custom card edits:
+
 ```powershell
-$env:LAB_IMPL = "starters"
-python -m pytest tests\lab4 -q -k "required_scope or correct_group"
+Copy-Item checkpoints/ai-plugin.cards.json appPackage/ai-plugin.json
 ```
-Expected: selected tests fail at the authorization exercise, not missing imports. Tests mint synthetic tokens internally; do not copy keys or tokens into a shell or document.
 
-### 2. Implement the two gates (12 min)
-In `require_scope`, test whether the requested `scope` is in `token_scopes(claims)`. Raise `AuthzError` if absent; include the scope name in the message. A valid token with wrong permission maps to **403**, not 401.
-In `authorize_ticket`: unrestricted records return normally; restricted records with no `assignee_group` raise `AuthzError`; restricted records allow only when that group is in `caller_groups(claims)`. Otherwise raise `AuthzError`, naming the ticket ID and required group. Never use a query string or message text for groups. The missing-group branch is fail-closed.
+**Checkpoint:** Both templates are embedded under the correct response semantics.
 
-### 3. Observe positive and negative cases (10 min)
-```powershell
-python -m pytest tests\lab4 -v
+## 5. Verify the actual Copilot rendering (15 minutes)
+
+1. Recheck the work account in Toolkit. Confirm the instructor's tunnel permission still applies.
+2. Select **Run and Debug > Debug in Copilot (Edge)** and press F5. Do not use Preview-only. Wait for the tunnel, local lifecycle, host and browser.
+3. Open **Il Ristorante - Lab 3 Cards** in Copilot using the same assigned account (the installed app is named **Il Ristorante Cards**, with the local suffix). This project's distinct name separates it from Lab 2's **Il Ristorante**. F5 opens generic Copilot chat, not an app-specific link: explicitly select the Lab 3 agent before starting a new conversation. If that name is absent or duplicated, stop and have the instructor match the installed app to this project's `TEAMS_APP_ID` in `env/.env.local`; do not guess from the browser tab or conversation age.
+4. Start a fresh chat and send:
+
+```text
+What's for lunch today?
 ```
-Expected: all Lab 4 tests pass. Read the actual assertions in `tests\lab4\test_secured_api.py` and annotate this matrix:
 
-| Input | Expected API result |
+5. Inspect the proposed API request and choose **Allow once** only for the expected read. In the response, open/hover a dish citation. **Expected result:** the citation popup contains your custom dish card with information beyond the title, such as description, allergens and formatted price. Multiple dishes need not appear as a wall of inline cards; the official exercise expects the rich card in the citation popup.
+6. Send the official order prompt:
+
+```text
+1x spaghetti, 1x iced tea
+```
+
+7. Inspect the exact order payload and confirm only the intended fictitious order. **Expected result:** the single order result appears as an inline Adaptive Card with order ID, status and total. Compare its values with the API response/Functions activity. Do not compare the live random ID to `order.data.json`.
+
+**Negative/diagnostic checks:** if the menu answer is fluent but the citation still has only a title, the old/no-card plugin may be installed. Verify the embedded templates in the generated package, stop/restart F5 and use a fresh chat. If a card shows blank facts, compare `data_path` and expression names against the actual API envelope. A local preview cannot detect using `$.dishes` for the order response.
+
+**Checkpoint:** Verify a dish citation card and an inline order card in the selected Lab 3 agent.
+
+## 6. Save evidence and stop tasks (5 minutes)
+
+1. Record a redacted dish citation card and an inline order card from **Copilot**, plus the two preview observations. Note any discrepancy between preview and Copilot. Passing requires the live cards, not simply valid JSON or screenshots supplied with the upstream repository.
+
+2. Stop debugging and terminate all task terminals, including the public tunnel. Confirm no lab process is listening on 7071/9229. Keep the source for class review; do not upload logs or environment files containing secrets.
+
+| Symptom | Recovery |
 |---|---|
-| Genuine fixture token, permitted T-1001 | 200 |
-| Genuine Dave token with hr-confidential, T-1004 | 200 |
-| Forged/unsigned/expired/wrong issuer/wrong audience | 401 |
-| Genuine token missing Tickets.Read | 403 |
-| Alice with valid scope, restricted T-1004 | 403, no salaries body |
-| Dave HR group, identity-support T-1002 | 403 |
-| Correct application API key, restricted T-1004 | 403 |
-| No server API key configured | 401 |
-| Unknown ticket after authentication | 404 |
+| Preview command missing | Confirm `.json` card is active; ask the instructor to restore the prepared Previewer extension. |
+| Preview shows literal expressions | Select matching data file and inspect syntax/property names. |
+| Copilot still has plain responses | Run `apply-cards.mjs` after edits, save, rerun local F5 provisioning, and open the correct agent in a new chat. |
+| Menu card works, order card blank | `getDishes` uses `$.dishes`; `placeOrder` uses `$`. Preserve the order-ID trailing space. |
+| Host/tunnel fails | Use Lab 2's port, network, account and generated-server checks; do not change working card bindings to fix a network issue. |
 
-These are Flask test-client responses and synthetic-signature checks, **not** Entra OAuth consent. Inspect list filtering: an unreadable restricted record is absent from the list, not merely redacted after delivery.
+**Additional practice:** [Challenge project — chat with your data](https://learn.microsoft.com/en-us/training/modules/copilot-declarative-agent-challenge-chat-with-data/). It follows the API and cards modules and is separate practice, not another mandatory guided block.
 
-### 4. Prove the missing-owner branch (8 min)
-The existing lab test file does not directly cover every malformed-record case. Run this additional direct check, which prints only synthetic data:
-```powershell
-@'
-from starters.lab4.token_validation import authorize_ticket, AuthzError
-try:
-    authorize_ticket({'groups': []}, {'id': 'TEST', 'restricted': True})
-except AuthzError:
-    print('missing owner DENIED as expected')
-else:
-    raise AssertionError('restricted record without owner was allowed')
-'@ | python -
-```
-Expected: `missing owner DENIED as expected`. To see a genuine red regression, first back up the repaired file:
-```powershell
-Copy-Item starters\lab4\token_validation.py starters\lab4\token_validation.py.good-D1-03 -Force
-```
-After this backup, temporarily replace the entire executable body of `authorize_ticket` with `return` (preserve signature), then:
-```powershell
-python -m pytest tests\lab4 -q -k valid_token_cannot_read_restricted
-Copy-Item starters\lab4\token_validation.py.good-D1-03 starters\lab4\token_validation.py -Force
-python -m pytest tests\lab4 -q
-```
-Expected: deliberately broken authorization fails; restored code passes.
+**Checkpoint:** Record preview versus Copilot results and confirm tasks/tunnel stopped.
 
-### 5. Connect the gates to declarative auth (5 min)
-Open `solutions\lab4\appPackage\ai-plugin.apikey.json` and `ai-plugin.oauth.json`. Their runtime auth types are `ApiKeyPluginVault` and `OAuthPluginVault`; `reference_id` is a registration reference, not a secret. Explain why a shared application key cannot stand in for per-user access. Keep all fixture servers private.
-
-## Troubleshooting and recovery
-From `Day1`, restart from the original saved exercise:
-```powershell
-Copy-Item starters\lab4\token_validation.py.before-D1-03 starters\lab4\token_validation.py -Force
-```
-For a complete reference recovery (record **assisted**, not independent completion):
-```powershell
-Copy-Item solutions\lab4\token_validation.py starters\lab4\token_validation.py -Force
-$env:LAB_IMPL = "starters"
-python -m pytest tests\lab4 -q
-```
-Import failure: stop the clock and use the setup steps in D1_Lab1, not ad-hoc dependency upgrades. Unexpected green before repair: check `$env:LAB_IMPL` and the file you edited. Save files, rerun; do not weaken tests. Close a previous server with Ctrl+C before opening another. Preserve your edited file before taking recovery.
-
-## Record your results
-Save the edited file/diff, exact commands, exit codes, negative/red output and final green output. Record elapsed minutes and `independent` or `assisted`, plus your explanation of the decision being tested. Mark `LOCAL VERIFIED` only after observing the checkpoint; otherwise `NOT EXECUTED` or `FAILED`. Use actual test totals, not a prewritten count. A skipped test does not prove its check.
-
-
-## Completion checklist
-
-- [ ] Your scope and record gates pass the positive and negative matrix.
-- [ ] Missing owner is denied; deliberately bypassed authorization fails its test.
-- [ ] The repaired file is restored and passes; you can explain 401 versus 403.
-
-Stop your own local servers and debug tasks when finished. Keep your edited source for the next lab. Follow provider save/expiry instructions; do not delete shared resources.
+## Session 3 authentication teaching boundary
+The instructor separately demonstrates an authenticated request/configuration or explicitly labelled worked walkthrough (15 minutes, outside this 50-minute lab). Trace identity, credential location, token/audience or API-key header, denied request, and least privilege. Do not paste secrets into cards/manifests. This lab keeps anonymous synthetic API actions; learner implementation of OAuth/API-key authentication remains an explicit syllabus gap, not a completed outcome.

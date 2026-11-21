@@ -1,33 +1,13 @@
-# Credentials and machine-local configuration
-.env
-.env.*
-!.env.example
-!Day2/env/.env.playground
-.localConfigs.*
-!.localConfigs.playground.example
-*.pem
-*.key
-*.pfx
-*.p12
-*.user
-.azure/
-.aws/
-credentials*
-secrets*
-# Dependencies and runtime output
+# Generated dependencies, local tools and learner work
 node_modules/
-.venv/
-venv/
-__pycache__/
-*.py[cod]
-.pytest_cache/
-lib/
-dist/
-build/
+tools/
+**/bin/
+**/obj/
+**/dist/
+Day1/Lab1-WIQD/work/
+**/appPackage/build/
+**/.env.*.user
+**/local.settings.json
+**/.localConfigs
+**/_storage_emulator/
 *.log
-preflight_report.json
-*.zip
-*.before-*
-*.good-*
-.DS_Store
-Thumbs.db
