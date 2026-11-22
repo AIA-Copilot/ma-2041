@@ -15,7 +15,7 @@ The official Microsoft ProxyAgent-CSharp revision uses `PersistentAgentsClient`,
 With provider-prepared dependencies, run in the VS Code **PowerShell 7** terminal:
 
 ```powershell
-Set-Location C:\ma-2041\Day2\AI3026
+Set-Location C:\Users\Admin\ma-2041\Day2\AI3026
 dotnet build .\Proxy\Proxy.csproj --no-restore
 dotnet build .\Probe\Probe.csproj --no-restore
 dotnet run --project .\Tests\Tests.csproj

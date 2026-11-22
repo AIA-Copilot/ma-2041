@@ -2,7 +2,7 @@
 
 > **Required working environment: the provided AI3026 Day 2 lab VM.** Perform every clone/download, dependency check or installation, VS Code action, terminal command, file edit and browser/Teams/Copilot test **inside that VM**. Your physical PC is only for accessing the VM. In this guide, “local” hosting/debugging means **local to the VM**, never your physical PC. Install or change tools only with the lab provider’s permission.
 
-Open `C:\ma-2041\Day2\AI3026\AI3026.code-workspace` in VS Code. Follow `docs/D2_Lab1.md` through `D2_Lab4.md` at repository root (or the matching PDFs).
+Open `C:\Users\Admin\ma-2041\Day2\AI3026\AI3026.code-workspace` in VS Code. Follow `docs/D2_Lab1.md` through `D2_Lab4.md` at repository root (or the matching PDFs).
 
 **This is an AIA adaptation, not an unchanged Microsoft lab.** It keeps the **same modern Foundry agent name and saved version** across portal, C# probe, and Microsoft 365 Agents SDK proxy. Microsoft’s pinned ProxyAgent-CSharp uses the incompatible classic Persistent Agents API. We retain its SDK hosting/authentication pattern, Bot Service Bicep, icons, and Toolkit lifecycle concepts; replace the classic client with the documented modern Foundry REST Responses API; omit SSO, Agent Framework previews, App Service, and advanced infrastructure. See `COMPATIBILITY.md` and `SOURCES.md`.
 
@@ -14,7 +14,7 @@ Open `C:\ma-2041\Day2\AI3026\AI3026.code-workspace` in VS Code. Follow `docs/D2_
 - This package was built/tested locally in WSL. That is **not** GoDeploy AI3026 VM, Azure, Teams, Copilot, or native-Windows acceptance. The tenant-dependent steps must be verified in your assigned environment.
 
 ```powershell
-Set-Location C:\ma-2041\Day2\AI3026
+Set-Location C:\Users\Admin\ma-2041\Day2\AI3026
 dotnet restore .\Proxy\Proxy.csproj --locked-mode
 dotnet build .\Proxy\Proxy.csproj --no-restore
 dotnet run --project .\Tests\Tests.csproj

@@ -23,8 +23,8 @@ try {
 ===== END BLOCK 03 =====
 
 ===== BEGIN BLOCK 04 (powershell) =====
-Set-Location 'C:\ma-2041\work\CurrencyAssistant'
-$assets = 'C:\ma-2041\Day1\Section2-Currency'
+Set-Location 'C:\Users\Admin\AgentsToolkitProjects\CurrencyAssistant'
+$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
 New-Item -ItemType Directory -Force '.\appPackage\apiSpecificationFile' | Out-Null
 Copy-Item "$assets\frankfurter.openapi.yaml" '.\appPackage\apiSpecificationFile\frankfurter.openapi.yaml'
 Copy-Item "$assets\currency-plugin.no-card.json" '.\appPackage\currency-plugin.json'
@@ -60,7 +60,7 @@ Get the latest available USD to CAD reference rate and its effective date. Use t
 ===== END BLOCK 09 =====
 
 ===== BEGIN BLOCK 10 (powershell) =====
-$assets = 'C:\ma-2041\Day1\Section2-Currency'
+$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
 Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin.json'
 ===== END BLOCK 10 =====
 

@@ -10,7 +10,7 @@ You need an instructor/provider-approved Azure subscription, Foundry project per
 
 ## 1. Open the prepared workspace
 
-1. In VS Code, choose **File > Open Workspace from File** and open `C:\ma-2041\Day2\AI3026\AI3026.code-workspace`.
+1. In VS Code, choose **File > Open Workspace from File** and open `C:\Users\Admin\ma-2041\Day2\AI3026\AI3026.code-workspace`.
 2. Open `assets\evidence-template.md`. Save a copy to a private location outside the repository.
 3. Keep passwords, tokens and generated environment/appsettings files out of evidence.
 

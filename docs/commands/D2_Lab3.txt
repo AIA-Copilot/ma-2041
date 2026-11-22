@@ -2,7 +2,7 @@ D2_Lab3 — exact code and prompt blocks
 Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbered step in the guide. Copy only the required block contents, not BEGIN/END labels. Never run this whole file. PDF code is display-only because wrapping can change clipboard text.
 
 ===== BEGIN BLOCK 01 (powershell) =====
-Set-Location C:\ma-2041\Day2\AI3026
+Set-Location C:\Users\Admin\ma-2041\Day2\AI3026
 dotnet build .\Proxy\Proxy.csproj --no-restore
 dotnet build .\Probe\Probe.csproj --no-restore
 dotnet run --project .\Tests\Tests.csproj

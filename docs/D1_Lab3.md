@@ -11,7 +11,7 @@
 1. Stop other lab debugging/tasks. In VS Code use **File > Open Folder** and open:
 
 ```text
-C:\ma-2041\Day1\Lab3-CopilotConnector\connector
+C:\Users\Admin\ma-2041\Day1\Lab3-CopilotConnector\connector
 ```
 
 2. Open `content/CF-001.md` through `CF-005.md`. These are AI-generated fictional customer comments, not evidence about real customers. Note each document's `id`, title, consultant and body. Read CF-001's Adatum example; you will check the answer against this file later.
@@ -58,7 +58,7 @@ Adatum Corporation Avery Howard
 
 ## 5. Create a separate no-action declarative agent
 
-1. Open a **new VS Code window**. In **Microsoft 365 Agents Toolkit > Create a New Agent/App**, choose **Declarative Agent**, then **No Action** (wording can vary by extension version). Choose `C:\ma-2041\work` as the parent folder and name the project `TreyFeedbackAgent`. Do not overwrite the connector or reuse the earlier API agent.
+1. Open a **new VS Code window**. In **Microsoft 365 Agents Toolkit > Create a New Agent/App**, choose **Declarative Agent**, then **No Action** (wording can vary by extension version). Choose `C:\Users\Admin\ma-2041\work` as the parent folder and name the project `TreyFeedbackAgent`. Do not overwrite the connector or reuse the earlier API agent.
 2. In the generated project's `appPackage` folder, open the declarative-agent JSON file referenced by `manifest.json` under `copilotAgents.declarativeAgents[].file` (normally `declarativeAgent.json`). Keep the Toolkit-generated schema/version and package icons. Set the agent name to `Trey Feedback — YOURSEAT`, using your seat suffix, and its description to `Answers from synthetic Trey Research feedback.`
 3. Replace its `instructions` value with the following text as a JSON string, preserving valid JSON:
 

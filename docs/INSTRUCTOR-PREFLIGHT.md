@@ -18,7 +18,7 @@ Use the AI3026 VM and its assigned Azure/Foundry resources. Confirm PowerShell7,
 Before Lab3, cache/restore the exact supplied projects:
 
 ```powershell
-Set-Location C:\ma-2041\Day2\AI3026
+Set-Location C:\Users\Admin\ma-2041\Day2\AI3026
 dotnet restore .\Proxy\Proxy.csproj --locked-mode
 dotnet restore .\Probe\Probe.csproj --locked-mode
 dotnet restore .\Tests\Tests.csproj

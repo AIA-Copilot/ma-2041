@@ -5,7 +5,7 @@ Run before class, after the root course setup. Learners do not clone or install 
 ## Windows VM prerequisites
 
 - VS Code, Microsoft 365 Agents Toolkit (`TeamsDevApp.ms-teams-vscode-extension`) and Azure Functions extension (`ms-azuretools.vscode-azurefunctions`).
-- Portable Node **22.22.2** at `C:\ma-2041\tools\node-v22.22.2-win-x64` and the course `scripts/Use-Node.ps1`. Node 24 is for WIQD, not this connector.
+- Portable Node **22.22.2** at `C:\Users\Admin\ma-2041\tools\node-v22.22.2-win-x64` and the course `scripts/Use-Node.ps1`. Node 24 is for WIQD, not this connector.
 - Azure Functions **Core Tools v4 x64**, installed once with Microsoft's Windows installer; use the [official Core Tools installation instructions](https://learn.microsoft.com/azure/azure-functions/functions-run-local#install-the-azure-functions-core-tools). This lab deliberately removes the project npm `azure-functions-core-tools` dependency. Do not use `npx func` to download a substitute. A local Functions host is not Azure cloud hosting.
 - Microsoft 365 training tenant, licensed Copilot account able to use declarative agents, custom-app upload allowed, app-registration permission, and an assigned administrator who can grant Microsoft Graph **application** permissions. No Azure subscription is required. Microsoft 365 service/network access is required; this is not an offline tenant lab.
 - Administrator approval to ingest the five **synthetic public** feedback documents with the sample's tenant-wide `everyone` ACL. Never replace them with confidential feedback.
@@ -31,7 +31,7 @@ Confirm the displayed publisher is Microsoft Corporation. Open that verified MSI
 Run once in PowerShell after Core Tools installation:
 
 ```powershell
-Set-Location C:\ma-2041
+Set-Location C:\Users\Admin\ma-2041
 . .\scripts\Use-Node.ps1 -Version 22
 node.exe --version
 func --version

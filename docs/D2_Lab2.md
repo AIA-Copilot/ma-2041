@@ -10,7 +10,7 @@ Open the **same** Foundry project and exact agent name from Lab 1. Keep your bas
 
 ## 1. Read the evidence before asking the agent
 
-1. In VS Code open `C:\ma-2041\Day2\AI3026\assets\IT_Policy.txt`.
+1. In VS Code open `C:\Users\Admin\ma-2041\Day2\AI3026\assets\IT_Policy.txt`.
 2. Read the title, effective date and version. This is Microsoft’s fictional Contoso training document, not security advice for your organization.
 3. Locate **Section 2 — Software Installation Requests**. Write down the timeline for standard software and the approvals needed for custom software.
 4. Locate **Section 8 — Mobile Device Management**. Find the instruction for lost/stolen company devices.
@@ -31,7 +31,7 @@ Open the **same** Foundry project and exact agent name from Lab 1. Keep your bas
 ## 2. Attach and verify file search
 
 1. Return to your Lab 1 agent in the **New Foundry** portal.
-2. In **Tools**, add **File search** if it is not already enabled. Use **Upload files** / **Attach files**, select `C:\ma-2041\Day2\AI3026\assets\IT_Policy.txt`, and select **Attach**. UI labels can vary; confirm the file is associated with this agent, not merely uploaded somewhere in the project.
+2. In **Tools**, add **File search** if it is not already enabled. Use **Upload files** / **Attach files**, select `C:\Users\Admin\ma-2041\Day2\AI3026\assets\IT_Policy.txt`, and select **Attach**. UI labels can vary; confirm the file is associated with this agent, not merely uploaded somewhere in the project.
 3. Wait for indexing/processing to finish. Do not treat “upload started” as readiness.
 4. Check that File search is enabled and the attached-file list includes `IT_Policy.txt`.
 5. Save the agent. Record the saved version associated with this configuration.

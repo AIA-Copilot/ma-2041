@@ -11,7 +11,7 @@ The **plugin** is the app package/container. Its **declarative agent** supplies 
 **Start here:** Node and WIQD 1.0.0 are already installed using [course setup](../README.md). The source folder keeps its historical name `Lab1-WIQD`; it is used only for this final Lab 4. Open a **PowerShell 7** terminal in VS Code. Select the supplied Node 24 runtime in each new terminal before WIQD commands:
 
 ```powershell
-. C:\ma-2041\scripts\Use-Node.ps1 -Version 24
+. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
 ```
 
 Do not use the WIQD extension, Toolkit or F5 for this lab.
@@ -19,7 +19,7 @@ Do not use the WIQD extension, Toolkit or F5 for this lab.
 If WIQD terms have not been accepted, an authorized human must review them and choose whether to run the following. If consent is declined, inspect the supplied files only.
 
 ```powershell
-$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
 & $wiqd eula accept wiqd
 & $wiqd eula status --json
 ```
@@ -29,7 +29,7 @@ Confirm the WIQD host row is accepted for the current terms/version. A downstrea
 If not already signed in to the assigned training account, run in an unredirected terminal:
 
 ```powershell
-$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
 & $wiqd auth login --interactive
 & $wiqd auth status
 ```
@@ -42,9 +42,9 @@ Skip optional Marketplace publisher setup. Confirm the actual lifecycle provider
 2. Run the following. `work` must not already contain `Briefing Coach`. Do not use `--force` to overwrite an earlier attempt.
 
 ```powershell
-. C:\ma-2041\scripts\Use-Node.ps1 -Version 24
-$lab = 'C:\ma-2041\Day1\Lab1-WIQD'
-$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
+$lab = 'C:\Users\Admin\ma-2041\Day1\Lab1-WIQD'
+$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
 & $wiqd --version
 New-Item -ItemType Directory -Force "$lab\work" | Out-Null
 & $wiqd plugin create --name 'Briefing Coach' --output "$lab\work"
@@ -58,9 +58,9 @@ code .
 3. If VS Code opens a new window, choose **Terminal > New Terminal** and re-establish the variables and location:
 
 ```powershell
-. C:\ma-2041\scripts\Use-Node.ps1 -Version 24
-$lab = 'C:\ma-2041\Day1\Lab1-WIQD'
-$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
+$lab = 'C:\Users\Admin\ma-2041\Day1\Lab1-WIQD'
+$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
 Set-Location "$lab\work\Briefing Coach"
 ```
 

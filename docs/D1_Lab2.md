@@ -63,7 +63,7 @@ You will wire the supplied files directly so each connection is visible. Do not 
 
 ```powershell
 Set-Location 'C:\Users\Admin\AgentsToolkitProjects\CurrencyAssistant'
-$assets = 'C:\ma-2041\Day1\Section2-Currency'
+$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
 New-Item -ItemType Directory -Force '.\appPackage\apiSpecificationFile' | Out-Null
 Copy-Item "$assets\frankfurter.openapi.yaml" '.\appPackage\apiSpecificationFile\frankfurter.openapi.yaml'
 Copy-Item "$assets\currency-plugin.no-card.json" '.\appPackage\currency-plugin.json'
@@ -135,14 +135,14 @@ Get the latest available USD to CAD reference rate and its effective date. Use t
 
 ## 5. Add the Adaptive Card
 
-1. Open the supplied `C:\ma-2041\Day1\Section2-Currency\currency-card.json`.
+1. Open the supplied `C:\Users\Admin\ma-2041\Day1\Section2-Currency\currency-card.json`.
 2. Find the expressions `${base}`, `${quote}`, `${rate}` and `${date}`. They bind to fields in the API response.
 3. Open `currency-plugin.with-card.json` in the same supplied folder. Find `functions[0].capabilities.response_semantics`.
 4. Notice that `data_path` is `$` because the rate response is one object at the root. The `static_template` contains the complete card. It is intentionally embedded, not a separate deployed file reference.
 5. In the project terminal, paste and run these commands to replace the no-card plugin:
 
 ```powershell
-$assets = 'C:\ma-2041\Day1\Section2-Currency'
+$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
 Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin.json'
 ```
 

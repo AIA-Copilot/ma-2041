@@ -2,25 +2,25 @@ D1_Lab4 — exact code and prompt blocks
 Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbered step in the guide. Copy only the required block contents, not BEGIN/END labels. Never run this whole file. PDF code is display-only because wrapping can change clipboard text.
 
 ===== BEGIN BLOCK 01 (powershell) =====
-. C:\ma-2041\scripts\Use-Node.ps1 -Version 24
+. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
 ===== END BLOCK 01 =====
 
 ===== BEGIN BLOCK 02 (powershell) =====
-$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
 & $wiqd eula accept wiqd
 & $wiqd eula status --json
 ===== END BLOCK 02 =====
 
 ===== BEGIN BLOCK 03 (powershell) =====
-$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
 & $wiqd auth login --interactive
 & $wiqd auth status
 ===== END BLOCK 03 =====
 
 ===== BEGIN BLOCK 04 (powershell) =====
-. C:\ma-2041\scripts\Use-Node.ps1 -Version 24
-$lab = 'C:\ma-2041\Day1\Lab1-WIQD'
-$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
+$lab = 'C:\Users\Admin\ma-2041\Day1\Lab1-WIQD'
+$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
 & $wiqd --version
 New-Item -ItemType Directory -Force "$lab\work" | Out-Null
 & $wiqd plugin create --name 'Briefing Coach' --output "$lab\work"
@@ -32,9 +32,9 @@ code .
 ===== END BLOCK 04 =====
 
 ===== BEGIN BLOCK 05 (powershell) =====
-. C:\ma-2041\scripts\Use-Node.ps1 -Version 24
-$lab = 'C:\ma-2041\Day1\Lab1-WIQD'
-$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
+$lab = 'C:\Users\Admin\ma-2041\Day1\Lab1-WIQD'
+$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
 Set-Location "$lab\work\Briefing Coach"
 ===== END BLOCK 05 =====
 

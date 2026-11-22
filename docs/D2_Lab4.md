@@ -10,7 +10,7 @@ This lab does **not** deploy or test a live Teams/Copilot channel. The retained 
 
 ## 1. Open the integration files
 
-1. In VS Code open `C:\ma-2041\Day2\AI3026`.
+1. In VS Code open `C:\Users\Admin\ma-2041\Day2\AI3026`.
 2. Read `M365Agent\m365agents.local.yml` and `M365Agent\appPackage\manifest.json`. Do not run the lifecycle.
 3. Find `teamsApp/create`, `aadApp/create`, `arm/deploy`, the local settings write, app-package validation and Microsoft 365 extension actions.
 4. Classify each as an app-registration action, Azure resource action, local file action or package action.
