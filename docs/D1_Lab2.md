@@ -128,28 +128,22 @@ Get the latest available USD to CAD reference rate and its effective date. Use t
 
 ## 5. Add the Adaptive Card
 
-1. In the project terminal, paste and run these commands to copy the card and with-card plugin into your project for review:
+1. In the project terminal, paste and run these commands to copy the card into your project and replace the no-card plugin with the with-card plugin:
 
 ```powershell
 $assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
 Copy-Item "$assets\currency-card.json" '.\appPackage\currency-card.json'
-Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin.with-card.json'
+Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin.json'
 ```
 
 2. In Explorer, open `appPackage/currency-card.json`. Find the expressions `${base}`, `${quote}`, `${rate}` and `${date}`. They bind to fields in the API response.
-3. Open `appPackage/currency-plugin.with-card.json`. Find `functions[0].capabilities.response_semantics`.
+3. Open `appPackage/currency-plugin.json`. Find `functions[0].capabilities.response_semantics`.
 4. Notice that `data_path` is `$` because the rate response is one object at the root. The `static_template` contains the complete card. It is intentionally embedded, not a separate deployed file reference.
-5. In the project terminal, paste and run this command to replace the no-card plugin:
-
-```powershell
-Copy-Item '.\appPackage\currency-plugin.with-card.json' '.\appPackage\currency-plugin.json'
-```
-
-6. Open `appPackage/manifest.json`. Increase the top-level `version` to a higher app version, for example `1.0.0` to `1.0.1`. Do not edit the generated `manifest.dev.json`, `manifestVersion`, or the declarative agent's schema version.
-7. Save all files. Run Toolkit **Provision** again for the same dev environment. Reload `https://m365.cloud.microsoft/chat`, select your agent, and start a fresh conversation.
-8. Ask for the USD-to-CAD rate again.
-9. Open the action result's source/citation. Microsoft 365 can display this card within the citation rather than directly in the main answer.
-10. Verify the card shows the currency pair, rate, effective date and reference-rate disclaimer. Narrow the Copilot pane and check that the text still fits.
+5. Open `appPackage/manifest.json`. Increase the top-level `version` to a higher app version, for example `1.0.0` to `1.0.1`. Do not edit the generated `manifest.dev.json`, `manifestVersion`, or the declarative agent's schema version.
+6. Save all files. Run Toolkit **Provision** again for the same dev environment. Reload `https://m365.cloud.microsoft/chat`, select your agent, and start a fresh conversation.
+7. Ask for the USD-to-CAD rate again.
+8. Open the action result's source/citation. Microsoft 365 can display this card within the citation rather than directly in the main answer.
+9. Verify the card shows the currency pair, rate, effective date and reference-rate disclaimer. Narrow the Copilot pane and check that the text still fits.
 
 **Checkpoint:** The real API response populates the custom card. A screenshot of a locally rendered sample is useful for layout checking but does not satisfy this Copilot checkpoint.
 
