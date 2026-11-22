@@ -258,13 +258,6 @@ If your app is already at `1.0.1`, use `1.0.2`, and so on. If `version` uses `${
 
 If the prompts do not appear, confirm the account and selected agent, the full provisioning result, and the saved `conversation_starters`. Refresh and reopen the agent in a fresh conversation. Ask the instructor if they remain absent; do not recreate the agent or treat pasted prompts as proof that the cards appeared.
 
-## Finish and debrief — 2 minutes
+## Summary
 
-Explain to a partner:
-
-- **Instructions** define the job; **WebSearch** lets the agent find public sources.
-- **Conversation starters** help users ask useful questions; they do not add capabilities.
-- **manifest.json** carries the app version; **declarativeAgent.json** defines the agent.
-- Editing source files is not enough: increase the app version, provision again and test the updated agent.
-
-Keep the project for the instructor's debrief. Do not delete shared tenant registrations.
+You built the **Zava New-Hire Travel Assistant**, added instructions and **WebSearch**, then provisioned it and tested its answers and boundaries. You improved the same agent by adding **conversation starters**, increasing the app version in **manifest.json**, and provisioning it again. Finally, you tested the updated agent and its suggested prompts.
