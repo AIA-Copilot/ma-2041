@@ -261,3 +261,5 @@ If the prompts do not appear, confirm the account and selected agent, the full p
 ## Summary
 
 You built the **Zava New-Hire Travel Assistant**, added instructions and **WebSearch**, then provisioned it and tested its answers and boundaries. You improved the same agent by adding **conversation starters**, increasing the app version in **manifest.json**, and provisioning it again. Finally, you tested the updated agent and its suggested prompts.
+
+When you are ready to go on to Lab 2, [click here](D1_Lab2.md).

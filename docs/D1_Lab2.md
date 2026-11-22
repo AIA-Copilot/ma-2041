@@ -1,19 +1,13 @@
 # Day 1 · Lab 2 — Currency API actions and Adaptive Cards
 
-**Outcome:** Create a declarative agent that calls a public currency API. First inspect a text answer. Then add an Adaptive Card that shows the currency pair, rate and effective date.
+## Outcome
 
-[Course setup](../README.md) · [Previous: first agent](D1_Lab1.md) · [Next: synced connector](D1_Lab3.md)
-
-**Practice budget:** 45–60 minutes, an estimate to confirm during instructor rehearsal.
-
-Use the provided MS-4018 VM, VS Code with Microsoft 365 Agents Toolkit, PowerShell 7, and your assigned Microsoft 365 account. The instructor must have checked custom-agent upload and Copilot access. The supplied files must already be at `C:\ma-2041\Day1\Section2-Currency`. Installation and repository download are preparation, not part of this exercise.
-
-**You do not need:** Postman, an API key, an Azure subscription, Azure Functions, a development tunnel, or a local API server. This API is read-only. It provides reference rates, not guaranteed bank quotes or payment services.
+Build a Currency Assistant that calls a public API for current and historical exchange rates. Test its answers in Microsoft 365 Copilot, add an Adaptive Card to display the rate and effective date, and verify that the agent handles unsupported currencies and cannot transfer money.
 
 ## 1. Check the public API
 
-1. Open a PowerShell 7 terminal in VS Code.
-2. Request a USD-to-CAD rate:
+1. Open the **Terminal** in VS Code.
+2. Paste and run these commands to request a USD-to-CAD rate:
 
 ```powershell
 $rate = Invoke-RestMethod 'https://api.frankfurter.dev/v2/rate/USD/CAD'
@@ -22,13 +16,13 @@ $rate | Format-List
 
 3. Find `base`, `quote`, `rate` and `date` in the response.
 4. Read the result as: **1 unit of base currency equals rate units of quote currency, effective on date.** The date can be earlier than today. Do not compare a changing rate with a fixed value in an instructor screenshot.
-5. Request a historical rate:
+5. Paste and run this command to request a historical rate:
 
 ```powershell
 Invoke-RestMethod 'https://api.frankfurter.dev/v2/rate/USD/CAD?date=2024-01-02'
 ```
 
-6. Check the error for an invalid currency:
+6. Paste and run these commands to check the error for an invalid currency:
 
 ```powershell
 try {
@@ -65,7 +59,7 @@ The rest of this guide assumes the project is `C:\ma-2041\work\CurrencyAssistant
 You will wire the supplied files directly so each connection is visible. Do not generate an OpenAPI file in Postman, and do not use the Add Action wizard as well as these steps.
 
 1. Open a terminal in the generated project.
-2. Copy the prepared files:
+2. Paste and run these commands to copy the prepared files:
 
 ```powershell
 Set-Location 'C:\ma-2041\work\CurrencyAssistant'
@@ -137,7 +131,7 @@ Get the latest available USD to CAD reference rate and its effective date. Use t
 8. Check the result against a fresh API request from step 1. Look for the action/source indication. A plausible answer without evidence of the action is not a pass.
 9. Enter the historical prompt from the starter. Verify both the requested historical date and the returned effective date.
 
-**Checkpoint:** The agent actually invokes the currency action and reports the returned rate and date. If invocation details are unavailable in this UI, record the test as unconfirmed rather than treating matching text alone as proof. The custom card has not been added yet.
+**Checkpoint:** The agent actually invokes the currency action and reports the returned rate and date. If invocation details are unavailable in this UI, matching text alone does not confirm that the action ran. The custom card has not been added yet.
 
 ## 5. Add the Adaptive Card
 
@@ -145,7 +139,7 @@ Get the latest available USD to CAD reference rate and its effective date. Use t
 2. Find the expressions `${base}`, `${quote}`, `${rate}` and `${date}`. They bind to fields in the API response.
 3. Open `currency-plugin.with-card.json` in the same supplied folder. Find `functions[0].capabilities.response_semantics`.
 4. Notice that `data_path` is `$` because the rate response is one object at the root. The `static_template` contains the complete card. It is intentionally embedded, not a separate deployed file reference.
-5. In the project terminal, replace the no-card checkpoint:
+5. In the project terminal, paste and run these commands to replace the no-card plugin:
 
 ```powershell
 $assets = 'C:\ma-2041\Day1\Section2-Currency'
@@ -159,7 +153,7 @@ Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin
 
 **Checkpoint:** The real API response populates the custom card. A screenshot of a locally rendered sample is useful for layout checking but does not satisfy this Copilot checkpoint.
 
-**Small change:** In the project's `currency-plugin.json`, change the card heading from `Currency reference rate` to `Travel exchange rate`. Save, reprovision dev and check the updated citation in a new chat. Editing only the supplied standalone `currency-card.json` does not update the embedded card. If the old heading persists, allow time for the update to appear, reload Copilot, and retry before recording a failure.
+**Small change:** In the project's `currency-plugin.json`, change the card heading from `Currency reference rate` to `Travel exchange rate`. Save, reprovision dev and check the updated citation in a new chat. Editing only the supplied standalone `currency-card.json` does not update the embedded card. If the old heading persists, allow time for the update to appear, reload Copilot, and retry.
 
 ## 6. Check boundaries
 
@@ -174,28 +168,16 @@ $rate = Invoke-RestMethod 'https://api.frankfurter.dev/v2/rate/USD/CAD'
 
 The amount is multiplied locally. The API returns a rate, not a converted amount. A bank's rate and fees may differ. The card continues to display the reference rate, not this optional calculation.
 
-## 7. Finish and record the result
-
-Record each result as **Pass**, **Fail**, or **Not run**:
-
-- VM: latest and historical API requests return valid objects.
-- VM: invalid code returns 422.
-- Copilot: confirmed action invocation returns the expected currency pair and effective date.
-- Copilot: custom citation card displays actual API values and remains readable in a narrow pane.
-- Agent: unsupported-code and transfer requests do not produce invented success.
-
-Save redacted screenshots of the action result and card. Do not capture account details or environment files. No host or tunnel needs stopping because none was started. Leave the agent available for instructor inspection; remove it later only under the instructor's normal training-tenant cleanup process. Do not publish or share it with other users as part of this lab.
-
 ## Troubleshooting
 
 - **403 or network failure:** check the same public URL in the VM browser and show the instructor the exact result. Do not bypass a block.
 - **429:** wait before retrying. Do not repeatedly submit prompts.
 - **API key requested:** the supplied runtime must use `auth.type: None`; Frankfurter's public service does not need a key.
 - **Missing operation or spec:** check `actions.file`, `spec.url` and exact `getExchangeRate` spelling.
-- **Card missing:** confirm you copied the with-card checkpoint, `data_path` is `$`, provisioning succeeded, and you opened the citation in a fresh chat. Record the host/UI if still absent.
+- **Card missing:** confirm you copied the with-card checkpoint, `data_path` is `$`, provisioning succeeded, and you opened the citation in a fresh chat. Ask the instructor if the card is still absent.
 - **Old heading:** edit the embedded template in the project's plugin, then reprovision. The standalone source card is not loaded at runtime. Allow time for the update to appear and reload Copilot before retesting.
 - **Older effective date:** this is a reference-rate service, not a live-market feed. Report the returned date.
-- **Service unavailable:** use `sample-rate.json` only for offline template inspection. Mark the live checkpoints Not run; do not present sample data as a fresh response.
+- **Service unavailable:** use `sample-rate.json` only for offline template inspection. This does not confirm that the live API works.
 
 ## Sources and scope
 
