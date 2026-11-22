@@ -166,7 +166,7 @@ Get-Content '.\appPackage\manifest.json' -Raw | ConvertFrom-Json | Out-Null
 2. Select **Microsoft 365 Agents Toolkit** in the Activity Bar. In its account area, confirm your Microsoft 365 training account and tenant. If signed out, use its sign-in UI and normal organizational authentication. Never put passwords or tokens in files or chat. Stop on policy or consent denial.
 3. Select **File > Save All**, then **Lifecycle > Provision**. If asked **Dev** or **Local**, choose **Dev**.
 
-    **Local vs Dev:** **Local** supports running and debugging application code on your device; it can still use cloud services. **Dev** uses the cloud development configuration for testing. Choose **Dev** here because this declarative agent runs in Microsoft 365 Copilot, not on your VM.
+    **Local vs Dev:** Use **Local** to test, run and debug on your local device. Use **Dev** to test in the Microsoft 365 tenant. Choose **Dev** for this lab, working from your lab VM.
 
 4. Watch Toolkit output for successful completion. Preserve the actual diagnostic if it fails. Generated local files alone do not prove registration/upload succeeded.
 
