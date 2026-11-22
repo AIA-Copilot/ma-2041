@@ -145,14 +145,15 @@ Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin
 Copy-Item '.\appPackage\currency-plugin.with-card.json' '.\appPackage\currency-plugin.json'
 ```
 
-6. Save all files. Run Toolkit **Provision** again for the same dev environment. Reload `https://m365.cloud.microsoft/chat`, select your agent, and start a fresh conversation.
-7. Ask for the USD-to-CAD rate again.
-8. Open the action result's source/citation. Microsoft 365 can display this card within the citation rather than directly in the main answer.
-9. Verify the card shows the currency pair, rate, effective date and reference-rate disclaimer. Narrow the Copilot pane and check that the text still fits.
+6. Open `appPackage/manifest.json`. Increase the top-level `version` to a higher app version, for example `1.0.0` to `1.0.1`. Do not edit the generated `manifest.dev.json`, `manifestVersion`, or the declarative agent's schema version.
+7. Save all files. Run Toolkit **Provision** again for the same dev environment. Reload `https://m365.cloud.microsoft/chat`, select your agent, and start a fresh conversation.
+8. Ask for the USD-to-CAD rate again.
+9. Open the action result's source/citation. Microsoft 365 can display this card within the citation rather than directly in the main answer.
+10. Verify the card shows the currency pair, rate, effective date and reference-rate disclaimer. Narrow the Copilot pane and check that the text still fits.
 
 **Checkpoint:** The real API response populates the custom card. A screenshot of a locally rendered sample is useful for layout checking but does not satisfy this Copilot checkpoint.
 
-**Small change:** In the project's `currency-plugin.json`, change the card heading from `Currency reference rate` to `Travel exchange rate`. Save, reprovision dev and check the updated citation in a new chat. Editing only the supplied standalone `currency-card.json` does not update the embedded card. If the old heading persists, allow time for the update to appear, reload Copilot, and retry.
+**Small change:** In the project's `currency-plugin.json`, change the card heading from `Currency reference rate` to `Travel exchange rate`. Increase the app `version` in `appPackage/manifest.json` again, for example `1.0.1` to `1.0.2`. Save, reprovision dev and check the updated citation in a new chat. Editing only the supplied standalone `currency-card.json` does not update the embedded card. If the old heading persists, allow time for the update to appear, reload Copilot, and retry.
 
 ## 6. Check boundaries
 
