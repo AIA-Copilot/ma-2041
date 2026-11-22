@@ -32,39 +32,35 @@ Copy-Item "$assets\currency-instructions.txt" '.\appPackage\instruction.txt'
 ===== END BLOCK 04 =====
 
 ===== BEGIN BLOCK 05 (json) =====
-"instructions": "$[file('instruction.txt')]"
-===== END BLOCK 05 =====
-
-===== BEGIN BLOCK 06 (json) =====
 "actions": [
   {
     "id": "currencyAction",
     "file": "currency-plugin.json"
   }
 ]
-===== END BLOCK 06 =====
+===== END BLOCK 05 =====
 
-===== BEGIN BLOCK 07 (json) =====
+===== BEGIN BLOCK 06 (json) =====
 "conversation_starters": [
   { "title": "Latest rate", "text": "Get the latest available USD to CAD reference rate and its effective date." },
   { "title": "Historical rate", "text": "Get the USD to CAD reference rate for January 2, 2024." }
 ]
+===== END BLOCK 06 =====
+
+===== BEGIN BLOCK 07 (json) =====
+"validDomains": ["api.frankfurter.dev"]
 ===== END BLOCK 07 =====
 
-===== BEGIN BLOCK 08 (json) =====
-"validDomains": ["api.frankfurter.dev"]
+===== BEGIN BLOCK 08 (text) =====
+Get the latest available USD to CAD reference rate and its effective date. Use the currency action.
 ===== END BLOCK 08 =====
 
-===== BEGIN BLOCK 09 (text) =====
-Get the latest available USD to CAD reference rate and its effective date. Use the currency action.
+===== BEGIN BLOCK 09 (powershell) =====
+$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
+Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin.json'
 ===== END BLOCK 09 =====
 
 ===== BEGIN BLOCK 10 (powershell) =====
-$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
-Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin.json'
-===== END BLOCK 10 =====
-
-===== BEGIN BLOCK 11 (powershell) =====
 $rate = Invoke-RestMethod 'https://api.frankfurter.dev/v2/rate/USD/CAD'
 [math]::Round(100 * $rate.rate, 2)
-===== END BLOCK 11 =====
+===== END BLOCK 10 =====

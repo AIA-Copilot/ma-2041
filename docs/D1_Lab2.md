@@ -76,13 +76,7 @@ Copy-Item "$assets\currency-instructions.txt" '.\appPackage\instruction.txt'
    - Optional query parameter: `date`.
    - Response fields: `date`, `base`, `quote`, `rate`.
 4. Open `appPackage/currency-plugin.json`. Verify the function name matches `getExchangeRate`, runtime is `OpenApi`, authentication is `None`, and `spec.url` points to the copied YAML.
-5. In `appPackage/declarativeAgent.json`, set the `instructions` property to:
-
-```json
-"instructions": "$[file('instruction.txt')]"
-```
-
-6. Add this top-level `actions` property inside the same JSON object. Add a comma after the preceding property. If an empty `actions` property already exists, replace it rather than adding a duplicate.
+5. Open `appPackage/declarativeAgent.json` and add this top-level `actions` property inside the JSON object. Add a comma after the preceding property. If an empty `actions` property already exists, replace it rather than adding a duplicate.
 
 ```json
 "actions": [
@@ -93,7 +87,7 @@ Copy-Item "$assets\currency-instructions.txt" '.\appPackage\instruction.txt'
 ]
 ```
 
-7. Replace the template's example conversation starters with these, using the existing `conversation_starters` property or adding it once:
+6. Replace the template's example conversation starters with these, using the existing `conversation_starters` property or adding it once:
 
 ```json
 "conversation_starters": [
@@ -102,13 +96,13 @@ Copy-Item "$assets\currency-instructions.txt" '.\appPackage\instruction.txt'
 ]
 ```
 
-8. In `appPackage/manifest.json`, add `api.frankfurter.dev` to `validDomains`. Preserve any existing entries. If the array is empty, the result is:
+7. In `appPackage/manifest.json`, add `api.frankfurter.dev` to `validDomains`. Preserve any existing entries. If the array is empty, the result is:
 
 ```json
 "validDomains": ["api.frankfurter.dev"]
 ```
 
-9. Save all files. Fix any JSON syntax errors shown by VS Code before continuing.
+8. Save all files. Fix any JSON syntax errors shown by VS Code before continuing.
 
 **Checkpoint:** Explain the chain: declarative agent → plugin → OpenAPI operation → public HTTPS service. The VM has not become an API server. The sample has no create/update/delete operation.
 
