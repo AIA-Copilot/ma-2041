@@ -71,7 +71,7 @@ C:\Users\Admin\AgentsToolkitProjects\ZavaLab1\
   m365agents.yml
 ```
 
-**Checkpoint:** the lab instructions are on the left and your agent project is on the right. The agent project is separate from the course repository. If the expected files are missing, stop and check the template with the instructor; do not manufacture them.
+**Checkpoint:** the lab instructions are on the left and your agent project is on the right. The agent project is separate from the course repository.
 
 ## 2. Set the role and boundaries — 7 minutes
 
