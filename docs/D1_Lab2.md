@@ -153,8 +153,6 @@ Copy-Item '.\appPackage\currency-plugin.with-card.json' '.\appPackage\currency-p
 
 **Checkpoint:** The real API response populates the custom card. A screenshot of a locally rendered sample is useful for layout checking but does not satisfy this Copilot checkpoint.
 
-**Small change:** In the project's `currency-plugin.json`, change the card heading from `Currency reference rate` to `Travel exchange rate`. Increase the app `version` in `appPackage/manifest.json` again, for example `1.0.1` to `1.0.2`. Save, reprovision dev and check the updated citation in a new chat. Editing only the supplied standalone `currency-card.json` does not update the embedded card. If the old heading persists, allow time for the update to appear, reload Copilot, and retry.
-
 ## 6. Check boundaries
 
 1. Ask: `Get the USD to ZZZ exchange rate.` The agent must report an unsupported code or a failed request, not invent a rate. It may ask you to correct the code instead of calling the API; the direct HTTP test in step 1 separately checks service error handling.
@@ -175,7 +173,6 @@ The amount is multiplied locally. The API returns a rate, not a converted amount
 - **API key requested:** the supplied runtime must use `auth.type: None`; Frankfurter's public service does not need a key.
 - **Missing operation or spec:** check `actions.file`, `spec.url` and exact `getExchangeRate` spelling.
 - **Card missing:** confirm you copied the with-card checkpoint, `data_path` is `$`, provisioning succeeded, and you opened the citation in a fresh chat. Ask the instructor if the card is still absent.
-- **Old heading:** edit the embedded template in the project's plugin, then reprovision. The standalone source card is not loaded at runtime. Allow time for the update to appear and reload Copilot before retesting.
 - **Older effective date:** this is a reference-rate service, not a live-market feed. Report the returned date.
 - **Service unavailable:** use `sample-rate.json` only for offline template inspection. This does not confirm that the live API works.
 
