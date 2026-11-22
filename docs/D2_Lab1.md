@@ -14,7 +14,7 @@ You need an instructor/provider-approved Azure subscription, Foundry project per
 2. Open `assets\evidence-template.md`. Save a copy to a private location outside the repository.
 3. Keep passwords, tokens and generated environment/appsettings files out of evidence.
 
-**Expected result:** the AI3026 projects and assets are visible in Explorer. If files or tools are missing, ask the instructor to complete [preflight](INSTRUCTOR-PREFLIGHT.md); do not switch to the original Python lab.
+**Expected result:** the AI3026 projects and assets are visible in Explorer. If files or tools are missing, ask the instructor to complete the VM setup; do not switch to the original Python lab.
 
 **Checkpoint:** your private evidence file is ready and you have the approved project/resource group.
 

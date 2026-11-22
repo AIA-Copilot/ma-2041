@@ -5,7 +5,7 @@ Use the provided **AI3026 VM**, VS Code and **PowerShell 7**. Keep the same mode
 ## Start
 
 1. Open `C:\Users\Admin\ma-2041\Day2\AI3026\AI3026.code-workspace` in VS Code.
-2. Confirm the instructor has prepared .NET 10 SDK, Azure CLI and the lab dependencies using [instructor preflight](../docs/INSTRUCTOR-PREFLIGHT.md). If tools or the course copy are missing, stop for preparation; [root setup](../README.md) covers safe acquisition.
+2. If .NET 10 SDK, Azure CLI or the lab dependencies are missing, ask the instructor to complete the VM setup.
 3. Follow the guides in order:
 
 | Guide | Result to carry forward |
