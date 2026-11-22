@@ -124,7 +124,7 @@ Get the latest available USD to CAD reference rate and its effective date. Use t
 9. Expand **Agent debug info** in the response. Under **Actions**, find **Currency Reference Rates** and check whether `getExchangeRate` is **Matched** and **Selected**. These statuses show function selection, not proof of a successful API response. Inspect the action result and compare its rate and date with a fresh API request from step 1.
 10. Enter the historical prompt from the starter. Verify both the requested historical date and the returned effective date.
 
-**Checkpoint:** The agent actually invokes the currency action and reports the returned rate and date. If invocation details are unavailable in this UI, matching text alone does not confirm that the action ran. The custom card has not been added yet.
+**Checkpoint:** The agent actually invokes the currency action and reports the returned rate and date.
 
 ## 5. Add the Adaptive Card
 
