@@ -1,8 +1,8 @@
-# Day 1 · Lab 2 — Currency API actions and Adaptive Cards
+# Day 1 · Lab 2 — Currency API actions, Adaptive Cards and MCP
 
 ## Outcome
 
-Build a Currency Assistant that calls a public API for current and historical exchange rates. Test its answers in Microsoft 365 Copilot, add an Adaptive Card to display the rate and effective date, and verify that the agent handles unsupported currencies and cannot transfer money.
+Build a Currency Assistant that calls a public API for current and historical exchange rates. Test its answers in Microsoft 365 Copilot, add an Adaptive Card to display the rate and effective date, and verify that the agent handles unsupported currencies and cannot transfer money. Finally, switch the same agent from its REST action to Frankfurter MCP and test rate lookups and amount conversions.
 
 ## 1. Check the public API
 
@@ -160,8 +160,58 @@ $rate = Invoke-RestMethod 'https://api.frankfurter.dev/v2/rate/USD/CAD'
 
 The amount is multiplied locally. The API returns a rate, not a converted amount. A bank's rate and fees may differ. The card continues to display the reference rate, not this optional calculation.
 
+## 7. Switch the same agent from REST to MCP
+
+Replace the REST action with Frankfurter's hosted MCP server. Keep the same agent and business task; change how it calls the service. No API key, local server or new project is needed. MCP still uses HTTPS, but exposes named tools instead of the OpenAPI operation used earlier.
+
+1. In the project terminal, paste and run:
+
+```powershell
+Set-Location 'C:\Users\Admin\AgentsToolkitProjects\CurrencyAssistant'
+$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
+Copy-Item "$assets\currency-plugin.mcp.json" '.\appPackage\currency-plugin.mcp.json'
+Copy-Item "$assets\currency-instructions.mcp.txt" '.\appPackage\instruction.txt'
+```
+
+2. Open `appPackage/currency-plugin.mcp.json`. Find:
+   - Runtime: `RemoteMCPServer`, replacing `OpenApi`.
+   - Server URL: `https://mcp.frankfurter.dev/`, replacing the OpenAPI file reference.
+   - Authentication: `None`.
+   - Tools: `get_rates` for rate lookups and `convert` for amount conversions.
+   - `mcp_tool_description.tools`: supplied tool names and input schemas from the server. This lab pins these two tools rather than discovering every tool dynamically.
+3. Open `appPackage/instruction.txt`. Notice that rate requests now use `get_rates`, and amount conversions use `convert` with `details: true` to return the rate and effective date.
+4. In `appPackage/declarativeAgent.json`, replace the existing `actions` array with this one. Do not add a second `actions` property. Preserve the other properties and any separating comma after the array.
+
+```json
+"actions": [
+  {
+    "id": "currencyAction",
+    "file": "currency-plugin.mcp.json"
+  }
+]
+```
+
+5. In `appPackage/manifest.json`, add `mcp.frankfurter.dev` to `validDomains`. Keep the existing entries. With the earlier REST domain, the array is:
+
+```json
+"validDomains": ["api.frankfurter.dev", "mcp.frankfurter.dev"]
+```
+
+6. Increase the top-level app `version` again, for example `1.0.1` to `1.0.2`. Use a value higher than your last provisioned version. Edit `appPackage/manifest.json`, not `manifest.dev.json`.
+7. Save all files and run Toolkit **Provision** for **dev**. Wait for provisioning to complete successfully.
+8. Reload `https://m365.cloud.microsoft/chat`, select the same Currency Assistant and start a fresh conversation. Send `-developer on`.
+9. Ask: `Use get_rates to get the latest USD to CAD reference rate and its effective date.` If Copilot asks to connect to **Frankfurter MCP**, select **Allow**.
+10. Expand **Agent debug info**. Check that `get_rates` is selected, then inspect the returned rate and date. The old `getExchangeRate` REST action should no longer be available.
+11. Ask: `Use get_rates to get the USD to CAD reference rate for January 2, 2024.` Check the returned effective date.
+12. Ask: `Use convert to convert an example amount of 100 USD to CAD. Set details to true and include the rate and effective date.` Check the tool result for `amount`, `currency`, `rate` and `date`.
+13. Repeat `Get the USD to ZZZ exchange rate` and `Transfer 100 USD into CAD for me`. The agent must not invent a rate or claim to transfer money.
+
+**Checkpoint:** The same agent now uses MCP tools for rates and conversions. The original REST plugin and card files remain in the project, but are no longer referenced by the active action. This MCP activity does not include a custom Adaptive Card; the earlier REST card is not expected to appear.
+
 ## Troubleshooting
 
+- **MCP switch still calls REST:** check that the only active action references `currency-plugin.mcp.json`, the MCP instructions were copied, and the higher app version was provisioned. Reload Copilot and start a fresh conversation.
+- **No card after the MCP switch:** expected in section 7; its plugin does not define a custom card.
 - **403 or network failure:** check the same public URL in the VM browser and show the instructor the exact result. Do not bypass a block.
 - **429:** wait before retrying. Do not repeatedly submit prompts.
 - **API key requested:** the supplied runtime must use `auth.type: None`; Frankfurter's public service does not need a key.
@@ -172,6 +222,6 @@ The amount is multiplied locally. The API returns a rate, not a converted amount
 
 ## Sources and scope
 
-These instructions are original course material. The creation/testing route follows [Microsoft’s Toolkit tutorial](https://learn.microsoft.com/plugins/build-declarative-agents). Runtime behavior follows [Frankfurter v2](https://frankfurter.dev/), the [Microsoft plugin manifest](https://learn.microsoft.com/microsoft-365/copilot/extensibility/plugin-manifest-2.4) and [Microsoft Adaptive Card response templates](https://learn.microsoft.com/plugins/api-plugin-adaptive-cards). All required learner files are supplied locally; these links are references, not extra exercises.
+These instructions are original course material. The creation/testing route follows [Microsoft’s Toolkit tutorial](https://learn.microsoft.com/plugins/build-declarative-agents). Runtime behavior follows [Frankfurter v2](https://frankfurter.dev/), the [Microsoft plugin manifest](https://learn.microsoft.com/microsoft-365/copilot/extensibility/plugin-manifest-2.4) and [Microsoft Adaptive Card response templates](https://learn.microsoft.com/plugins/api-plugin-adaptive-cards). The MCP activity uses the [Frankfurter MCP server](https://frankfurter.dev/mcp/) and Microsoft’s [MCP plugin guidance](https://learn.microsoft.com/plugins/build-mcp-plugins). All required learner files are supplied locally; these links are references, not extra exercises.
 
 When you are ready to go on to Lab 3, [click here](D1_Lab3.md).

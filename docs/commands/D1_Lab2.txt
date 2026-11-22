@@ -65,3 +65,23 @@ Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin
 $rate = Invoke-RestMethod 'https://api.frankfurter.dev/v2/rate/USD/CAD'
 [math]::Round(100 * $rate.rate, 2)
 ===== END BLOCK 10 =====
+
+===== BEGIN BLOCK 11 (powershell) =====
+Set-Location 'C:\Users\Admin\AgentsToolkitProjects\CurrencyAssistant'
+$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
+Copy-Item "$assets\currency-plugin.mcp.json" '.\appPackage\currency-plugin.mcp.json'
+Copy-Item "$assets\currency-instructions.mcp.txt" '.\appPackage\instruction.txt'
+===== END BLOCK 11 =====
+
+===== BEGIN BLOCK 12 (json) =====
+"actions": [
+  {
+    "id": "currencyAction",
+    "file": "currency-plugin.mcp.json"
+  }
+]
+===== END BLOCK 12 =====
+
+===== BEGIN BLOCK 13 (json) =====
+"validDomains": ["api.frankfurter.dev", "mcp.frankfurter.dev"]
+===== END BLOCK 13 =====
