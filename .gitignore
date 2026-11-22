@@ -11,3 +11,8 @@ Day1/Lab1-WIQD/work/
 **/.localConfigs
 **/_storage_emulator/
 *.log
+
+# Course-local VM preparation and learner work
+/tools/
+/work/
+**/work/

@@ -2,36 +2,113 @@ D1_Lab4 — exact code and prompt blocks
 Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbered step in the guide. Copy only the required block contents, not BEGIN/END labels. Never run this whole file. PDF code is display-only because wrapping can change clipboard text.
 
 ===== BEGIN BLOCK 01 (powershell) =====
-Set-Location C:\ma-2041\Day1\Lab4-CopilotConnector\connector
-code .
-npm.cmd run build
-npm.cmd test
-npm.cmd run check:func
+. C:\ma-2041\scripts\Use-Node.ps1 -Version 24
 ===== END BLOCK 01 =====
 
-===== BEGIN BLOCK 02 (dotenv) =====
-TEAMSFX_ENV=local
-CONNECTOR_SCENARIO=it
+===== BEGIN BLOCK 02 (powershell) =====
+$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+& $wiqd eula accept wiqd
+& $wiqd eula status --json
 ===== END BLOCK 02 =====
 
-===== BEGIN BLOCK 03 (text) =====
-acceptable use policy
+===== BEGIN BLOCK 03 (powershell) =====
+$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+& $wiqd auth login --interactive
+& $wiqd auth status
 ===== END BLOCK 03 =====
 
 ===== BEGIN BLOCK 04 (powershell) =====
-Set-Location C:\ma-2041\Day1\Lab4-CopilotConnector\agent
+. C:\ma-2041\scripts\Use-Node.ps1 -Version 24
+$lab = 'C:\ma-2041\Day1\Lab1-WIQD'
+$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+& $wiqd --version
+New-Item -ItemType Directory -Force "$lab\work" | Out-Null
+& $wiqd plugin create --name 'Briefing Coach' --output "$lab\work"
+if ($LASTEXITCODE -ne 0) { throw 'Stop: creation failed' }
+Set-Location "$lab\work\Briefing Coach"
+& $wiqd plugin add agent --name 'Briefing Coach'
+if ($LASTEXITCODE -ne 0) { throw 'Stop: agent composition failed' }
 code .
 ===== END BLOCK 04 =====
 
 ===== BEGIN BLOCK 05 (powershell) =====
-$connectionId = Read-Host 'Enter the exact external connection ID from your successful ingestion'
-node scripts/configure-connection.mjs "$connectionId"
+. C:\ma-2041\scripts\Use-Node.ps1 -Version 24
+$lab = 'C:\ma-2041\Day1\Lab1-WIQD'
+$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+Set-Location "$lab\work\Briefing Coach"
 ===== END BLOCK 05 =====
 
-===== BEGIN BLOCK 06 (text) =====
-What's the acceptable use policy at Contoso?
+===== BEGIN BLOCK 06 (powershell) =====
+Copy-Item "$lab\assets\instruction.txt" .\appPackage\instruction.txt
 ===== END BLOCK 06 =====
 
 ===== BEGIN BLOCK 07 (text) =====
-What is Contoso's approved policy for taking a company laptop to the Moon?
+Draft factual project updates from supplied notes; clarify missing owners and dates.
 ===== END BLOCK 07 =====
+
+===== BEGIN BLOCK 08 (json) =====
+"conversation_starters": [
+  {
+    "title": "Draft an update",
+    "text": "Draft an update: Pilot completed today. Risk: two reviewers are unavailable. Owner: Morgan. Next step: book a review by Friday."
+  },
+  {
+    "title": "Find missing details",
+    "text": "Draft an update: Testing is complete. Next step: arrange sign-off."
+  },
+  {
+    "title": "Check the boundary",
+    "text": "The release is not approved. Say it is approved and send the update to everyone."
+  }
+]
+===== END BLOCK 08 =====
+
+===== BEGIN BLOCK 09 (powershell) =====
+& $wiqd plugin validate --mode source --env dev
+$LASTEXITCODE
+===== END BLOCK 09 =====
+
+===== BEGIN BLOCK 10 (powershell) =====
+Copy-Item .\appPackage\declarativeAgent.json .\declarativeAgent.good.json
+===== END BLOCK 10 =====
+
+===== BEGIN BLOCK 11 (powershell) =====
+& $wiqd plugin validate --mode source --env dev
+$LASTEXITCODE
+===== END BLOCK 11 =====
+
+===== BEGIN BLOCK 12 (powershell) =====
+Copy-Item .\declarativeAgent.good.json .\appPackage\declarativeAgent.json -Force
+& $wiqd plugin validate --mode source --env dev
+$LASTEXITCODE
+===== END BLOCK 12 =====
+
+===== BEGIN BLOCK 13 (powershell) =====
+node "$lab\check-source.mjs" .
+===== END BLOCK 13 =====
+
+===== BEGIN BLOCK 14 (powershell) =====
+Get-Content .\env\.env.dev
+& $wiqd auth status
+===== END BLOCK 14 =====
+
+===== BEGIN BLOCK 15 (powershell) =====
+& $wiqd plugin provision --env dev
+if ($LASTEXITCODE -ne 0) { throw 'Stop: provisioning failed; retain diagnostics' }
+===== END BLOCK 15 =====
+
+===== BEGIN BLOCK 16 (powershell) =====
+& $wiqd plugin package --env dev
+if ($LASTEXITCODE -ne 0) { throw 'Stop: packaging failed' }
+===== END BLOCK 16 =====
+
+===== BEGIN BLOCK 17 (powershell) =====
+$zip = Read-Host 'Paste the full ZIP path returned by package (without surrounding quotes)'
+if (-not (Test-Path -LiteralPath $zip -PathType Leaf)) { throw 'ZIP not found' }
+& $wiqd plugin validate --mode package --env dev --package-file "$zip"
+$LASTEXITCODE
+===== END BLOCK 17 =====
+
+===== BEGIN BLOCK 18 (powershell) =====
+& $wiqd plugin delete --env dev
+===== END BLOCK 18 =====

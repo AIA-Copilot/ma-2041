@@ -1,0 +1,205 @@
+{
+  "scope": "Lab 3 source and guide only; report excluded",
+  "files": [
+    {
+      "path": "Day1/Lab3-CopilotConnector/LICENSE",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/PROVENANCE.md",
+      "sha256": "30bb4cebdf1669fa821a9e9ed175268d8225f204faff4e82c7c0eda59635a6ac"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/README.md",
+      "sha256": "47a38f9649e25c960350a5ba038060386a0d0e5be016589aaed6a14efd16f2ed"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/SETUP.md",
+      "sha256": "efd54c181b09961c60e8f6ca60466db1c963c5b6b5f4fffec7713d64f6f40d34"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/UPSTREAM-MANIFEST.json",
+      "sha256": "f8fc4f2a913f8c1633f9fef3625fb13f7630615b411945523f1fb604de11bd9c"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/VERIFICATION.json",
+      "sha256": "642f3422695b7a62b9c891baaeecb67b67dca8428fe90f5256c3f0bb7dd9c150"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/.funcignore",
+      "sha256": "78fbf2a14ba22d956cb94879c1c6a0a92ea2a74282cbbd29be6e9c90e59411fa"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/.gitignore",
+      "sha256": "1636c5eea6d5e9f15118aa5f253e8d9a40ea13b31f472009c59e64cc1ac86d9b"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/.vscode/extensions.json",
+      "sha256": "2c08ca9bdbb1c009c8f0f409ba6e9aa284624a0c05d96f8fbfb27f297adf0cec"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/.vscode/launch.json",
+      "sha256": "68cc83de8cb5252746b3b893eb5cb678af14bb2aa34f8ef6882f8d1d406b6332"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/.vscode/settings.json",
+      "sha256": "b3a7ecd2089d95e36d2db43c04306ad835efd40be5ccb89535542656a22a624a"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/.vscode/tasks.json",
+      "sha256": "0de5bf8eac816829140eacb1ed9a3d97593fad2bc849a434788dc2df56db6bc8"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/README.md",
+      "sha256": "299d54654b94e4305ce5b6f8e09a229bf8b9aa926390eceecd6e6bb25b1e98b8"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/aad.manifest.json",
+      "sha256": "f1c620581d2d772b62fc0bd937f79d9e29f67afbcd3fa3677654e4dd48491111"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/content/CF-001.md",
+      "sha256": "bd521534105824da09d75f62f7d9ec6fb1752beff9c5fba77debfd32750bd32e"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/content/CF-002.md",
+      "sha256": "6e48f08a925a16c55df4dd78168ad38f1caad55a2ab3228a00d8127cd2f7e7a6"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/content/CF-003.md",
+      "sha256": "0d232d51abe898d28d6db7c74d7b29ee8c6cf44c0004d2303c17a5b93d119b77"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/content/CF-004.md",
+      "sha256": "da44fb29e7b5d9b8a6288cb12f93ff0b4435eb3eb8025dc027276843d6448b6c"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/content/CF-005.md",
+      "sha256": "34a25422566e923d0f85c55ff76e155855701652e333899e316c044584df022d"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/env/.env.dev",
+      "sha256": "3e102a0c20330a15ab84a37257109fcab032736985f26603c57bf6e364dfda65"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/env/.env.local.example",
+      "sha256": "13f56a1021b423f44278c3b1bc5e270f1781f4703b4d1e2b29d7959397bfc4f4"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/host.json",
+      "sha256": "dd2af916a2441d9e97f1b4b23ff6b94253a745261f30f23a040053430e78aa5f"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/infra/azure.bicep",
+      "sha256": "edf3da3319c608cfa4344b9eb17bc785932c069d7b049abf24f7b1009fc894f5"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/infra/azure.parameters.json",
+      "sha256": "b288c0585cabe9cdd53612668085f2d4af1d42bc32e041148c1df61b45774e9b"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/m365agents.local.yml",
+      "sha256": "089a2b7d266f19d18f8053aada016d8a3d3c56e64bcee9b1e78212014067c818"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/m365agents.yml",
+      "sha256": "83efd2832118ff07e0f5aec30b85e7ce83b08f62ef794bcfcc858857b776b172"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/package-lock.json",
+      "sha256": "dca23ee232d491a219e6745d750ed9e0cd88647b3c705a2ad550e1cc7379ff60"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/package.json",
+      "sha256": "e2236df7102713eebc591d0d3e271ca0125361f1127cfdb407bca4292730586c"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/scripts/admin-consent.js",
+      "sha256": "11208a74c3b1795356b2f7d6df59969763d49fab1d3922cb04173bcd2b2eeb2c"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/scripts/verify-offline.cjs",
+      "sha256": "0038f488ed6448d2c35cd6d6f5e5daf0d8b9806bf6ae4f3b115f8e4722dfbc80"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/config.ts",
+      "sha256": "63119dbc0bd46db04801673162a4eab61413ef3de74b6e63ffb859bba4a36586"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/connection.ts",
+      "sha256": "089d269c6642c4fdc6d8902f6d88c10231beb9313bb4acacf7879aed5d197ac1"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/custom/getExternalItemFromItem.ts",
+      "sha256": "1517aef64ad57091f3ab406349c2d63299d9172afae6b6c5b014ec4c4cf4ab02"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/custom/getItemFromDocument.ts",
+      "sha256": "3bb0b9ff638cc907e06dfa57ecbf914dc9ea98c7e72cf848bf6886b41d5a7dd4"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/functions/connections.ts",
+      "sha256": "e29e20b3bbe2df2532e1e822cc832255041ea18aa24718632bd41a4afa876a7c"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/graphClient.ts",
+      "sha256": "9d178677e30cf92e4798f5f60dc9e71450b4e35282bda554700c051fdab8e722"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/ingest.ts",
+      "sha256": "ad4e1716a10613d3d459f5c15e70c722119e685a37449c7a23fb587b76787440"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/longRunningOperationMiddleware.ts",
+      "sha256": "22c4ccbd7ce3527649570c6255ad92457a00cc429264238831d58c28ab9398a9"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/models/Config.ts",
+      "sha256": "6afc851969160c39cc9f9fe5bf1f306cd5fcd40d3b7efbfaf7862086a0a36e17"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/models/Item.ts",
+      "sha256": "aabdb19401981c1d3b751ce778c61e044155576482177e29c94db655564b4153"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/references/schema.json",
+      "sha256": "2b396347bfcf7f75d5c50c7837ee18adcaa0bcd5d91c967bd62d4adf62072f47"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/references/template.data.json",
+      "sha256": "d3f96d4b9132f9d1b47c54ad31f3343164df562c40edaeef140218e3f9f06b75"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/references/template.json",
+      "sha256": "f4c1a4b7013b5eec5cdbfde3cb56de47d5ab2363607fc667a12791bc8d6066d7"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/schema.ts",
+      "sha256": "1b0fb2674ccd1f016b7325954df56b35a5a52a59330c73674066d7113af8b161"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/services/itemsService.ts",
+      "sha256": "88da6a98b4b1c5acb105336f2f0db539309622edb6a966fdf2e8fa966ea06ea6"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/src/utils.ts",
+      "sha256": "be9e9d62083fa9dd741ddae204b455df117d203400f59874724401d392489179"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/connector/tsconfig.json",
+      "sha256": "200cb4be7a42913b2bc3d247303e0cb191df4d757f81ee37de1b7d612aa0a6b4"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/upstream-reference/teamsapp.local.yml",
+      "sha256": "6ac940f12fbe7535ac8092901ce4e2b48329fc193c30ae1423915b0c6cf14328"
+    },
+    {
+      "path": "Day1/Lab3-CopilotConnector/upstream-reference/teamsapp.yml",
+      "sha256": "7f23adf0cbb387028dd7fae41dedb63dd8fa86ba803179ad673f409678843728"
+    },
+    {
+      "path": "docs/D1_Lab3.md",
+      "sha256": "665c9ee62228fa28db1af7ea6252a9fb5ced88ee5cb5453207f81665aa033618"
+    }
+  ]
+}

@@ -1,0 +1,205 @@
+{
+  "commit": "937fd5b6af4c705597381dd24d5e8aa7693521ad",
+  "files": [
+    {
+      "path": "connector/.funcignore",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/.funcignore",
+      "sha256": "78fbf2a14ba22d956cb94879c1c6a0a92ea2a74282cbbd29be6e9c90e59411fa"
+    },
+    {
+      "path": "connector/.gitignore",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/.gitignore",
+      "sha256": "9b32ae274e2f2b35334dfb8f79ffcd58e122ff41a93c708021b31ab8ce8af2c7"
+    },
+    {
+      "path": "connector/.vscode/extensions.json",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/.vscode/extensions.json",
+      "sha256": "2c08ca9bdbb1c009c8f0f409ba6e9aa284624a0c05d96f8fbfb27f297adf0cec"
+    },
+    {
+      "path": "connector/.vscode/launch.json",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/.vscode/launch.json",
+      "sha256": "68cc83de8cb5252746b3b893eb5cb678af14bb2aa34f8ef6882f8d1d406b6332"
+    },
+    {
+      "path": "connector/.vscode/settings.json",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/.vscode/settings.json",
+      "sha256": "b3a7ecd2089d95e36d2db43c04306ad835efd40be5ccb89535542656a22a624a"
+    },
+    {
+      "path": "connector/.vscode/tasks.json",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/.vscode/tasks.json",
+      "sha256": "c2537a1fe9594ad0e07f0771f3b3dfc4903043fafc28a30b629275b325211736"
+    },
+    {
+      "path": "connector/README.md",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/README.md",
+      "sha256": "299d54654b94e4305ce5b6f8e09a229bf8b9aa926390eceecd6e6bb25b1e98b8"
+    },
+    {
+      "path": "connector/aad.manifest.json",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/aad.manifest.json",
+      "sha256": "f1c620581d2d772b62fc0bd937f79d9e29f67afbcd3fa3677654e4dd48491111"
+    },
+    {
+      "path": "connector/content/CF-001.md",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/content/CF-001.md",
+      "sha256": "bd521534105824da09d75f62f7d9ec6fb1752beff9c5fba77debfd32750bd32e"
+    },
+    {
+      "path": "connector/content/CF-002.md",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/content/CF-002.md",
+      "sha256": "6e48f08a925a16c55df4dd78168ad38f1caad55a2ab3228a00d8127cd2f7e7a6"
+    },
+    {
+      "path": "connector/content/CF-003.md",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/content/CF-003.md",
+      "sha256": "0d232d51abe898d28d6db7c74d7b29ee8c6cf44c0004d2303c17a5b93d119b77"
+    },
+    {
+      "path": "connector/content/CF-004.md",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/content/CF-004.md",
+      "sha256": "da44fb29e7b5d9b8a6288cb12f93ff0b4435eb3eb8025dc027276843d6448b6c"
+    },
+    {
+      "path": "connector/content/CF-005.md",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/content/CF-005.md",
+      "sha256": "34a25422566e923d0f85c55ff76e155855701652e333899e316c044584df022d"
+    },
+    {
+      "path": "connector/env/.env.dev",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/env/.env.dev",
+      "sha256": "3e102a0c20330a15ab84a37257109fcab032736985f26603c57bf6e364dfda65"
+    },
+    {
+      "path": "connector/host.json",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/host.json",
+      "sha256": "dd2af916a2441d9e97f1b4b23ff6b94253a745261f30f23a040053430e78aa5f"
+    },
+    {
+      "path": "connector/infra/azure.bicep",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/infra/azure.bicep",
+      "sha256": "edf3da3319c608cfa4344b9eb17bc785932c069d7b049abf24f7b1009fc894f5"
+    },
+    {
+      "path": "connector/infra/azure.parameters.json",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/infra/azure.parameters.json",
+      "sha256": "b288c0585cabe9cdd53612668085f2d4af1d42bc32e041148c1df61b45774e9b"
+    },
+    {
+      "path": "connector/package-lock.json",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/package-lock.json",
+      "sha256": "7d5e0eb1cf98e1be05f68bba9ec13fc10193eaec7c44b1c6e52ca868dfeeda81"
+    },
+    {
+      "path": "connector/package.json",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/package.json",
+      "sha256": "9e210d77bdc3f0ede738f4dc70dcd409933bbd510bf37f00aea0273f872b94f7"
+    },
+    {
+      "path": "connector/scripts/admin-consent.js",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/scripts/admin-consent.js",
+      "sha256": "11208a74c3b1795356b2f7d6df59969763d49fab1d3922cb04173bcd2b2eeb2c"
+    },
+    {
+      "path": "connector/src/config.ts",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/config.ts",
+      "sha256": "9812add673ef42fa2f766251b5670d6af37cdc33a29269d93069e6af95b7b0d8"
+    },
+    {
+      "path": "connector/src/connection.ts",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/connection.ts",
+      "sha256": "089d269c6642c4fdc6d8902f6d88c10231beb9313bb4acacf7879aed5d197ac1"
+    },
+    {
+      "path": "connector/src/custom/getExternalItemFromItem.ts",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/custom/getExternalItemFromItem.ts",
+      "sha256": "1517aef64ad57091f3ab406349c2d63299d9172afae6b6c5b014ec4c4cf4ab02"
+    },
+    {
+      "path": "connector/src/custom/getItemFromDocument.ts",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/custom/getItemFromDocument.ts",
+      "sha256": "3bb0b9ff638cc907e06dfa57ecbf914dc9ea98c7e72cf848bf6886b41d5a7dd4"
+    },
+    {
+      "path": "connector/src/functions/connections.ts",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/functions/connections.ts",
+      "sha256": "422cfd1dc924aecc59d49017e3478e715ffe09dc7ceac1ddac752a1aeeb313ad"
+    },
+    {
+      "path": "connector/src/graphClient.ts",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/graphClient.ts",
+      "sha256": "9d178677e30cf92e4798f5f60dc9e71450b4e35282bda554700c051fdab8e722"
+    },
+    {
+      "path": "connector/src/ingest.ts",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/ingest.ts",
+      "sha256": "ad4e1716a10613d3d459f5c15e70c722119e685a37449c7a23fb587b76787440"
+    },
+    {
+      "path": "connector/src/longRunningOperationMiddleware.ts",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/longRunningOperationMiddleware.ts",
+      "sha256": "22c4ccbd7ce3527649570c6255ad92457a00cc429264238831d58c28ab9398a9"
+    },
+    {
+      "path": "connector/src/models/Config.ts",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/models/Config.ts",
+      "sha256": "6afc851969160c39cc9f9fe5bf1f306cd5fcd40d3b7efbfaf7862086a0a36e17"
+    },
+    {
+      "path": "connector/src/models/Item.ts",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/models/Item.ts",
+      "sha256": "aabdb19401981c1d3b751ce778c61e044155576482177e29c94db655564b4153"
+    },
+    {
+      "path": "connector/src/references/schema.json",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/references/schema.json",
+      "sha256": "2b396347bfcf7f75d5c50c7837ee18adcaa0bcd5d91c967bd62d4adf62072f47"
+    },
+    {
+      "path": "connector/src/references/template.data.json",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/references/template.data.json",
+      "sha256": "d3f96d4b9132f9d1b47c54ad31f3343164df562c40edaeef140218e3f9f06b75"
+    },
+    {
+      "path": "connector/src/references/template.json",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/references/template.json",
+      "sha256": "f4c1a4b7013b5eec5cdbfde3cb56de47d5ab2363607fc667a12791bc8d6066d7"
+    },
+    {
+      "path": "connector/src/schema.ts",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/schema.ts",
+      "sha256": "1b0fb2674ccd1f016b7325954df56b35a5a52a59330c73674066d7113af8b161"
+    },
+    {
+      "path": "connector/src/services/itemsService.ts",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/services/itemsService.ts",
+      "sha256": "731c6f476bb60394688cbfb81eae0fabcfa28d5ade3b6962a39b065fc2b3f4ae"
+    },
+    {
+      "path": "connector/src/utils.ts",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/src/utils.ts",
+      "sha256": "be9e9d62083fa9dd741ddae204b455df117d203400f59874724401d392489179"
+    },
+    {
+      "path": "connector/teamsapp.local.yml",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/teamsapp.local.yml",
+      "sha256": "6ac940f12fbe7535ac8092901ce4e2b48329fc193c30ae1423915b0c6cf14328"
+    },
+    {
+      "path": "connector/teamsapp.yml",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/teamsapp.yml",
+      "sha256": "7f23adf0cbb387028dd7fae41dedb63dd8fa86ba803179ad673f409678843728"
+    },
+    {
+      "path": "connector/tsconfig.json",
+      "upstream": "src/extend-m365-copilot/path-e-bonus-gc-lab/trey-feedback-connector/tsconfig.json",
+      "sha256": "ff4033bf4616b41aafac3d2b28ca836ca49bd4a7d3e9189bc7f856d20515a50f"
+    },
+    {
+      "path": "LICENSE",
+      "upstream": "LICENSE",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    }
+  ]
+}

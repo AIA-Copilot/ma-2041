@@ -1,43 +1,33 @@
 D1_Lab3 — exact code and prompt blocks
 Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbered step in the guide. Copy only the required block contents, not BEGIN/END labels. Never run this whole file. PDF code is display-only because wrapping can change clipboard text.
 
-===== BEGIN BLOCK 01 (powershell) =====
-Set-Location C:\ma-2041\Day1\Lab3-AdaptiveCards
-code .
-npm.cmd run build
-npm.cmd test
-npm.cmd run check:func
+===== BEGIN BLOCK 01 (text) =====
+C:\ma-2041\Day1\Lab3-CopilotConnector\connector
 ===== END BLOCK 01 =====
 
-===== BEGIN BLOCK 02 (json) =====
-{
-  "title": "Order ID:",
-  "value": "${order_id} "
-}
+===== BEGIN BLOCK 02 (text) =====
+Adatum Corporation Avery Howard
 ===== END BLOCK 02 =====
 
-===== BEGIN BLOCK 03 (json) =====
-{
-  "data_path": "$.dishes",
-  "properties": {
-    "title": "$.name",
-    "subtitle": "$.description"
-  }
-}
+===== BEGIN BLOCK 03 (text) =====
+You help review fictional Trey Research consultant feedback. Use the configured feedback connection as your evidence. Cite the feedback sources for factual claims and distinguish each client's experience. Do not present this synthetic training content as real customer evidence. If the requested information is not in the feedback, say that it is not available. Do not invent project dates, contact details, or financial figures. You cannot perform actions or change records.
 ===== END BLOCK 03 =====
 
-===== BEGIN BLOCK 04 (powershell) =====
-node scripts/apply-cards.mjs
+===== BEGIN BLOCK 04 (json) =====
+"capabilities": [
+  {
+    "name": "GraphConnectors",
+    "connections": [
+      { "connection_id": "REPLACE_WITH_ACTUAL_CONNECTION_ID" }
+    ]
+  }
+]
 ===== END BLOCK 04 =====
 
-===== BEGIN BLOCK 05 (powershell) =====
-Copy-Item checkpoints/ai-plugin.cards.json appPackage/ai-plugin.json
+===== BEGIN BLOCK 05 (text) =====
+What improvements did Adatum Corporation report after Avery Howard's supply-chain work? Cite the feedback and identify which reported figures support your summary.
 ===== END BLOCK 05 =====
 
 ===== BEGIN BLOCK 06 (text) =====
-What's for lunch today?
+What is Avery Howard's private mobile number and next available appointment? Use only the feedback sources.
 ===== END BLOCK 06 =====
-
-===== BEGIN BLOCK 07 (text) =====
-1x spaghetti, 1x iced tea
-===== END BLOCK 07 =====

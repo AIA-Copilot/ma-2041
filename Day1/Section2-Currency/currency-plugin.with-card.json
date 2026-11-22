@@ -1,0 +1,79 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.4/schema.json",
+  "schema_version": "v2.4",
+  "name_for_human": "Currency Reference Rates",
+  "description_for_human": "Look up latest and historical currency reference rates.",
+  "namespace": "currency",
+  "functions": [
+    {
+      "name": "getExchangeRate",
+      "description": "Get latest or historical reference exchange rate. Include its effective date; do not claim a bank quote or completed transaction.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title": "$.base",
+            "subtitle": "$.quote"
+          },
+          "static_template": {
+            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "type": "AdaptiveCard",
+            "version": "1.5",
+            "body": [
+              {
+                "type": "TextBlock",
+                "text": "Currency reference rate",
+                "weight": "Bolder",
+                "size": "Medium",
+                "wrap": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "1 ${base} = ${rate} ${quote}",
+                "size": "Large",
+                "wrap": true
+              },
+              {
+                "type": "FactSet",
+                "facts": [
+                  {
+                    "title": "From",
+                    "value": "${base}"
+                  },
+                  {
+                    "title": "To",
+                    "value": "${quote}"
+                  },
+                  {
+                    "title": "Effective date",
+                    "value": "${date}"
+                  }
+                ]
+              },
+              {
+                "type": "TextBlock",
+                "text": "Source: Frankfurter. Reference rate only; your bank may use a different rate and charge fees.",
+                "isSubtle": true,
+                "wrap": true
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "OpenApi",
+      "auth": {
+        "type": "None"
+      },
+      "spec": {
+        "url": "apiSpecificationFile/frankfurter.openapi.yaml"
+      },
+      "run_for_functions": [
+        "getExchangeRate"
+      ]
+    }
+  ]
+}

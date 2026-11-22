@@ -1,153 +1,124 @@
-# Day 1 · Lab 3 — Show API results with Adaptive Cards
+# Day 1 · Lab 3 — Ground an agent in synced feedback
 
-**Workspace:** use VS Code and PowerShell 7 inside the provided MS-4018 VM. “Local” means this VM. One-time preparation: [course setup](../README.md).
+**Outcome:** ingest five synthetic Trey Research feedback files into Microsoft Graph, then create a separate, no-action declarative agent grounded in that exact connection. This is a standalone adaptation of [Copilot Camp E7](https://microsoft.github.io/copilot-camp/pages/extend-m365-copilot/07-add-graphconnector/): no previous Camp E2–E4 API project is needed.
 
+**Workspace:** Windows training VM, VS Code and PowerShell. One-time preparation is already complete through the [course setup](../README.md) and [connector setup](../Day1/Lab3-CopilotConnector/SETUP.md). Allow approximately 50 minutes plus tenant indexing latency (planning estimate, not a measured completion time).
 
-**Outcome:** build and inspect dish/order card templates, bind them to API response semantics, and verify a dish card in a Copilot citation plus an order card in the response itself.
+**Architecture:** local Markdown → local Functions timer + local Azurite → Microsoft Graph external connection → Microsoft 365 index → declarative agent. There is no API action, public tunnel, separately hosted API server, or Azure cloud deployment. The local Functions runtime does have a local listener; do not expose it. Microsoft 365 and Graph remain cloud services.
 
-**Allow:** 50 minutes of practice after Lab 2 and provider preflight (planning budget, not measured completion). Use the same approved anonymous restaurant tunnel and Microsoft 365 account gates.
+## 1. Inspect the data and permission boundary
 
-**Start gate:** the instructor must confirm [provider preflight](INSTRUCTOR-PREFLIGHT.md) before runtime work. If tools or approval are missing, stop; do not install or bypass policy during this lab.
+1. Stop other lab debugging/tasks. In VS Code use **File > Open Folder** and open:
 
-**Official exercise:** [Return rich responses with Adaptive Cards](https://learn.microsoft.com/en-us/training/modules/copilot-declarative-agent-action-api-plugin-adaptive-cards-vsc/3-exercise-return-rich-responses-adaptive-cards). This is the official Cards starter, not a different API or scenario. The complete exercise card files and preview data are supplied under `cards`.
-
-## 1. Switch projects cleanly (3 minutes)
-
-1. Stop Lab 2 debugging and terminate its tunnel/host tasks. Do not run both projects on the same ports.
-2. Open and check the prepared Lab 3 project:
-
-```powershell
-Set-Location C:\ma-2041\Day1\Lab3-AdaptiveCards
-code .
-npm.cmd run build
-npm.cmd test
-npm.cmd run check:func
+```text
+C:\ma-2041\Day1\Lab3-CopilotConnector\connector
 ```
 
-**Expected result:** build and tests succeed. Confirm `appPackage/ai-plugin.json` already contains `getDishes` and `placeOrder`, and `declarativeAgent.json` already references the plugin. The same corrected API contract applies: `GET /dishes` returns `{ "dishes": [...] }`, `POST /orders` is plural, quantities are integers 1–100 inclusive, and multiple excluded allergens use a single comma-separated query value. This is where Lab 2 ended, before cards. The initial plugin deliberately has no `static_template`; you add that now.
+2. Open `content/CF-001.md` through `CF-005.md`. These are AI-generated fictional customer comments, not evidence about real customers. Note each document's `id`, title, consultant and body. Read CF-001's Adatum example; you will check the answer against this file later.
+3. Open `src/custom/getExternalItemFromItem.ts`. The `everyone` ACL makes the indexed synthetic items visible tenant-wide; it does not implement confidential per-client access. Do not add private documents.
+4. Open `aad.manifest.json`. The connector requires Microsoft Graph **application** permissions `ExternalConnection.ReadWrite.OwnedBy` and `ExternalItem.ReadWrite.OwnedBy`. They let its app identity manage connections it owns and their items, not all tenant connections. An authorized tenant administrator must grant consent; a student sign-in alone does not grant it.
+5. Confirm the instructor has authorized this training ingestion and arranged that administrator. App registration, consent, ingestion and indexing are separate checkpoints. If permission is unavailable, inspect the supplied files and record runtime checkpoints as **not run**—do not weaken permissions or switch tenants casually.
 
-Verify **Adaptive Card Previewer** is available; ask the instructor if it is missing. This is a design preview tool, not the Copilot runtime. You still need the live Copilot checks at the end.
+**Checkpoint:** identify the two application permissions and explain why only synthetic content is suitable for the supplied ACL.
 
-**Checkpoint:** Only the Lab 3 project is active; baseline plugin has no cards.
+## 2. Assign your own connection identity
 
-## 2. Inspect and preview the dish card (10 minutes)
+1. In Explorer copy `env/.env.local.example` to `env/.env.local` only if `.env.local` does not already exist. Preserve an existing file and its generated identity; ask the instructor before changing it. Do not edit `.env.dev`.
+2. In `.env.local`, replace `YOURSEAT` in both `CONNECTOR_ID` and `CONNECTOR_NAME` with your instructor-assigned unique letters/digits (for example `s07nov23`). Keep `TEAMSFX_ENV=local`, the base URL and the other settings.
+3. The code appends `local` to the base ID. For example, base `tfcs07nov23` produces `tfcs07nov23local`. Use **only letters/digits**, keep the base at most **27 characters** so the combined ID stays at most **32**, and use a fresh seat-specific value rather than the example shared by the class. A local guard rejects invalid combined IDs.
+4. The supplied `CONNECTOR_BASE_URL` points to the pinned public GitHub sample content directory. The adapter adds `.md` to each item ID, so a citation can open the actual sample file. This is a source link, not a server the student must start. Leave it unchanged for the supplied data.
 
-1. Open `cards/dish.json` and `cards/dish.data.json` side by side. The data is the official exercise's Caprese Salad sample. The card has `type: AdaptiveCard` and version `1.5`.
+**Checkpoint:** write down your base ID and expected combined ID. No passwords or client secrets belong in this evidence.
 
-2. Use the **Preview Adaptive Card** CodeLens or Command Palette command with `dish.json` active. If the extension asks for a data file, choose the supplied `dish.data.json`. The official flow can also create a file with **Adaptive Card: New Data File**; do not overwrite the prepared data accidentally.
+## 3. Provision locally, then grant admin consent
 
-3. Trace these bindings:
+1. In Agents Toolkit confirm the assigned Microsoft 365 training account/tenant. Select **Run and Debug > Debug Connector**, then press **F5**. Use the **local** environment only. Do not select Deploy to Azure or a `dev` environment. If asked for an Azure subscription, cancel: that is not this lab's path.
+2. The tasks start Azurite locally, provision the Entra app, generate ignored local settings, compile TypeScript, and start the local Functions host with the debugger. Task runtime is explicitly Node 22; changing a terminal to Node 24 does not change this task configuration.
+3. Open the task terminal **func: host start**. The startup ingestion attempts app-only authentication. If consent is absent it prints an Entra app-permissions link. Have the authorized administrator open that link in their own signed-in browser, verify the app/client ID against `env/.env.local`, inspect the two **application** permissions from step 1, then select **Grant admin consent** for the training tenant.
+4. Verify the portal shows both permissions **Granted for** the correct tenant. Do not share the generated secret, `local.settings.json`, or `.env.local.user`. If the runtime's ten-minute consent window expired, stop debugging and restart **after** consent. Do not create another registration just because consent took time.
 
-| Template expression | Data meaning | What you should see |
-|---|---|---|
-| `${image_url}` | Dish image URL | Image, if the VM can reach the remote sample asset |
-| `${name}` | Dish name | Caprese Salad |
-| `${description}` | Dish description | Wrapped descriptive text |
-| `${if(count(allergens) > 0, join(allergens, ', '), 'none')}` | List formatting and empty-list behavior | `dairy` for the supplied sample |
-| `${formatNumber(price, 2)}` | Two decimal places | Price rendered with two decimals |
+**Checkpoint:** record app display name, redacted client ID and consent status/tenant. No consent means no ingestion claim.
 
-The wrapper is a Container, with Image/TextBlock elements inside. `wrap: true` prevents the description being forced onto one line. The preview data is deliberately a **single dish**, not the entire `{dishes:[...]}` API envelope; the plugin's `data_path` selects each dish at runtime.
+## 4. Verify connection, schema, ingestion and search separately
 
-4. **Make and verify an edit:** change the fixture's `allergens` array to `[]` and save. The preview should show `none`. Restore `["dairy"]` before continuing. This is a formatting test, not an API change. Change the title's weight or spacing, inspect the result, then keep a readable version.
+1. In the Functions task terminal look for `Creating connection <id>` / `Connection <id> was created` (or `already exists`), then schema creation and search-settings update on the first run. Copy the **actual** connection ID from the log, not just your predicted value.
+2. Watch `Loading CF-001...` through `Loading CF-005...`. There must be no `Failed to load` messages. **Loading is an attempt, not proof of success:** the upstream sample catches item errors and can finish the function even when an item failed. A successful timer invocation by itself is not your pass condition.
+3. Open [Microsoft 365 admin center — connectors](https://admin.cloud.microsoft/#/copilot/connectors). Find **your** named connection and confirm its ID and **Ready** state. If a required action offers **Include Connector Results**, have the authorized administrator review/enable it. Use the connection's status/item information to check successful ingestion where available; a zero-item connection is not complete.
+4. In [Microsoft 365 Search](https://m365.cloud.microsoft/search), search for:
 
-If a binding appears literally as `${name}`, verify that preview data is selected and valid JSON. If only the image is missing, test the image URL in the VM browser; do not diagnose every remote-image failure as a broken card schema. Text/data binding must still be correct.
-
-**Checkpoint:** Record empty-allergen rendering and restore the supplied fixture.
-
-## 3. Inspect and preview the order card (7 minutes)
-
-1. Open `cards/order.json` with `cards/order.data.json`. The fixture contains a fictional order ID, `confirmed` status and total. Use Preview Adaptive Card again.
-
-The FactSet maps these values:
-
-```json
-{
-  "title": "Order ID:",
-  "value": "${order_id} "
-}
+```text
+Adatum Corporation Avery Howard
 ```
 
-The trailing space after `${order_id}` is intentional in the Learn exercise: it works around number rendering behavior in the preview. Remove the space temporarily and observe whether your current preview reproduces the issue; restore it regardless so the supplied exercise checkpoint remains consistent. Do not silently change the fixture's number into a fabricated live order result.
+5. Verify the returned title/source belongs to your feedback connection. Open the source link and compare it with `content/CF-001.md`. The public GitHub page alone proves only source reachability, not tenant ingestion. Check a distinctive title or phrase from each of the other four supplied files as well, using the source/connection filter if available so another learner's duplicate content does not count as your proof.
+6. Indexing is asynchronous. **Ready**, item upload, search visibility and Copilot grounding may occur at different times. Allow propagation and recheck; do not loop F5 or delete/recreate the connection to force indexing. If the lesson window expires, record **ingested / search pending** as appropriate and complete the agent authoring step while keeping the live-answer gate open.
+7. Once ingestion is verified, stop debugging and terminate the Azurite/host tasks. Synced content stays in Microsoft 365; an agent query does not require this local host to remain running.
 
-2. Verify all three facts—ID, status and formatted total—are visible. The fixture's ID and total are preview inputs only; actual Copilot output will use the API's runtime response.
+**Checkpoint:** actual connection ID, Ready status, all five upload attempts without errors, and search evidence for your indexed source. Separate any unverified condition explicitly.
 
-3. **Deliberate broken-binding repair (3 minutes):** in the dish card change `${name}` to `${dish_name}` while leaving the fixture unchanged. Preview the missing title, explain the mismatch, then restore `${name}` and verify the title returns. Do not ship the broken card. This takes the total practice budget to 50 minutes.
+## 5. Create a separate no-action declarative agent
 
-**Checkpoint:** both cards preview with resolved text, and long descriptions remain readable. A screenshot of this preview is design evidence only.
+1. Open a **new VS Code window**. In **Microsoft 365 Agents Toolkit > Create a New Agent/App**, choose **Declarative Agent**, then **No Action** (wording can vary by extension version). Choose `C:\ma-2041\work` as the parent folder and name the project `TreyFeedbackAgent`. Do not overwrite the connector or reuse the earlier API agent.
+2. In the generated project's `appPackage` folder, open the declarative-agent JSON file referenced by `manifest.json` under `copilotAgents.declarativeAgents[].file` (normally `declarativeAgent.json`). Keep the Toolkit-generated schema/version and package icons. Set the agent name to `Trey Feedback — YOURSEAT`, using your seat suffix, and its description to `Answers from synthetic Trey Research feedback.`
+3. Replace its `instructions` value with the following text as a JSON string, preserving valid JSON:
 
-## 4. Embed both cards in the API plugin (7 minutes)
+```text
+You help review fictional Trey Research consultant feedback. Use the configured feedback connection as your evidence. Cite the feedback sources for factual claims and distinguish each client's experience. Do not present this synthetic training content as real customer evidence. If the requested information is not in the feedback, say that it is not available. Do not invent project dates, contact details, or financial figures. You cannot perform actions or change records.
+```
 
-1. Open `appPackage/ai-plugin.json`. Find the function object whose `name` is `getDishes`, then its `capabilities.response_semantics`:
+4. Replace the `capabilities` array with the fragment below. Replace `REPLACE_WITH_ACTUAL_CONNECTION_ID` with the ID verified in step 4. Do not retain the placeholder or use another learner's connection. This is a property fragment inside the existing object, not a complete manifest:
 
 ```json
-{
-  "data_path": "$.dishes",
-  "properties": {
-    "title": "$.name",
-    "subtitle": "$.description"
+"capabilities": [
+  {
+    "name": "GraphConnectors",
+    "connections": [
+      { "connection_id": "REPLACE_WITH_ACTUAL_CONNECTION_ID" }
+    ]
   }
-}
+]
 ```
 
-2. Add a `static_template` property at this same level and make its value the full **object** from `cards/dish.json`, not a filename or quoted JSON string. For `placeOrder`, add the full `cards/order.json` object under that function's response semantics. Keep its `data_path` as `$` because the response is one order object.
+5. Verify there is no `actions` entry, API plugin, OpenAPI runtime or web-search capability. This agent's knowledge comes from the indexed connector. Instructions are behavior guidance, not an access-control replacement.
+6. Save. In this separate agent project use Toolkit **Lifecycle > Provision** for **dev**, as in Lab 1. This agent environment is separate from the connector’s local environment. A No Action project packages the agent; it does not require a tunnel or API host. If asked to expose an API or choose Azure resources, cancel and confirm you selected **No Action**.
+7. Open `https://m365.cloud.microsoft/chat` using the same training account. In Copilot explicitly select **Trey Feedback — YOURSEAT** and start a fresh chat. Do not assume the default Copilot landing page selected your agent. If editing an already-installed version, increment `appPackage/manifest.json`'s app version (for example `1.0.0` to `1.0.1`), reprovision the same dev environment and start a fresh chat.
 
-For a reproducible edit without brace/copy errors, the supplied utility performs those exact two insertions using your current card files:
+**Checkpoint:** the packaged agent has your verified connection ID, no actions, and the correct installed identity in Copilot.
 
-```powershell
-node scripts/apply-cards.mjs
-```
+## 6. Verify a cited answer, then a missing-information answer
 
-3. Open the resulting plugin and locate both `static_template` objects. Confirm function names, `run_for_functions`, runtime spec path and `auth: None` remain unchanged. The standalone `cards` files are authoring inputs; the **embedded** copies in the plugin are what Copilot receives. If you change a card later, rerun the utility to update those copies before F5.
-
-If your plugin editing fails, `checkpoints/ai-plugin.cards.json` is the complete official-card checkpoint. Copy it only as a deliberate recovery; it overwrites your custom card edits:
-
-```powershell
-Copy-Item checkpoints/ai-plugin.cards.json appPackage/ai-plugin.json
-```
-
-**Checkpoint:** Both templates are embedded under the correct response semantics.
-
-## 5. Verify the actual Copilot rendering (15 minutes)
-
-1. Recheck the work account in Toolkit. Confirm the instructor's tunnel permission still applies.
-2. Select **Run and Debug > Debug in Copilot (Edge)** and press F5. Do not use Preview-only. Wait for the tunnel, local lifecycle, host and browser.
-3. Open **Il Ristorante - Lab 3 Cards** in Copilot using the same assigned account (the installed app is named **Il Ristorante Cards**, with the local suffix). This project's distinct name separates it from Lab 2's **Il Ristorante**. F5 opens generic Copilot chat, not an app-specific link: explicitly select the Lab 3 agent before starting a new conversation. If that name is absent or duplicated, stop and have the instructor match the installed app to this project's `TEAMS_APP_ID` in `env/.env.local`; do not guess from the browser tab or conversation age.
-4. Start a fresh chat and send:
+1. Ask your selected agent:
 
 ```text
-What's for lunch today?
+What improvements did Adatum Corporation report after Avery Howard's supply-chain work? Cite the feedback and identify which reported figures support your summary.
 ```
 
-5. Inspect the proposed API request and choose **Allow once** only for the expected read. In the response, open/hover a dish citation. **Expected result:** the citation popup contains your custom dish card with information beyond the title, such as description, allergens and formatted price. Multiple dishes need not appear as a wall of inline cards; the official exercise expects the rich card in the citation popup.
-6. Send the official order prompt:
+2. Open the citation. Check that its source is the Adatum feedback, and compare the answer and numbers with `content/CF-001.md`. The expected kind of result is a concise summary supported by that document, not a generic statement about supply chains. A fluent uncited answer, another learner's connection, or an unrelated citation is not a pass.
+3. Ask:
 
 ```text
-1x spaghetti, 1x iced tea
+What is Avery Howard's private mobile number and next available appointment? Use only the feedback sources.
 ```
 
-7. Inspect the exact order payload and confirm only the intended fictitious order. **Expected result:** the single order result appears as an inline Adaptive Card with order ID, status and total. Compare its values with the API response/Functions activity. Do not compare the live random ID to `order.data.json`.
+4. Confirm the agent reports that the information is not available from the supplied feedback rather than fabricating it. This is a behavioral check, not proof that all hallucinations are prevented.
+5. Save redacted evidence of the consent checkpoint, actual connection ID/Ready state, source search, selected agent identity, cited answer and missing-information response. If indexing/Copilot access is still pending, record exactly which gates are incomplete rather than substituting the local source file for a live answer.
 
-**Negative/diagnostic checks:** if the menu answer is fluent but the citation still has only a title, the old/no-card plugin may be installed. Verify the embedded templates in the generated package, stop/restart F5 and use a fresh chat. If a card shows blank facts, compare `data_path` and expression names against the actual API envelope. A local preview cannot detect using `$.dishes` for the order response.
+**Checkpoint:** one source-supported cited reply and one appropriate missing-information reply from your installed no-action agent.
 
-**Checkpoint:** Verify a dish citation card and an inline order card in the selected Lab 3 agent.
+## 7. Stop and retain evidence safely
 
-## 6. Save evidence and stop tasks (5 minutes)
+1. Stop any remaining connector/Storage tasks. No public tunnel should have been created. Closing the connector does **not** delete the connection, indexed items, Entra registration or installed agent.
+2. The adaptation removes registration of the upstream destructive `retractConnection` timer. Do not invoke its retained source function manually. Rerunning ingestion writes the same item IDs; removing a local Markdown file does not automatically delete its indexed item.
+3. Retain training resources until the instructor has checked evidence. For later cleanup, the authorized administrator first verifies your exact connection ID/owner in the admin center, deletes only that training connection with approval, verifies its absence, and then removes the dedicated app registration/credentials and unneeded installed agent. Do not delete a shared connection or registration and do not treat local file deletion as tenant cleanup.
 
-1. Record a redacted dish citation card and an inline order card from **Copilot**, plus the two preview observations. Note any discrepancy between preview and Copilot. Passing requires the live cards, not simply valid JSON or screenshots supplied with the upstream repository.
-
-2. Stop debugging and terminate all task terminals, including the public tunnel. Confirm no lab process is listening on 7071/9229. Keep the source for class review; do not upload logs or environment files containing secrets.
-
-| Symptom | Recovery |
+| Symptom | Check / recovery |
 |---|---|
-| Preview command missing | Confirm `.json` card is active; ask the instructor to restore the prepared Previewer extension. |
-| Preview shows literal expressions | Select matching data file and inspect syntax/property names. |
-| Copilot still has plain responses | Run `apply-cards.mjs` after edits, save, rerun local F5 provisioning, and open the correct agent in a new chat. |
-| Menu card works, order card blank | `getDishes` uses `$.dishes`; `placeOrder` uses `$`. Preserve the order-ID trailing space. |
-| Host/tunnel fails | Use Lab 2's port, network, account and generated-server checks; do not change working card bindings to fix a network issue. |
+| `func` missing or wrong Node | Stop and return to the one-time setup owner. Core Tools must be global v4; workspace tasks use the supplied Node 22 path. |
+| Azurite port already occupied | Stop the previous lab's tasks; do not start another emulator or kill unrelated processes. |
+| 401/403 or consent timeout | Confirm the exact app, tenant, application permissions and admin grant; restart after correction. |
+| Connection ID conflict / not owned | Ask instructor to verify ownership; use a fresh assigned base ID rather than deleting another learner's connection. |
+| `Loading` appears but no items/search | Check `Failed to load`, schema errors and connection status first; then allow indexing. |
+| Search works, agent has no answer | Check actual `connection_id`, installed version/account/agent, fresh chat, and Copilot propagation. |
+| Citation opens localhost or 404 | Verify supplied base URL and `.md` URL adaptation; rerun ingestion only after fixing configuration. |
 
-**Additional practice:** [Challenge project — chat with your data](https://learn.microsoft.com/en-us/training/modules/copilot-declarative-agent-challenge-chat-with-data/). It follows the API and cards modules and is separate practice, not another mandatory guided block.
-
-**Checkpoint:** Record preview versus Copilot results and confirm tasks/tunnel stopped.
-
-## Session 3 authentication teaching boundary
-The instructor separately demonstrates an authenticated request/configuration or explicitly labelled worked walkthrough (15 minutes, outside this 50-minute lab). Trace identity, credential location, token/audience or API-key header, denied request, and least privilege. Do not paste secrets into cards/manifests. This lab keeps anonymous synthetic API actions; learner implementation of OAuth/API-key authentication remains an explicit syllabus gap, not a completed outcome.
+**Completion:** you can explain the difference between connector app-only write permissions, item ACL visibility, indexing and the agent's knowledge binding. Local compilation is not tenant completion.

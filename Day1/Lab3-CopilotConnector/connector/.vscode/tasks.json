@@ -1,0 +1,106 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "TTK",
+      "dependsOn": [
+        "Start Azurite emulator",
+        "Provision"
+      ],
+      "dependsOrder": "sequence",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "Path": "${workspaceFolder}/../../../tools/node-v22.22.2-win-x64;${env:Path}"
+        }
+      }
+    },
+    {
+      "label": "Start Azurite emulator",
+      "type": "shell",
+      "command": "npm run storage",
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": [
+          {
+            "regexp": "^.*$",
+            "file": 0,
+            "location": 1,
+            "message": 2
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Azurite",
+          "endsPattern": "successfully listening"
+        }
+      },
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "Path": "${workspaceFolder}/../../../tools/node-v22.22.2-win-x64;${env:Path}"
+        }
+      }
+    },
+    {
+      "label": "Provision",
+      "type": "teamsfx",
+      "command": "provision",
+      "args": {
+        "env": "local"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "Path": "${workspaceFolder}/../../../tools/node-v22.22.2-win-x64;${env:Path}"
+        }
+      }
+    },
+    {
+      "label": "Terminate All Tasks",
+      "command": "echo ${input:terminate}",
+      "type": "shell",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "Path": "${workspaceFolder}/../../../tools/node-v22.22.2-win-x64;${env:Path}"
+        }
+      }
+    },
+    {
+      "type": "shell",
+      "label": "func: host start",
+      "command": "func host start --language-worker=\"--inspect=9229\"",
+      "problemMatcher": "$func-node-watch",
+      "isBackground": true,
+      "dependsOn": "npm build (functions)",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "Path": "${workspaceFolder}/../../../tools/node-v22.22.2-win-x64;${env:Path}"
+        }
+      }
+    },
+    {
+      "type": "shell",
+      "label": "npm build (functions)",
+      "command": "npm run build",
+      "problemMatcher": "$tsc",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "Path": "${workspaceFolder}/../../../tools/node-v22.22.2-win-x64;${env:Path}"
+        }
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "terminate",
+      "type": "command",
+      "command": "workbench.action.tasks.terminate",
+      "args": "terminateAll"
+    }
+  ]
+}

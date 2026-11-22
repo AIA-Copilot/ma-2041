@@ -1,0 +1,72 @@
+openapi: 3.0.3
+info:
+  title: Currency Reference Rates
+  version: 1.0.0
+  description: Read-only Frankfurter reference exchange rates. No API key. Not a trading,
+    payment, bank quote or currency conversion service.
+servers:
+- url: https://api.frankfurter.dev/v2
+security: []
+paths:
+  /rate/{base}/{quote}:
+    get:
+      operationId: getExchangeRate
+      summary: Get a reference exchange rate
+      description: Get latest or historical reference rate for a currency pair. Always
+        include returned base, quote, rate and date. No transfer or trade occurs.
+      parameters:
+      - name: base
+        in: path
+        required: true
+        description: Three-letter source currency code, for example USD.
+        schema:
+          type: string
+          pattern: ^[A-Za-z]{3}$
+      - name: quote
+        in: path
+        required: true
+        description: Three-letter target currency code, for example CAD.
+        schema:
+          type: string
+          pattern: ^[A-Za-z]{3}$
+      - name: date
+        in: query
+        required: false
+        description: Optional historical date YYYY-MM-DD. Omit for latest available
+          reference rate. Report the returned effective date.
+        schema:
+          type: string
+          format: date
+      responses:
+        '200':
+          description: One exchange rate object
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - date
+                - base
+                - quote
+                - rate
+                properties:
+                  date:
+                    type: string
+                    format: date
+                    description: Effective date reported by the data source, not necessarily
+                      today.
+                  base:
+                    type: string
+                  quote:
+                    type: string
+                  rate:
+                    type: number
+                    description: Units of quote currency per one unit of base currency.
+        '400':
+          description: Malformed request
+        '404':
+          description: Currency or rate not found
+        '422':
+          description: Unsupported currency or invalid parameter
+        '429':
+          description: Rate limited; wait before retrying

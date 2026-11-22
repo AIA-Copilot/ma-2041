@@ -21,7 +21,7 @@ Use the provided **AI3026 VM**, VS Code and **PowerShell 7**. Keep the same mode
 
 - Resource creation/model invocation needs the provider-approved subscription, project, permissions and spend authority.
 - Lab 4's pinned Toolkit lock retains **five affected packages (two high, three moderate)**. Do not install/rebuild or run Toolkit until tested supported remediation passes independent security review. Read-only review is the current route, not channel acceptance.
-- Even after security release, Lab 4 requires Lab 3's real grounded C# answer plus tenant/tunnel/Bot permission. A failed live probe blocks channel deployment.
+- Lab 4 is read-only in this release. Do not execute a channel deployment or public tunnel. A future live route would require separate approval and actual Lab 3/tenant/channel acceptance.
 - The C# proxy uses the developer's Azure CLI identity, not the Teams user's identity. Use fictional files and your personal lab installation only. Keep `/api/messages` authentication enabled.
 
-This is a C#/.NET 10 adaptation, not the unchanged classic proxy. [Compatibility](AI3026/COMPATIBILITY.md) explains modern name/version versus classic `asst_` IDs; [source/asset provenance](AI3026/SOURCES.md) retains attribution. Local tests are not native-VM or live-tenant acceptance. Hosting remains on the VM through an approved tunnel, not Azure App Service.
+This is a C#/.NET 10 adaptation, not the unchanged classic proxy. [Compatibility](AI3026/COMPATIBILITY.md) explains modern name/version versus classic `asst_` IDs; [source/asset provenance](AI3026/SOURCES.md) retains attribution. Local tests are not native-VM or live-tenant acceptance. The source illustrates VM hosting; the current Lab 4 does not expose that host or deploy channel resources.

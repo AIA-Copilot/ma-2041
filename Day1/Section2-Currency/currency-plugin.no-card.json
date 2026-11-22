@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.4/schema.json",
+  "schema_version": "v2.4",
+  "name_for_human": "Currency Reference Rates",
+  "description_for_human": "Look up latest and historical currency reference rates.",
+  "namespace": "currency",
+  "functions": [
+    {
+      "name": "getExchangeRate",
+      "description": "Get latest or historical reference exchange rate. Include its effective date; do not claim a bank quote or completed transaction.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title": "$.base",
+            "subtitle": "$.quote"
+          }
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "OpenApi",
+      "auth": {
+        "type": "None"
+      },
+      "spec": {
+        "url": "apiSpecificationFile/frankfurter.openapi.yaml"
+      },
+      "run_for_functions": [
+        "getExchangeRate"
+      ]
+    }
+  ]
+}

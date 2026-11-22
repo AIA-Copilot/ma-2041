@@ -2,67 +2,69 @@ D1_Lab2 — exact code and prompt blocks
 Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbered step in the guide. Copy only the required block contents, not BEGIN/END labels. Never run this whole file. PDF code is display-only because wrapping can change clipboard text.
 
 ===== BEGIN BLOCK 01 (powershell) =====
-Set-Location C:\ma-2041\Day1\Lab2-RestaurantAPI
-code .
-node --version
-npm.cmd run build
-npm.cmd test
-npm.cmd run check:func
+$rate = Invoke-RestMethod 'https://api.frankfurter.dev/v2/rate/USD/CAD'
+$rate | Format-List
 ===== END BLOCK 01 =====
 
 ===== BEGIN BLOCK 02 (powershell) =====
-'{"IsEncrypted":false,"Values":{"FUNCTIONS_WORKER_RUNTIME":"node"}}' | Set-Content local.settings.json -Encoding ascii
-npm.cmd start
+Invoke-RestMethod 'https://api.frankfurter.dev/v2/rate/USD/CAD?date=2024-01-02'
 ===== END BLOCK 02 =====
 
 ===== BEGIN BLOCK 03 (powershell) =====
-Invoke-RestMethod 'http://localhost:7071/api/dishes?course=lunch'
-Invoke-RestMethod 'http://localhost:7071/api/dishes?course=lunch&allergens=dairy,gluten'
-$body = @{ dishes = @(@{name='spaghetti';quantity=1}, @{name='iced tea';quantity=1}) } | ConvertTo-Json -Depth 5
-Invoke-RestMethod 'http://localhost:7071/api/orders' -Method Post -ContentType 'application/json' -Body $body
+try {
+    Invoke-RestMethod 'https://api.frankfurter.dev/v2/rate/USD/ZZZ' -ErrorAction Stop
+    throw 'Unexpected success for invalid currency; ask the instructor.'
+} catch {
+    if ($null -eq $_.Exception.Response) { throw }
+    $status = [int]$_.Exception.Response.StatusCode
+    Write-Host "HTTP status: $status"
+    if ($status -ne 422) { throw }
+}
 ===== END BLOCK 03 =====
 
 ===== BEGIN BLOCK 04 (powershell) =====
-try {
-  Invoke-RestMethod 'http://localhost:7071/api/orders' -Method Post -ContentType 'application/json' -Body '{"dishes":[{"name":"spaghetti","quantity":-1}]}'
-} catch {
-  $_.Exception.Response.StatusCode.value__
-}
+Set-Location 'C:\ma-2041\work\CurrencyAssistant'
+$assets = 'C:\ma-2041\Day1\Section2-Currency'
+New-Item -ItemType Directory -Force '.\appPackage\apiSpecificationFile' | Out-Null
+Copy-Item "$assets\frankfurter.openapi.yaml" '.\appPackage\apiSpecificationFile\frankfurter.openapi.yaml'
+Copy-Item "$assets\currency-plugin.no-card.json" '.\appPackage\currency-plugin.json'
+Copy-Item "$assets\currency-instructions.txt" '.\appPackage\instruction.txt'
 ===== END BLOCK 04 =====
 
-===== BEGIN BLOCK 05 (powershell) =====
-Copy-Item checkpoints/ai-plugin.json appPackage/ai-plugin.json
-Copy-Item checkpoints/declarativeAgent.json appPackage/declarativeAgent.json
-Copy-Item checkpoints/instruction.txt appPackage/instruction.txt
+===== BEGIN BLOCK 05 (json) =====
+"instructions": "$[file('instruction.txt')]"
 ===== END BLOCK 05 =====
 
 ===== BEGIN BLOCK 06 (json) =====
 "actions": [
   {
-    "id": "menuPlugin",
-    "file": "ai-plugin.json"
+    "id": "currencyAction",
+    "file": "currency-plugin.json"
   }
 ]
 ===== END BLOCK 06 =====
 
-===== BEGIN BLOCK 07 (yaml) =====
-servers:
-  - url: ${{OPENAPI_SERVER_URL}}/api
-    description: Il Ristorante API server
+===== BEGIN BLOCK 07 (json) =====
+"conversation_starters": [
+  { "title": "Latest rate", "text": "Get the latest available USD to CAD reference rate and its effective date." },
+  { "title": "Historical rate", "text": "Get the USD to CAD reference rate for January 2, 2024." }
+]
 ===== END BLOCK 07 =====
 
-===== BEGIN BLOCK 08 (text) =====
-What's for lunch today?
+===== BEGIN BLOCK 08 (json) =====
+"validDomains": ["api.frankfurter.dev"]
 ===== END BLOCK 08 =====
 
 ===== BEGIN BLOCK 09 (text) =====
-1x spaghetti, 1x iced tea
+Get the latest available USD to CAD reference rate and its effective date. Use the currency action.
 ===== END BLOCK 09 =====
 
-===== BEGIN BLOCK 10 (text) =====
-Order one item called nonexistent dish.
+===== BEGIN BLOCK 10 (powershell) =====
+$assets = 'C:\ma-2041\Day1\Section2-Currency'
+Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin.json'
 ===== END BLOCK 10 =====
 
 ===== BEGIN BLOCK 11 (powershell) =====
-Get-NetTCPConnection -LocalPort 7071,9229 -ErrorAction SilentlyContinue
+$rate = Invoke-RestMethod 'https://api.frankfurter.dev/v2/rate/USD/CAD'
+[math]::Round(100 * $rate.rate, 2)
 ===== END BLOCK 11 =====

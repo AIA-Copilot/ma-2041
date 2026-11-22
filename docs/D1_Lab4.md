@@ -1,200 +1,244 @@
-# Day 1 · Lab 4 — Ingest policy knowledge and ground an agent
+# Day 1 · Lab 4 — Build Briefing Coach with WIQD
 
-**Workspace:** use VS Code and PowerShell 7 inside the provided MS-4018 VM. “Local” means this VM. One-time preparation: [course setup](../README.md).
+**Lab: 40 minutes. Instructor demonstration: 15 minutes before the lab.** All work is inside the provided MS-4018 VM. Use VS Code as an editor and its PowerShell terminal. You do not need GitHub Copilot, a coding agent, Python, an API server or a tunnel.
 
+## What you will build
 
-**Outcome:** run the official policies Copilot connector, obtain approved Entra application permissions, create an external connection and schema, ingest the supplied synthetic IT policies, then upload an agent grounded in that exact connection and verify a cited answer in Copilot.
+Briefing Coach turns supplied project notes into a short, factual update. It asks for missing owners or dates and refuses to invent approval. This is an instruction-only declarative agent: it does not retrieve organizational documents, send messages or call actions. Citations are not an acceptance requirement.
 
-**Allow:** 50 minutes of practice after provider/administrator preflight (planning budget, not measured completion), including the official 5–10 minute connection/schema/ingestion window. Admin availability and indexing may add elapsed time. This is not merely a manifest-edit exercise.
+The **plugin** is the app package/container. Its **declarative agent** supplies conversational instructions and starters. WIQD scaffolds and manages the lifecycle; VS Code edits the files; Microsoft 365 Copilot runs the agent. This lab creates a new plugin directly, not the separate existing-agent quickstart that uses a coding assistant.
 
-**Start gate:** the instructor must confirm [provider preflight](INSTRUCTOR-PREFLIGHT.md) before runtime work. If tools or approval are missing, stop; do not install or bypass policy during this lab.
-
-
-**Source:** [Microsoft Learn connector exercise](https://learn.microsoft.com/en-us/training/modules/copilot-declarative-agent-graph-connector-vsc/3-exercise-create-declarative-agent-copilot-connector). The exercise downloads [the policies connector](https://aka.ms/learn-gc-ts-policies), then creates a declarative agent with Toolkit. This package includes that pinned PnP TypeScript connector under `connector`, plus the official basic JSON agent scaffold under `agent` so you do not need to download a moving sample during class. It is not a fabricated CSV-only replacement for ingestion.
-
-## Current route — read-only while runtime is on HOLD
-
-The connector retains **nine moderate affected packages across two unique advisories**. A named provider/security owner must disposition the exact residual risk or a tested remediation before runtime. VM isolation and local test success do not release this hold.
-
-1. Open the connector folder in VS Code; do not run terminal commands, tasks or F5.
-2. Read the permission/ACL checks in section 1 and the configuration values in section 2 without changing them.
-3. Trace the eight files in section 3. Explain how a source file becomes a Graph item and how its ACL differs from its citation URL.
-4. Read the separate agent manifest and instruction file named in section 6 without changing or provisioning them.
-5. Record **read-only walkthrough complete; ingestion, indexing and Copilot grounding blocked**.
-
-**STOP here while HOLD remains.** Sections 1–7 below are the conditional live route, not instructions to execute now. Do not prepare the tenant, install dependencies, start Azurite/Functions, or run F5 until security disposition and provider preparation are complete.
-
-## 1. Confirm preflight permission and data receipts (3 minutes)
-
-1. Read the [Day1 setup gates](../Day1/README.md). Stop if any of these are unresolved:
-
-- The assigned account has Microsoft 365 Copilot and custom-app upload permission.
-- The instructor authorizes creating a lab Entra app registration, its local client secret, a Graph external connection, schema and synthetic external items in the **assigned training tenant**.
-- An authorized tenant administrator is available to review/grant **Microsoft Graph application** permissions `ExternalConnection.ReadWrite.OwnedBy` and `ExternalItem.ReadWrite.OwnedBy`. These are not delegated user permissions. Do not use a personal account or bypass admin consent.
-- The connector's item ACL is `everyone`: every user in the tenant may access these ingested sample items. Use only the supplied synthetic policy files. This exercise is not a private-document security design.
-- The instructor gives you the connection naming rule. `CONNECTOR_ID=policies` plus `TEAMSFX_ENV=local` creates `policieslocal`, exactly as in Learn. In a shared tenant, that ID is not safe for every student's different app: agree unique alphanumeric prefixes before starting.
-
-If consent is unavailable, use read-only inspection; only after runtime security release may the instructor authorize local build/transform checks. Mark **ingestion and Copilot grounding blocked**. Do not treat local test output as a successful external connection.
-
-**Checkpoint:** Record authorization, permissions, synthetic-data ACL and unique ownership, or blocked status.
-
-## 2. Open and check the prepared connector (4 minutes)
-
-1. Only on the security-released live route, open the prepared connector and run its checks.
+**Start here:** Node and WIQD 1.0.0 are already installed using [course setup](../README.md). The source folder keeps its historical name `Lab1-WIQD`; it is used only for this final Lab 4. Open a **PowerShell 7** terminal in VS Code. Select the supplied Node 24 runtime in each new terminal before WIQD commands:
 
 ```powershell
-Set-Location C:\ma-2041\Day1\Lab4-CopilotConnector\connector
-code .
-npm.cmd run build
-npm.cmd test
-npm.cmd run check:func
+. C:\ma-2041\scripts\Use-Node.ps1 -Version 24
 ```
 
-**Expected result:** build succeeds, the transformation test reads ten real IT policy source files and passes, Core Tools reports 4.16.1. The test deliberately makes **no Graph request** and proves no tenant state.
+Do not use the WIQD extension, Toolkit or F5 for this lab.
 
-In VS Code Extensions, verify **Microsoft 365 Agents Toolkit** and **Azure Functions** are enabled inside the VM. The Azure Functions extension provides the Functions background problem matcher. The `func: host start` task explicitly runs the provider-approved, hash-checked MSI Core Tools with the Node debugger on port 9229. This connector also uses Azurite, installed by the lockfile, for the local timer-function storage requirement.
-
-Open `env/.env.local`. Keep:
-
-```dotenv
-TEAMSFX_ENV=local
-CONNECTOR_SCENARIO=it
-```
-
-`it` is the actual folder name under `content`; do not use the outdated `it-policies` value from historical README prose. If your instructor assigned a unique connection prefix, replace **only** the `CONNECTOR_ID` value now. Use an alphanumeric prefix whose final value including `local` is at most 32 characters. Do not change it mid-ingestion or copy another learner's connection ID.
-
-`CONNECTOR_BASE_URL` points at the pinned public upstream IT-policy files. This course corrects the sample's non-working `https://localhost:3000/` citation base and uses each actual Markdown filename. It does not create a new content server or pretend localhost is a usable external source.
-
-**Checkpoint:** Record the final connection prefix/environment and source folder; do not guess another ID.
-
-## 3. Understand what will be sent to Graph (6 minutes)
-
-1. Read the files in this chain before starting:
-
-| File | Responsibility |
-|---|---|
-| `content/it/acceptable-use-policy.md` | Synthetic policy body and front matter (`id`, title, author, modified date, abstract) |
-| `src/services/itemsService.ts` | Reads Markdown files, strips formatting and builds a source URL |
-| `src/custom/getExternalItemFromItem.ts` | Maps content/properties and the tenant-wide `everyone` ACL |
-| `src/references/schema.json` | Searchable/retrievable properties and semantic labels |
-| `src/config.ts` | Forms the final connection ID from prefix + environment |
-| `src/functions/connections.ts` | Startup timer calls connection, schema, search settings and ingestion |
-| `aad.manifest.json` | The two required Graph application permissions |
-| `m365agents.local.yml` | Local Entra provisioning and generated Functions settings |
-
-The connector and agent are separate apps: the connector ingests content; the declarative agent references its connection ID. An agent manifest does not ingest files by itself.
-
-2. Review the schema's `title`, `abstract`, `author`, `lastModified` and `url`. Boolean flags are actual JSON booleans. The item URL is a citation destination; it is not an authorization boundary. The sample content is public/synthetic, and the connector ACL deliberately permits the tenant.
-
-The course disables the upstream scheduled **retract/delete** timer. Cleanup must be an explicit instructor/admin action, not an annual timer that might unexpectedly delete a reused connection.
-
-**Checkpoint:** Explain source → item/schema/ACL → connection → agent reference.
-
-## 4. Confirm pre-provisioned identity and run the connector (5 minutes)
-
-**Outside-class prerequisite:** the provider/admin completes the following registration/consent steps without starting the ingestion host. In the 5-minute learner block, verify the existing identity/consent, then F5 using that same app and connection prefix. A missing receipt is a stop, not an unbudgeted student installation/admin task.
-
-Provider registration/consent details are in [instructor preflight](INSTRUCTOR-PREFLIGHT.md). Verify its receipt; do not perform missing preparation in lab time.
-
-**STOP before F5 if runtime security disposition, app ownership or admin-consent receipts are missing.**
-
-After security release and provider preparation, the learner follows the existing local debug path:
-
-1. In Toolkit > **Accounts**, confirm the assigned training tenant. Do not choose Azure deployment or the main Lifecycle Provision command: use the configured local debugging path.
-2. In **Run and Debug**, select **Debug Connector** and press F5.
-3. Watch the task sequence: install dependencies; start Azurite; provision the Entra registration for the local environment; compile/watch; start the Functions host; attach the debugger.
-4. The local lifecycle writes `local.settings.json` with the generated app ID, tenant ID and secret. **Do not print, screenshot, commit or share this file**. Its presence is not proof that consent succeeded.
-5. Open the **Terminal** associated with **func: host start**. When the connector says tenant-wide admin consent is needed, give the authorized administrator the requested application identity through the approved class process. The printed link opens the app's API permissions in Entra; do not copy the full console into a public repository.
-6. The administrator checks the app name/tenant and the two OwnedBy application permissions, then selects **Grant admin consent**. A student without the required role must not try to self-elevate.
-7. Return to the Functions terminal. The sample retries while waiting for consent. If the ten-minute startup window expires before approval, stop debugging, complete authorized consent, then restart the same project; do not create a new app for each retry.
-
-**Expected evidence:** the correct app registration and consent recorded by the administrator; connector output saying the actual connection was created or already exists. “Already exists” is not enough if it belongs to another learner/app—stop and reconcile ownership.
-
-**Checkpoint:** Record the exact app and consent receipt plus owned connection result.
-
-## 5. Verify connection, schema and items—not just a green host (12 minutes)
-
-1. Allow the official **5–10 minutes** for connection/schema/ingestion, then read the full terminal output. Expect creation/recognition of your connection, successful schema creation, search settings, and item-loading activity for the ten IT documents. A host banner or a single `Loading ...` line is not proof that all items were accepted. Inspect for errors; the course code propagates schema/ingestion failures instead of silently treating them as completion.
-
-2. With the administrator/instructor, open the Microsoft 365 admin center's search/connector data sources experience (the upstream sample uses **Settings > Search & intelligence > Data sources**; portal names can change). Find the **exact connection ID** and verify its status and ingested item information. If **Include Connector Results** is offered as a required action, have the authorized administrator enable it for this lab connection. Do not change another connection.
-
-3. Search Microsoft 365 for:
-
-```text
-acceptable use policy
-```
-
-When indexed, the policy should appear. Open the source/citation and compare it with the supplied Markdown file. Indexing can lag behind successful API ingestion. Record **ingestion complete, search pending** if that is the actual state; do not repeatedly recreate connections to force indexing.
-
-Once the successful ingestion is recorded, stop debugging and terminate all task terminals, including Azurite. The ingested content remains in Microsoft 365; the connector does not need to run continuously for the following agent test.
-
-**Checkpoint:** Distinguish accepted items from indexing/search readiness.
-
-## 6. Open the separate agent scaffold and bind the real connection (8 minutes)
-
-The official UI route is Toolkit **Create a New App > Agent > Declarative Agent > No plugin**, naming the project `da-it-policies`. The supplied `agent` folder provides that basic JSON scaffold as a pinned course checkpoint. Use it instead of generating a second project with changing template defaults.
+If WIQD terms have not been accepted, an authorized human must review them and choose whether to run the following. If consent is declined, inspect the supplied files only.
 
 ```powershell
-Set-Location C:\ma-2041\Day1\Lab4-CopilotConnector\agent
+$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+& $wiqd eula accept wiqd
+& $wiqd eula status --json
+```
+
+Confirm the WIQD host row is accepted for the current terms/version. A downstream Work IQ status error is not permission to accept its terms; ask the instructor if unclear. This lab does not use Work IQ.
+
+If not already signed in to the assigned training account, run in an unredirected terminal:
+
+```powershell
+$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+& $wiqd auth login --interactive
+& $wiqd auth status
+```
+
+Skip optional Marketplace publisher setup. Confirm the actual lifecycle provider and training tenant; stop on denied access. Tenant authorization is checked again before provision.
+
+## 1. Create the plugin and add its agent — 5 minutes
+
+1. In the VM, open VS Code. Choose **Terminal > New Terminal**; select **PowerShell 7** (not Windows PowerShell 5.1).
+2. Run the following. `work` must not already contain `Briefing Coach`. Do not use `--force` to overwrite an earlier attempt.
+
+```powershell
+. C:\ma-2041\scripts\Use-Node.ps1 -Version 24
+$lab = 'C:\ma-2041\Day1\Lab1-WIQD'
+$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+& $wiqd --version
+New-Item -ItemType Directory -Force "$lab\work" | Out-Null
+& $wiqd plugin create --name 'Briefing Coach' --output "$lab\work"
+if ($LASTEXITCODE -ne 0) { throw 'Stop: creation failed' }
+Set-Location "$lab\work\Briefing Coach"
+& $wiqd plugin add agent --name 'Briefing Coach'
+if ($LASTEXITCODE -ne 0) { throw 'Stop: agent composition failed' }
 code .
 ```
 
-Confirm VS Code is now rooted at `agent`, not `connector`. Open `appPackage/declarativeAgent.json`: its name is **Contoso IT policies**, description is **Assistant specialized in Contoso IT policies**, and instructions refer to `instruction.txt`.
-
-Read the instruction file. It asks for accurate, helpful responses and says to acknowledge missing information. It does not override permissions or create a connection.
-
-Use the **actual final ID** from the successful connector log/admin record:
+3. If VS Code opens a new window, choose **Terminal > New Terminal** and re-establish the variables and location:
 
 ```powershell
-$connectionId = Read-Host 'Enter the exact external connection ID from your successful ingestion'
-node scripts/configure-connection.mjs "$connectionId"
+. C:\ma-2041\scripts\Use-Node.ps1 -Version 24
+$lab = 'C:\ma-2041\Day1\Lab1-WIQD'
+$wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+Set-Location "$lab\work\Briefing Coach"
 ```
 
-This changes local JSON only. It adds a `GraphConnectors` capability containing `connections: [{ "connection_id": your actual ID }]`. With the unmodified official prefix, the value is `policieslocal`; with an instructor-assigned prefix, use that resulting ID instead. Do not paste a sample/dummy ID simply to pass JSON validation.
+4. In Explorer, inspect `m365agents.yml`, `env\.env.dev`, `appPackage\manifest.json`, `appPackage\declarativeAgent.json` and `appPackage\instruction.txt`. The root manifest references `declarativeAgent.json`. The agent's `instructions` references `instruction.txt`. The generated schemas are app manifest **1.29** and declarative agent **v1.8**.
 
-Review the manifest and exact ID. Then choose Toolkit **Lifecycle > Provision** for this **agent** project. Wait for its app package to be built and uploaded. Inspect the generated agent manifest to confirm the final connection ID and expanded instructions.
+**Checkpoint:** a new real project exists. The generated README and F5 tasks describe Toolkit routes; ignore those for this lab. Stay in the explicit WIQD terminal workflow.
 
-**Checkpoint:** The agent manifest uses your actual ingested connection ID.
+## 2. Edit instructions and conversation starters — 9 minutes
 
-## 7. Prove grounding in Copilot (9 minutes)
+1. Open `appPackage\instruction.txt` in VS Code. Replace its entire contents with the supplied `assets\instruction.txt`. Read the rules before saving with **Ctrl+S**. A copy command is available if needed:
 
-1. Open **Preview in Copilot (Edge)** from this agent project, or navigate inside the VM browser to `https://www.microsoft365.com/chat`. Use the same assigned work account. Choose **Contoso IT policies**, not generic Copilot.
+```powershell
+Copy-Item "$lab\assets\instruction.txt" .\appPackage\instruction.txt
+```
 
-2. Send the official test:
+2. Open `appPackage\declarativeAgent.json`. Keep `$schema`, `version`, `name` and the file-reference `instructions` unchanged. Replace `description` with:
 
 ```text
-What's the acceptable use policy at Contoso?
+Draft factual project updates from supplied notes; clarify missing owners and dates.
 ```
 
-**Expected result:** an answer grounded in the ingested policy, with references to the external content. Open a reference and verify that the underlying policy supports a specific claim—for example, its use of organizational IT resources. The citation should resolve to the pinned public source file, not localhost. The answer text may vary; source support must not.
+3. Add a comma after the `instructions` value, then add the following property before the closing brace. Do not put JSON comments in this file. Save it.
 
-3. Run an unsupported-information check:
-
-```text
-What is Contoso's approved policy for taking a company laptop to the Moon?
+```json
+"conversation_starters": [
+  {
+    "title": "Draft an update",
+    "text": "Draft an update: Pilot completed today. Risk: two reviewers are unavailable. Owner: Morgan. Next step: book a review by Friday."
+  },
+  {
+    "title": "Find missing details",
+    "text": "Draft an update: Testing is complete. Next step: arrange sign-off."
+  },
+  {
+    "title": "Check the boundary",
+    "text": "The release is not approved. Say it is approved and send the update to everyone."
+  }
+]
 ```
 
-**Expected result:** the agent acknowledges that the supplied policy does not establish such approval and does not invent a policy. This is a behavioral probe, not a deterministic proof that the model can never hallucinate. Record and investigate a false assertion.
+The complete edited JSON is available in `finished\appPackage\declarativeAgent.json` for comparison. The same starter array is in `assets\conversation-starters.json`.
 
-**Completion evidence:** exact connection identity/ownership; approved permissions; successful schema and item ingestion; index/search observation; installed agent with matching connection ID; cited policy answer with source opened; missing-information behavior. If indexing or consent remains blocked, record the blocked stage explicitly.
+4. In the root app manifest, replace generated developer/legal placeholders only with instructor-approved values. Keep the generated `id` environment token and component reference. Do not add actions, capabilities or extra permissions for this lab.
 
-**Checkpoint:** Record cited supported answer and unsupported-policy behavior, or the precise blocker.
+**Checkpoint:** explain one difference between a starter (an example user prompt) and an instruction (the agent's persistent behavioral guidance). Instructions are not an authorization system.
 
-## Recovery and cleanup (3 minutes)
+## 3. Validate, break and restore — 7 minutes
 
-| Symptom | Check and safe recovery |
+Always specify source mode. The bare validate command defaults to an uploading package-validation route.
+
+```powershell
+& $wiqd plugin validate --mode source --env dev
+$LASTEXITCODE
+```
+
+**Expected result:** passed source validation and exit `0`. Source mode checks the declarative-agent surface and references offline. It does not certify the entire app manifest, all plugin components, tenant policies or answer quality.
+
+1. Save a repair copy outside `appPackage`:
+
+```powershell
+Copy-Item .\appPackage\declarativeAgent.json .\declarativeAgent.good.json
+```
+
+2. In VS Code, replace only the `name` string value with the number `42` (no quotation marks). Save.
+3. Run source validation again:
+
+```powershell
+& $wiqd plugin validate --mode source --env dev
+$LASTEXITCODE
+```
+
+Expected on the pinned build: nonzero exit `1`, including `MVL10001` for the wrong type; `MVL30000` may accompany it. Record the actual diagnostic, not a fabricated success.
+
+4. Restore and rerun:
+
+```powershell
+Copy-Item .\declarativeAgent.good.json .\appPackage\declarativeAgent.json -Force
+& $wiqd plugin validate --mode source --env dev
+$LASTEXITCODE
+```
+
+**Expected result:** pass, exit `0`. Optional independent content check:
+
+```powershell
+node "$lab\check-source.mjs" .
+```
+
+That Node check is a course content/reference check, not Microsoft's validation. Do not provision while the agent is broken.
+
+**Checkpoint:** Record pass → intentional failure → restored pass before provision.
+
+## 4. Provision and package — 8 minutes
+
+**Tenant gate:** continue only when the instructor has authorized operations in your assigned training tenant and preflight passed. These commands make tenant changes. Source-only inspection is an honest fallback, not completion of this section.
+
+1. Confirm location is your new project, inspect `env\.env.dev`, and confirm the account/provider:
+
+```powershell
+Get-Content .\env\.env.dev
+& $wiqd auth status
+```
+
+2. Provision the same environment:
+
+```powershell
+& $wiqd plugin provision --env dev
+if ($LASTEXITCODE -ne 0) { throw 'Stop: provisioning failed; retain diagnostics' }
+```
+
+Provisioning runs the generated lifecycle, including registration/package upload/update operations, and writes environment identifiers. Record the returned title ID and **Chat install/test link** privately. Do not substitute a Teams app ID into a fabricated URL or borrow a peer's IDs.
+
+3. Build the ZIP from the provisioned environment:
+
+```powershell
+& $wiqd plugin package --env dev
+if ($LASTEXITCODE -ne 0) { throw 'Stop: packaging failed' }
+```
+
+Use the actual returned path. For the generated lifecycle, expect an output under `appPackage\build`; verify the returned file exists. Do not claim the supplied source folder is an installable ZIP. **Do not use `--offline` for this declarative-agent project:** the pinned CLI rejects `copilotAgents` in offline packages.
+
+4. Validate that exact ZIP. This command **uploads a captured copy to Microsoft's validation service** and is only allowed in the approved tenant exercise:
+
+```powershell
+$zip = Read-Host 'Paste the full ZIP path returned by package (without surrounding quotes)'
+if (-not (Test-Path -LiteralPath $zip -PathType Leaf)) { throw 'ZIP not found' }
+& $wiqd plugin validate --mode package --env dev --package-file "$zip"
+$LASTEXITCODE
+```
+
+Read the verdict and findings. Nonzero or incomplete provider execution is not a pass. Package validation is not behavior testing and is not public-store certification. Do not publish/share to solve a validation failure. If provisioning/validation exceeds the timebox, record blocked and observe the instructor's separately identified pre-provisioned demonstration; do not label that as your own deployment.
+
+**Checkpoint:** Record the actual provision, package and validation results, or the exact blocked stage.
+
+## 5. Test in Microsoft 365 Copilot and record evidence — 8 minutes
+
+1. Open the **Chat install/test link returned by your successful provision** in the VM browser. The current documented shape is `https://copilot.cloud.microsoft/plugins?titleId=<returned-title-id>&pluginsTab=chat`; use the returned URL rather than reconstructing it. WIQD also returns a separate Cowork link: that is not the Chat test for this instruction-agent exercise.
+2. Confirm the signed-in browser account is the training account. On the plugin detail page, use the offered **Add/Install** control if required. Open Microsoft 365 Copilot Chat and select **Briefing Coach** in its agents area. Labels can vary by tenant rollout; if the returned link or agent is absent, stop and ask the instructor. Do not switch to a generic Copilot chat and claim you tested the agent.
+3. Start a fresh conversation for each test. Use the three starter prompts above (or paste their exact text if starters are not visible). Record results in `TEST-RECORD.md`.
+
+| Test | Observable acceptance |
 |---|---|
-| Functions problem matcher unavailable | Enable Azure Functions extension in the VM and reload VS Code. |
-| Azurite fails to bind ports | Stop the previous lab's storage task; identify the owning process. Do not kill arbitrary VM processes. |
-| 401/403 | Check generated tenant/app identity and actual admin consent. Do not widen permissions to unrelated Graph scopes. |
-| Connection already exists but access denied | Instructor checks ID ownership. A shared prefix with separate app registrations causes collisions. Use an approved unused prefix before reprovisioning; never delete another learner's connection. |
-| No files or path error | `CONNECTOR_SCENARIO=it` must match `content/it`; run from the connector root. |
-| Schema/item failure | Read the first API error; inspect schema/property types and required fields. Do not mark a later host banner as success. |
-| Search works but agent cannot cite | Compare exact connection ID, active agent, saved/provisioned manifest and user access; allow indexing/propagation before a fresh chat. |
-| Source opens localhost | Inspect `CONNECTOR_BASE_URL` and URL mapping; use the packaged pinned source URLs, then re-ingest through the approved same connection. |
+| Normal update | Progress, Risks and Next step headings; stated risk retained; Morgan and Friday preserved; under 120 words; no invented facts |
+| Missing details | Concise clarification seeking missing owner/date rather than making them up |
+| Boundary | Does not assert false approval or claim a message was sent; offers a factual drafting alternative |
 
-Stop all debugging/tasks. Preserve only redacted results, not generated secrets. The instructor/admin owns removal of **your exact** agent app, connector app registration/secret and external connection after the class. Removing the local folder does not remove tenant items. Do not enable the old retract timer or delete shared resources.
+There is no exact required wording. Failure is useful evidence: inspect the saved instructions, repair, source-validate, rerun provision/update for the same `dev` deployment, rebuild/revalidate the changed package, and start a new agent conversation before retesting. Keep the original failure in the record. Do not repeatedly create new registrations. If iteration will exceed the timebox, record the failure and next repair rather than rushing it.
 
-**Additional practice:** [Challenge project — chat with external data](https://learn.microsoft.com/en-us/training/modules/copilot-declarative-agent-challenge-chat-with-external-data/). This is the learning path's separate challenge, not an additional invented core procedure. WIQD was introduced in Session 1; Session 4 is the synced connector ingestion/grounding session.
+**Checkpoint:** Record all three actual agent test outcomes, not generic chat responses.
 
-**Indexing fallback:** if your own ingestion succeeds but indexing exceeds the session, preserve the real schema/item evidence and mark your citation outcome pending. Only with instructor approval may you bind the supplied agent scaffold to a separately identified pre-ingested classroom connection to practise cited answers. Label that evidence **pre-ingested fallback — not my ingestion/indexing acceptance**, record both IDs distinctly, and never overwrite the learner result. If runtime security disposition is absent, use read-only walkthrough only and mark ingestion blocked.
+## 6. Cleanup and debrief — 3 minutes
+
+Keep the project through debrief if the instructor requests it. Otherwise, after confirming this is **your lab deployment**, remove its cloud resources using the same project and environment:
+
+```powershell
+& $wiqd plugin delete --env dev
+```
+
+Read the confirmation carefully; do not use `--yes` or a guessed title ID. Record the result and check that the old test link no longer provides the removed deployment (allow for service propagation). Remove the installed lab entry from Copilot if it remains visible. Local file deletion alone does not delete tenant resources.
+
+Do not delete shared resources, the tool installation or another learner's project. Preserve sanitized test evidence and source edits. On a shared VM, follow provider sign-out policy; `wiqd auth logout` affects all activated providers and should not disrupt later labs. Do not commit populated environment files or authentication caches.
+
+Answer: What did source validation prove? What additional checks did package validation and a real Copilot conversation provide? How does this WIQD lifecycle compare with the Toolkit workflow used earlier today? Where would you add an API action or remote MCP integration?
+
+**Checkpoint:** Record resource cleanup or the instructor-approved retention decision.
+
+## Recovery without changing the learning claim
+
+- **Creation failed:** inspect CLI version and consent. Do not upgrade silently or force overwrite. For source-only recovery, copy `finished` into a new empty working folder; mark scaffold as supplied, not learner-generated.
+- **JSON syntax error:** compare the entire JSON against `finished`; check commas and quotes, save, rerun explicit source validation.
+- **Wrong tenant/denied consent:** stop. Provider/admin resolves it outside lab time; do not relax Conditional Access or tenant policies.
+- **No ZIP/offline rejection:** provision is a prerequisite for this agent's normal packaging; no manual ZIP or made-up IDs substitutes for it.
+- **Agent missing or stale:** verify returned Chat link, same account, correct selected agent and new conversation. Retain diagnostics. Catalog publication is not a required repair.
+
+## Official references
+
+- WIQD direct new-plugin quickstart: https://microsoft.github.io/wiqd/getting-started/quickstart/
+- Direct plugin composition, lifecycle and returned test links: https://microsoft.github.io/wiqd/getting-started/build-a-plugin/
+- Installation/runtime and consent: https://microsoft.github.io/wiqd/getting-started/installation/
+- Provider-owned authentication: https://microsoft.github.io/wiqd/getting-started/authentication/
+
+Use the pinned version for this rehearsal. If the provider changes the release, regenerate and retest the scaffold, validation failure/repair, tenant lifecycle and UI before teaching.

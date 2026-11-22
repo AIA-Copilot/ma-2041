@@ -1,88 +1,112 @@
-# Microsoft 365 agent development — two-day labs
+# Microsoft 365 agent development — start here
 
-Work inside the provided training VM: **MS-4018 for Day 1**, **AI3026 for Day 2**. Your physical computer only accesses the VM. VS Code is already installed in MS-4018. No Python or coding-assistant subscription is required.
+This repository contains **all eight lab guides and their required course files**. Work inside the provided **MS-4018 VM for Day 1** and **AI3026 VM for Day 2**, not on your physical PC. VS Code is already installed in MS-4018.
 
-## 1. Open the approved course copy
+**Current Day 1 order:** first declarative agent → currency API and Adaptive Card → synced connector → WIQD. The old restaurant/tunnel exercises are not assigned. The existing `Lab1-WIQD` source-folder name is retained, but its current guide is **Lab 4**.
 
-Use the instructor-confirmed release at `C:\ma-2041`. Check that `Day1\Lab1-WIQD` and `Day2\AI3026` exist, then open the folder in VS Code. The older Python/TypeSpec course is not this version.
+**Readiness:** these are instructor-rehearsal materials, not a claim that your VM or tenant has passed. Day 1 uses no Azure hosting or public development tunnel. Day 2 Labs 1–3 need the provided Foundry/Azure resources. **Day 2 Lab 4 is a read-only architecture exercise, not live Teams/Copilot deployment.** Its dependency and tunnel requirements remain unresolved.
 
-**Existing Git clone:** stop debugging and save open files. In a terminal at `C:\ma-2041`, run `git status --short` and `git branch --show-current`. Continue only on `main` with no modified, added or deleted tracked files. An untracked `tools/` folder from the WIQD installation is expected and is not part of the course update.
+## 1. Clone once in a fresh VM
 
-```powershell
-Set-Location C:\ma-2041
-git pull --ff-only origin main
-if ($LASTEXITCODE -ne 0) { throw 'Update stopped. Keep your files and ask the instructor.' }
-code .\docs\D1_Lab1.md
-```
-
-The update does not reinstall Node or WIQD. If Git reports local changes, conflicting untracked files or diverged history, stop. Do not use reset, clean, force or a ZIP overwrite. Keep source edits, private evidence and populated environment files intact; never upload credentials to resolve a conflict. If the folder was obtained as a ZIP rather than a Git clone, ask the instructor to preserve it and prepare a separate current copy.
-
-**New VM only:** download the instructor-confirmed ZIP and extract its repository root to an unused `C:\ma-2041`. If Git is already available, this is the optional alternative:
+Open a terminal in the VM. Check `git --version`. If Git is missing, install it through the VM's permitted process (`winget install --id Git.Git --exact --source winget`), then open a fresh terminal.
 
 ```powershell
-if (Test-Path C:\ma-2041) { throw 'Workspace exists; preserve it and ask the instructor for the safe update.' }
+if (Test-Path C:\ma-2041) { throw 'Folder already exists. Use the safe-update instructions below; do not overwrite it.' }
 git clone https://github.com/AIA-Copilot/ma-2041.git C:\ma-2041
 if ($LASTEXITCODE -ne 0) { throw 'Clone failed' }
+Set-Location C:\ma-2041
+code .
 ```
 
-Do not proceed with a different release just because a download succeeded.
+In VS Code, trust this repository only after confirming the publisher and location. Open this `README.md` and press **Ctrl+Shift+V** to preview it.
 
-## 2. Prepare Node and WIQD once — MS-4018
+**Existing clone:** save your work and stop running debug/tasks. Run `git status --short` and `git branch --show-current`. Only on `main`, with no tracked-file changes or conflicting untracked files, run `git pull --ff-only origin main`. Untracked `tools/` and `work/` folders from preparation are expected. Stop on conflicts or divergence. Do not reset, clean, force, or overwrite your existing environment files.
 
-With provider permission, run these in the VM terminal if the tools are not already prepared:
+## 2. Prepare the Day 1 VM once
+
+Use the VM's permitted installation process. If PowerShell 7 is missing:
 
 ```powershell
-winget install --id OpenJS.NodeJS.LTS --exact --source winget
 winget install --id Microsoft.PowerShell --exact --source winget
 ```
 
-Close all VS Code windows and reopen VS Code from the Windows Start menu so it detects the updated PATH and PowerShell 7. A new terminal tab alone is not enough. In the terminal profile menu, select **PowerShell 7 (`pwsh`)**, not Windows PowerShell 5.1. If the tools are still not found, save your work and sign out of and back into the VM. Check:
+Close **all VS Code windows**, reopen VS Code from Start, and choose **PowerShell 7** in **Terminal > Select Default Profile**. Open a new terminal. If it is not discovered, save your work and sign out of and back into the VM. Verify:
 
 ```powershell
-node --version
-npm.cmd --version
 $PSVersionTable.PSVersion
 ```
 
-**Expected result:** working Node/npm and PowerShell major version 7 or later. WIQD 1.0.0 requires **Node 24.15.0 or later**. `OpenJS.NodeJS.LTS` floats; verify the installed version rather than assuming it meets this requirement.
+The major version must be 7 or later. Do not weaken execution policy to run blocked scripts; ask the VM administrator if policy blocks the course files.
 
-Install the course-local WIQD pin:
+### Extensions
+
+Install these Microsoft extensions in the VM's VS Code Extensions view:
+- **Microsoft 365 Agents Toolkit** (`TeamsDevApp.ms-teams-vscode-extension`) for Labs 1–3.
+- **Azure Functions** (`ms-azuretools.vscode-azurefunctions`) for Lab 3 only.
+
+Record the installed Toolkit version during rehearsal. The course supplies JSON OpenAPI/card files; an Adaptive Card Previewer extension is optional, not a prerequisite for the currency lab. No GitHub Copilot subscription, Postman or Python is needed.
+
+### Pinned Node runtimes
+
+The connector needs Node 22; WIQD needs Node 24.15 or later. The supplied script downloads **22.22.2 and 24.15.0**, verifies each official ZIP checksum, and extracts them under `tools/`. It does not replace any system-wide Node installation.
 
 ```powershell
+Set-Location C:\ma-2041
+.\scripts\Prepare-Node.ps1
+. .\scripts\Use-Node.ps1 -Version 22
+node --version
+npm.cmd --version
+```
+
+Expected Node: `v22.22.2`. The leading `. ` on **Use-Node.ps1** selects Node in the current terminal. Repeat it in a new terminal when a lab asks. Lab 3's supplied VS Code tasks also select the course Node 22 path; they do not rely on a prior terminal's environment.
+
+### Connector tools and dependencies
+
+Complete [the local connector setup](Day1/Lab3-CopilotConnector/SETUP.md) now. It includes Core Tools, locked dependencies and the required training-tenant permissions. It does not require an Azure subscription or a public tunnel. Do not start ingestion during tool preparation.
+
+### WIQD pin
+
+Switch this terminal to Node 24 and install the course-local WIQD version:
+
+```powershell
+Set-Location C:\ma-2041
+. .\scripts\Use-Node.ps1 -Version 24
 npm.cmd install --prefix C:\ma-2041\tools\wiqd-1.0.0 --save-exact @microsoft/wiqd@1.0.0
 if ($LASTEXITCODE -ne 0) { throw 'WIQD installation failed' }
 $wiqd = 'C:\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
 & $wiqd --version
 ```
 
-**Checkpoint:** WIQD reports `1.0.0`. Do not substitute `latest`, `alpha`, a global installation or an extension workflow. Lab 1 includes only conditional terms/sign-in checks before creating the agent. Installation does not supply consent or tenant authorization.
+Expected WIQD: `1.0.0`. Do not install global/latest/alpha as a workaround. An authorized human reviews WIQD terms and signs into the assigned tenant in Lab 4. Installation does not accept terms or provide tenant permissions.
 
-**Before Day 1 Lab 2:** the Functions projects were tested on **Node 22.22.2**, not the floating LTS used above. The provider must supply a tested way to select that version, restart VS Code and verify `node --version` reports `v22.22.2`. No unverified version-switch command is supplied. If this is not prepared, stop; current LTS is not a compatibility clearance.
+### Tenant check
 
-Other dependencies, account permissions and native tooling belong to [instructor preflight](docs/INSTRUCTOR-PREFLIGHT.md), outside lab time. Day 2 needs its separately prepared AI3026 VM, including .NET 10 SDK; the Node/WIQD steps above do not prepare Day 2.
+In Toolkit **Accounts**, sign into the assigned training Microsoft 365 account. Confirm custom-app upload and Copilot access. Labs 1 and 2 use declarative-agent provisioning, not Azure resource deployment. Lab 3 additionally needs an authorized administrator for Graph application permissions and an owned, uniquely named external connection. Review [instructor preflight](docs/INSTRUCTOR-PREFLIGHT.md) before the run.
 
-## 3. Follow the lab guides
+## 3. Run the labs in this order
 
-| Day | Guide | What you do |
-|---|---|---|
-| 1 | [Lab 1 — Briefing Coach](docs/D1_Lab1.md) | Create, edit, source-validate and test with WIQD CLI |
-| 1 | [Lab 2 — Restaurant API](docs/D1_Lab2.md) | Trace and test API actions |
-| 1 | [Lab 3 — Adaptive Cards](docs/D1_Lab3.md) | Bind and verify rich responses |
-| 1 | [Lab 4 — Copilot connector](docs/D1_Lab4.md) | Read-only route while runtime HOLD remains |
-| 2 | [Lab 1 — Foundry agent](docs/D2_Lab1.md) | Create and evaluate instructions |
-| 2 | [Lab 2 — Grounding](docs/D2_Lab2.md) | Attach policy and evaluate evidence |
-| 2 | [Lab 3 — C# bridge](docs/D2_Lab3.md) | Change/test code and invoke the same agent |
-| 2 | [Lab 4 — Teams/Copilot](docs/D2_Lab4.md) | Read-only route while Toolkit HOLD remains |
+Open each local guide and use **Ctrl+Shift+V**. Do not follow an older source project's README instead of the guide.
 
-[Day 1 session map](Day1/README.md) · [Day 2 starting point](Day2/README.md). Matching student PDFs are `Labs/D1_Lab1.pdf` through `Labs/D1_Lab4.pdf` and `Labs/D2_Lab1.pdf` through `Labs/D2_Lab4.pdf`. Use each guide's project folder, not the repository root, for commands/debugging.
+### Day 1 — MS-4018 VM
 
-## Release boundaries
+1. [Lab 1 — First declarative agent](docs/D1_Lab1.md): Camp-based instructions and supplied Zava knowledge document.
+2. [Lab 2 — Currency API and Adaptive Card](docs/D1_Lab2.md): real public reference rates, provided OpenAPI and card, no authentication/backend/tunnel.
+3. [Lab 3 — Synced Copilot connector](docs/D1_Lab3.md): Camp-based synthetic feedback ingestion into Graph, then cited retrieval by an agent.
+4. [Lab 4 — WIQD Briefing Coach](docs/D1_Lab4.md): create, edit, validate, provision and test with the pinned CLI.
 
-This is a **rehearsal/testing package**, not security or live-tenant acceptance. Local builds cannot prove Copilot, Graph ingestion, Foundry or channel behavior.
+### Day 2 — AI3026 VM
 
-- **Day 1 Lab 4 runtime HOLD:** nine moderate affected npm packages across two unique advisories. A named provider/security owner must disposition the exact residual risk or a tested remediation before tenant preparation or emulator/Functions runtime. Use the read-only route until then.
-- **Day 2 Lab 4 Toolkit HOLD:** five affected packages (two high, three moderate). Do not install/rebuild or run the CLI until tested supported remediation passes independent security review. C# compilation does not clear this hold.
-- Use synthetic data and assigned accounts only. Day 1 authentication is an instructor walkthrough, not a completed learner OAuth/API-key implementation. Day 2 hosts C# on the VM, not Azure App Service.
-- Do not publish to a catalog, expose private services/data, or delete shared resources. Preserve redacted evidence; never share populated environment files, secrets or token caches. Original licenses and attribution remain in the projects.
+Prepare this separate VM using [Day 2 setup](docs/INSTRUCTOR-PREFLIGHT.md#day-2-preparation).
 
-Runtime reference: [WIQD installation](https://microsoft.github.io/wiqd/getting-started/installation/) · [pinned package metadata](https://registry.npmjs.org/@microsoft/wiqd/1.0.0).
+1. [Lab 1 — Foundry agent](docs/D2_Lab1.md).
+2. [Lab 2 — Grounding and evaluation](docs/D2_Lab2.md).
+3. [Lab 3 — C# bridge](docs/D2_Lab3.md).
+4. [Lab 4 — Microsoft 365 integration architecture](docs/D2_Lab4.md), **read-only**.
+
+The same eight guides are supplied as PDFs in `Labs/`. Use Markdown or `docs/commands/` for copying commands; PDF line wrapping can alter clipboard text. Day 1 sample files and code are already in this repository. Reference links are for further reading, not required downloads during the exercises.
+
+## Boundaries and cleanup
+
+Use supplied synthetic content, public currency codes and assigned training accounts. Never commit passwords, tokens, populated environment files or private tenant data. Do not publish agents to a catalog, expose a local service, or delete shared tenant resources. Follow each guide's exact test and cleanup steps. Copilot answers, indexing, tenant permissions and elapsed lab times must be checked in the actual VM; a source/schema/build pass does not prove them.
+
+Original sample licenses and provenance are retained alongside the source. Old `Lab2-RestaurantAPI`, `Lab3-AdaptiveCards` and `Lab4-CopilotConnector` folders are retained only as earlier source checkpoints and are not part of this route.

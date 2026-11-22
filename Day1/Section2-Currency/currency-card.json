@@ -1,0 +1,43 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Currency reference rate",
+      "weight": "Bolder",
+      "size": "Medium",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "1 ${base} = ${rate} ${quote}",
+      "size": "Large",
+      "wrap": true
+    },
+    {
+      "type": "FactSet",
+      "facts": [
+        {
+          "title": "From",
+          "value": "${base}"
+        },
+        {
+          "title": "To",
+          "value": "${quote}"
+        },
+        {
+          "title": "Effective date",
+          "value": "${date}"
+        }
+      ]
+    },
+    {
+      "type": "TextBlock",
+      "text": "Source: Frankfurter. Reference rate only; your bank may use a different rate and charge fees.",
+      "isSubtle": true,
+      "wrap": true
+    }
+  ]
+}

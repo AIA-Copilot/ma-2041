@@ -1,6 +1,6 @@
-# Lab 1 — Briefing Coach
+# Lab 4 — Briefing Coach
 
-Start with `../../docs/D1_Lab1.md` in the distributed course root (the guide is under `docs`). Work inside the provided MS-4018 VM.
+Start with `../../docs/D1_Lab4.md` in the distributed course root (the guide is under `docs`). Work inside the provided MS-4018 VM.
 
 - `generated-baseline/`: real, unmodified WIQD 1.0.0 `plugin create` + `plugin add agent` output. Generated README/tasks mention Toolkit; they are not the instructions for this direct-CLI lab. Do not press F5.
 - `assets/`: text and conversation starters to apply to your new project.
