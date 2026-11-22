@@ -2,7 +2,7 @@
 
 ## Outcome
 
-Extend your Lab 1 Zava New-Hire Travel Assistant with five fictional arrival and travel-policy documents. Keep official web search, add indexed company guidance, and test cited answers and missing-information boundaries.
+Extend your Lab 1 Zava New-Hire Travel Assistant with five fictional arrival and travel-policy documents by indexing their content in Microsoft 365 through Microsoft Graph.
 
 ## 1. Inspect the data and permission boundary
 
