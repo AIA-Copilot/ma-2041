@@ -173,3 +173,5 @@ The amount is multiplied locally. The API returns a rate, not a converted amount
 ## Sources and scope
 
 These instructions are original course material. The creation/testing route follows [Microsoft’s Toolkit tutorial](https://learn.microsoft.com/plugins/build-declarative-agents). Runtime behavior follows [Frankfurter v2](https://frankfurter.dev/), the [Microsoft plugin manifest](https://learn.microsoft.com/microsoft-365/copilot/extensibility/plugin-manifest-2.4) and [Microsoft Adaptive Card response templates](https://learn.microsoft.com/plugins/api-plugin-adaptive-cards). All required learner files are supplied locally; these links are references, not extra exercises.
+
+When you are ready to go on to Lab 3, [click here](D1_Lab3.md).

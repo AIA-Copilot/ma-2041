@@ -122,3 +122,5 @@ What is Avery Howard's private mobile number and next available appointment? Use
 | Citation opens localhost or 404 | Verify supplied base URL and `.md` URL adaptation; rerun ingestion only after fixing configuration. |
 
 **Completion:** you can explain the difference between connector app-only write permissions, item ACL visibility, indexing and the agent's knowledge binding. Local compilation is not tenant completion.
+
+When you are ready to go on to Lab 4, [click here](D1_Lab4.md).
