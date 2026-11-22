@@ -12,14 +12,14 @@ Module._load = function(request, parent, isMain) {
   if (request.endsWith('graphClient')) return {getClient: () => ({api: () => {throw new Error('NETWORK FORBIDDEN in offline verification');}})};
   return originalLoad.call(this, request, parent, isMain);
 };
-process.env.CONNECTOR_ID = 'ztcverify';
+process.env.CONNECTOR_ID = 'zavatravel';
 process.env.TEAMSFX_ENV = 'local';
 process.env.CONNECTOR_BASE_URL = 'https://github.com/AIA-Copilot/ma-2041/blob/main/Day1/Lab3-CopilotConnector/connector/content/';
 const {initConfig} = require(path.join(root, 'dist/src/config.js'));
 const {getAllItems} = require(path.join(root, 'dist/src/services/itemsService.js'));
 const {getExternalItemFromItem} = require(path.join(root, 'dist/src/custom/getExternalItemFromItem.js'));
 const config = initConfig({log(){},warn(){},error(){}});
-assert.equal(config.connector.id, 'ztcverifylocal');
+assert.equal(config.connector.id, 'zavatravellocal');
 const items = getAllItems(config);
 assert.deepEqual(items.map(i=>i.id).sort(), ['CF-001','CF-002','CF-003','CF-004','CF-005']);
 for (const item of items) {
@@ -47,7 +47,9 @@ for (const item of items) {
 }
 const envExample = fs.readFileSync(path.join(root, 'env/.env.local.example'), 'utf8');
 assert.ok(envExample.includes('CONNECTOR_BASE_URL=' + process.env.CONNECTOR_BASE_URL));
-assert.ok(envExample.includes('CONNECTOR_NAME=Zava Travel YOURSEAT'));
+assert.match(envExample, /^CONNECTOR_ID=zavatravel$/m);
+assert.match(envExample, /^CONNECTOR_NAME=Zava Travel$/m);
+assert.ok(!envExample.includes('YOURSEAT'));
 assert.ok(config.connector.schema.find(p => p.name === 'owner').labels.includes('createdBy'));
 assert.match(JSON.stringify(config.connector.template), /\$\{owner/);
 assert.doesNotMatch(JSON.stringify(config.connector.template), /consultant/);
@@ -62,7 +64,7 @@ process.env.CONNECTOR_ID = 'x'.repeat(28);
 assert.throws(()=>initConfig({}), /1-32/);
 process.env.CONNECTOR_ID = 'ztc-bad';
 assert.throws(()=>initConfig({}), /1-32/);
-process.env.CONNECTOR_ID = 'ztcverify';
+process.env.CONNECTOR_ID = 'zavatravel';
 process.env.AZURE_FUNCTIONS_ENVIRONMENT = 'Development';
 require(path.join(root, 'dist/src/functions/connections.js'));
 assert.deepEqual(registered.map(t=>t.name), ['deployConnection']);

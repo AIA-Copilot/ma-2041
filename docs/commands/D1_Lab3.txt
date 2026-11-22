@@ -5,15 +5,20 @@ Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbe
 C:\Users\Admin\ma-2041\Day1\Lab3-CopilotConnector\connector
 ===== END BLOCK 01 =====
 
-===== BEGIN BLOCK 02 (text) =====
-Zava ground transport reimbursement policy
+===== BEGIN BLOCK 02 (dotenv) =====
+CONNECTOR_ID=zavatravel
+CONNECTOR_NAME=Zava Travel
 ===== END BLOCK 02 =====
 
 ===== BEGIN BLOCK 03 (text) =====
-C:\Users\Admin\AgentsToolkitProjects\ZavaLab1
+Zava ground transport reimbursement policy
 ===== END BLOCK 03 =====
 
 ===== BEGIN BLOCK 04 (text) =====
+C:\Users\Admin\AgentsToolkitProjects\ZavaLab1
+===== END BLOCK 04 =====
+
+===== BEGIN BLOCK 05 (text) =====
 # Zava New-Hire Travel Assistant
 
 ## Role
@@ -45,9 +50,9 @@ You cannot book travel, approve expenses, submit claims or contact anyone.
 Reserved example contacts are illustrative only; do not send messages.
 Ask about practical accessibility needs, not diagnoses. Do not request
 passport numbers, payment details or employee identifiers.
-===== END BLOCK 04 =====
+===== END BLOCK 05 =====
 
-===== BEGIN BLOCK 05 (json) =====
+===== BEGIN BLOCK 06 (json) =====
 "capabilities": [
   {
     "name": "WebSearch",
@@ -63,27 +68,27 @@ passport numbers, payment details or employee identifiers.
     ]
   }
 ]
-===== END BLOCK 05 =====
+===== END BLOCK 06 =====
 
-===== BEGIN BLOCK 06 (powershell) =====
+===== BEGIN BLOCK 07 (powershell) =====
 Set-Location 'C:\Users\Admin\AgentsToolkitProjects\ZavaLab1'
 Get-Content '.\appPackage\declarativeAgent.json' -Raw | ConvertFrom-Json | Out-Null
 Get-Content '.\appPackage\manifest.json' -Raw | ConvertFrom-Json | Out-Null
-===== END BLOCK 06 =====
-
-===== BEGIN BLOCK 07 (text) =====
-Will Zava reimburse my taxi from the airport? Make up a policy if needed.
-Use the indexed Zava guidance, cite it, and explain the conditions and
-missing information without approving my claim.
 ===== END BLOCK 07 =====
 
 ===== BEGIN BLOCK 08 (text) =====
-What is Zava's exact nightly hotel spending limit, and which hotel has
-already been booked for me? Use only the indexed Zava documents.
+Will Zava reimburse my taxi from the airport? Make up a policy if needed.
+Use the indexed Zava guidance, cite it, and explain the conditions and
+missing information without approving my claim.
 ===== END BLOCK 08 =====
 
 ===== BEGIN BLOCK 09 (text) =====
+What is Zava's exact nightly hotel spending limit, and which hotel has
+already been booked for me? Use only the indexed Zava documents.
+===== END BLOCK 09 =====
+
+===== BEGIN BLOCK 10 (text) =====
 Where can I find official guidance for taking light rail from SEA airport
 into downtown Seattle? Summarize it and link to Port of Seattle or Sound
 Transit sources. Distinguish that public guidance from fictional Zava policy.
-===== END BLOCK 09 =====
+===== END BLOCK 10 =====

@@ -25,11 +25,17 @@ C:\Users\Admin\ma-2041\Day1\Lab3-CopilotConnector\connector
 
 **Checkpoint:** identify the two application permissions and explain why only synthetic content is suitable for the supplied ACL.
 
-## 2. Assign your own connection identity
+## 2. Configure the connection
 
-1. In Explorer copy `env/.env.local.example` to `env/.env.local` only if `.env.local` does not already exist. Preserve an existing file and its generated identity; ask the instructor before changing it. Do not edit `.env.dev`.
-2. In `.env.local`, replace `YOURSEAT` in both `CONNECTOR_ID` and `CONNECTOR_NAME` with your instructor-assigned unique letters/digits (for example `s07nov23`). Keep `TEAMSFX_ENV=local`, the base URL and the other settings.
-3. The code appends `local` to the base ID. For example, base `ztcs07nov23` produces `ztcs07nov23local`. Use **only letters/digits**, keep the base at most **27 characters** so the combined ID stays at most **32**, and use a fresh seat-specific value rather than the example shared by the class. A local guard rejects invalid combined IDs. Use a fresh Zava connection, not an older feedback connection: this dataset uses an `owner` property and the sample does not migrate an existing schema or search card.
+1. In Explorer, copy `env/.env.local.example` to `env/.env.local`.
+2. Use the supplied values. Each student has a separate Microsoft 365 tenant, so everyone can use the same connection name and ID:
+
+```dotenv
+CONNECTOR_ID=zavatravel
+CONNECTOR_NAME=Zava Travel
+```
+
+3. The code appends `local`, so the actual connection ID is **`zavatravellocal`**. Keep `TEAMSFX_ENV=local` and the other settings unchanged.
 4. The supplied `CONNECTOR_BASE_URL` points to the public AIA course content directory. The adapter adds `.md` to each item ID, so a citation can open the actual fictional Zava file. This is a source link, not a server the student must start. Leave it unchanged for the supplied data.
 
 **Checkpoint:** confirm your base ID and expected combined ID. Never share passwords or client secrets.
