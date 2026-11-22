@@ -113,15 +113,16 @@ Copy-Item "$assets\currency-instructions.txt" '.\appPackage\instruction.txt'
 3. If validation reports a missing file or invalid JSON, correct that file and retry. If tenant policy refuses upload or requires admin approval, ask the instructor. Do not change deployment scope to bypass the refusal.
 4. Open `https://m365.cloud.microsoft/chat` in the VM browser. Sign in with the same training account. Open the agent list/conversation drawer and select the newly provisioned agent, following Microsoft's Toolkit test route.
 5. Start a new conversation with **Currency Assistant**. The picker may instead show the generated application name **CurrencyAssistant** with a dev suffix. Do not use ordinary Copilot or your section 1 agent.
-6. Enter:
+6. Enter `-developer on` in the agent chat and send it to enable developer mode.
+7. Enter:
 
 ```text
 Get the latest available USD to CAD reference rate and its effective date. Use the currency action.
 ```
 
-7. If permission is requested, inspect the currency pair, endpoint and read operation. Allow only the expected request.
-8. Check the result against a fresh API request from step 1. Look for the action/source indication. A plausible answer without evidence of the action is not a pass.
-9. Enter the historical prompt from the starter. Verify both the requested historical date and the returned effective date.
+8. When Copilot asks to connect to **Currency Reference Rates**, select **Allow**.
+9. Expand **Agent debug info** in the response. Under **Actions**, find **Currency Reference Rates** and check whether `getExchangeRate` is **Matched** and **Selected**. These statuses show function selection, not proof of a successful API response. Inspect the action result and compare its rate and date with a fresh API request from step 1.
+10. Enter the historical prompt from the starter. Verify both the requested historical date and the returned effective date.
 
 **Checkpoint:** The agent actually invokes the currency action and reports the returned rate and date. If invocation details are unavailable in this UI, matching text alone does not confirm that the action ran. The custom card has not been added yet.
 
