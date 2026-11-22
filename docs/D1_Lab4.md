@@ -13,7 +13,7 @@ This reuses your Lab 3 connection. It does not ingest the documents again or cha
 ```powershell
 . C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
 $wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
-$lab = 'C:\Users\Admin\ma-2041\Day1\Lab1-WIQD'
+$lab = 'C:\Users\Admin\ma-2041\Day1\Lab4-WIQD'
 $project = 'C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD'
 & $wiqd --version
 & $wiqd auth status
@@ -36,7 +36,7 @@ code .
 ```powershell
 . C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
 $wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
-$lab = 'C:\Users\Admin\ma-2041\Day1\Lab1-WIQD'
+$lab = 'C:\Users\Admin\ma-2041\Day1\Lab4-WIQD'
 Set-Location 'C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD'
 ```
 
@@ -49,7 +49,7 @@ Set-Location 'C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD'
 ```powershell
 Copy-Item "$lab\assets\declarativeAgent.json" '.\appPackage\declarativeAgent.json'
 Copy-Item "$lab\assets\instruction.txt" '.\appPackage\instruction.txt'
-Copy-Item 'C:\Users\Admin\ma-2041\Day1\Section2-Currency\currency-plugin.mcp.json' '.\appPackage\currency-plugin.mcp.json'
+Copy-Item 'C:\Users\Admin\ma-2041\Day1\Lab2-CurrencyConverter\currency-plugin.mcp.json' '.\appPackage\currency-plugin.mcp.json'
 ```
 
 2. Open **appPackage/declarativeAgent.json**. Replace `REPLACE_WITH_ACTUAL_CONNECTION_ID` with the exact connection ID you verified in Lab 3.

@@ -4,7 +4,7 @@ tools/
 **/bin/
 **/obj/
 **/dist/
-Day1/Lab1-WIQD/work/
+Day1/Lab4-WIQD/work/
 **/appPackage/build/
 **/.env.*.user
 **/local.settings.json

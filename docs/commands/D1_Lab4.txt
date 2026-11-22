@@ -4,7 +4,7 @@ Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbe
 ===== BEGIN BLOCK 01 (powershell) =====
 . C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
 $wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
-$lab = 'C:\Users\Admin\ma-2041\Day1\Lab1-WIQD'
+$lab = 'C:\Users\Admin\ma-2041\Day1\Lab4-WIQD'
 $project = 'C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD'
 & $wiqd --version
 & $wiqd auth status
@@ -22,14 +22,14 @@ code .
 ===== BEGIN BLOCK 03 (powershell) =====
 . C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
 $wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
-$lab = 'C:\Users\Admin\ma-2041\Day1\Lab1-WIQD'
+$lab = 'C:\Users\Admin\ma-2041\Day1\Lab4-WIQD'
 Set-Location 'C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD'
 ===== END BLOCK 03 =====
 
 ===== BEGIN BLOCK 04 (powershell) =====
 Copy-Item "$lab\assets\declarativeAgent.json" '.\appPackage\declarativeAgent.json'
 Copy-Item "$lab\assets\instruction.txt" '.\appPackage\instruction.txt'
-Copy-Item 'C:\Users\Admin\ma-2041\Day1\Section2-Currency\currency-plugin.mcp.json' '.\appPackage\currency-plugin.mcp.json'
+Copy-Item 'C:\Users\Admin\ma-2041\Day1\Lab2-CurrencyConverter\currency-plugin.mcp.json' '.\appPackage\currency-plugin.mcp.json'
 ===== END BLOCK 04 =====
 
 ===== BEGIN BLOCK 05 (json) =====

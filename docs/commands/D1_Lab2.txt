@@ -24,7 +24,7 @@ try {
 
 ===== BEGIN BLOCK 04 (powershell) =====
 Set-Location 'C:\Users\Admin\AgentsToolkitProjects\CurrencyAssistant'
-$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
+$assets = 'C:\Users\Admin\ma-2041\Day1\Lab2-CurrencyConverter'
 New-Item -ItemType Directory -Force '.\appPackage\apiSpecificationFile' | Out-Null
 Copy-Item "$assets\frankfurter.openapi.yaml" '.\appPackage\apiSpecificationFile\frankfurter.openapi.yaml'
 Copy-Item "$assets\currency-plugin.no-card.json" '.\appPackage\currency-plugin.json'
@@ -56,7 +56,7 @@ Get the latest available USD to CAD reference rate and its effective date. Use t
 ===== END BLOCK 08 =====
 
 ===== BEGIN BLOCK 09 (powershell) =====
-$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
+$assets = 'C:\Users\Admin\ma-2041\Day1\Lab2-CurrencyConverter'
 Copy-Item "$assets\currency-card.json" '.\appPackage\currency-card.json'
 Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin.json'
 ===== END BLOCK 09 =====
@@ -68,7 +68,7 @@ $rate = Invoke-RestMethod 'https://api.frankfurter.dev/v2/rate/USD/CAD'
 
 ===== BEGIN BLOCK 11 (powershell) =====
 Set-Location 'C:\Users\Admin\AgentsToolkitProjects\CurrencyAssistant'
-$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
+$assets = 'C:\Users\Admin\ma-2041\Day1\Lab2-CurrencyConverter'
 Copy-Item "$assets\currency-plugin.mcp.json" '.\appPackage\currency-plugin.mcp.json'
 Copy-Item "$assets\currency-instructions.mcp.txt" '.\appPackage\instruction.txt'
 ===== END BLOCK 11 =====

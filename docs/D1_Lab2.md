@@ -61,7 +61,7 @@ You will wire the supplied files directly so each connection is visible. Do not 
 
 ```powershell
 Set-Location 'C:\Users\Admin\AgentsToolkitProjects\CurrencyAssistant'
-$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
+$assets = 'C:\Users\Admin\ma-2041\Day1\Lab2-CurrencyConverter'
 New-Item -ItemType Directory -Force '.\appPackage\apiSpecificationFile' | Out-Null
 Copy-Item "$assets\frankfurter.openapi.yaml" '.\appPackage\apiSpecificationFile\frankfurter.openapi.yaml'
 Copy-Item "$assets\currency-plugin.no-card.json" '.\appPackage\currency-plugin.json'
@@ -131,7 +131,7 @@ Get the latest available USD to CAD reference rate and its effective date. Use t
 1. In the project terminal, paste and run these commands to copy the card into your project and replace the no-card plugin with the with-card plugin:
 
 ```powershell
-$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
+$assets = 'C:\Users\Admin\ma-2041\Day1\Lab2-CurrencyConverter'
 Copy-Item "$assets\currency-card.json" '.\appPackage\currency-card.json'
 Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin.json'
 ```
@@ -168,7 +168,7 @@ Replace the REST action with Frankfurter's hosted MCP server. Keep the same agen
 
 ```powershell
 Set-Location 'C:\Users\Admin\AgentsToolkitProjects\CurrencyAssistant'
-$assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
+$assets = 'C:\Users\Admin\ma-2041\Day1\Lab2-CurrencyConverter'
 Copy-Item "$assets\currency-plugin.mcp.json" '.\appPackage\currency-plugin.mcp.json'
 Copy-Item "$assets\currency-instructions.mcp.txt" '.\appPackage\instruction.txt'
 ```
