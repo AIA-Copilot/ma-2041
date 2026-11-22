@@ -1,10 +1,8 @@
 # Day 1 · Lab 3 — Ground an agent in synced feedback
 
-**Outcome:** ingest five synthetic Trey Research feedback files into Microsoft Graph, then create a separate, no-action declarative agent grounded in that exact connection. This is a standalone adaptation of [Copilot Camp E7](https://microsoft.github.io/copilot-camp/pages/extend-m365-copilot/07-add-graphconnector/): no previous Camp E2–E4 API project is needed.
+## Outcome
 
-**Workspace:** Windows training VM, VS Code and PowerShell. One-time preparation is already complete through the [course setup](../README.md) and [connector setup](../Day1/Lab3-CopilotConnector/SETUP.md). Allow approximately 50 minutes plus tenant indexing latency (planning estimate, not a measured completion time).
-
-**Architecture:** local Markdown → local Functions timer + local Azurite → Microsoft Graph external connection → Microsoft 365 index → declarative agent. There is no API action, public tunnel, separately hosted API server, or Azure cloud deployment. The local Functions runtime does have a local listener; do not expose it. Microsoft 365 and Graph remain cloud services.
+Index five fictional feedback documents in Microsoft 365 with a synced connector. Connect an agent to the indexed content, test a cited answer, and check that it does not invent missing information.
 
 ## 1. Inspect the data and permission boundary
 
@@ -44,7 +42,7 @@ C:\Users\Admin\ma-2041\Day1\Lab3-CopilotConnector\connector
 1. In the Functions task terminal look for `Creating connection <id>` / `Connection <id> was created` (or `already exists`), then schema creation and search-settings update on the first run. Copy the **actual** connection ID from the log, not just your predicted value.
 2. Watch `Loading CF-001...` through `Loading CF-005...`. There must be no `Failed to load` messages. **Loading is an attempt, not proof of success:** the upstream sample catches item errors and can finish the function even when an item failed. A successful timer invocation by itself is not your pass condition.
 3. Open [Microsoft 365 admin center — connectors](https://admin.cloud.microsoft/#/copilot/connectors). Find **your** named connection and confirm its ID and **Ready** state. If a required action offers **Include Connector Results**, have the authorized administrator review/enable it. Use the connection's status/item information to check successful ingestion where available; a zero-item connection is not complete.
-4. In [Microsoft 365 Search](https://m365.cloud.microsoft/search), search for:
+4. Open [Microsoft 365 Search](https://m365.cloud.microsoft/search). Copy and paste this search:
 
 ```text
 Adatum Corporation Avery Howard
@@ -60,7 +58,7 @@ Adatum Corporation Avery Howard
 
 1. Open a **new VS Code window**. In **Microsoft 365 Agents Toolkit > Create a New Agent/App**, choose **Declarative Agent**, then **No Action** (wording can vary by extension version). Choose `C:\Users\Admin\ma-2041\work` as the parent folder and name the project `TreyFeedbackAgent`. Do not overwrite the connector or reuse the earlier API agent.
 2. In the generated project's `appPackage` folder, open the declarative-agent JSON file referenced by `manifest.json` under `copilotAgents.declarativeAgents[].file` (normally `declarativeAgent.json`). Keep the Toolkit-generated schema/version and package icons. Set the agent name to `Trey Feedback — YOURSEAT`, using your seat suffix, and its description to `Answers from synthetic Trey Research feedback.`
-3. Replace its `instructions` value with the following text as a JSON string, preserving valid JSON:
+3. Copy and paste the following text as its `instructions` value. Keep it as a valid JSON string:
 
 ```text
 You help review fictional Trey Research consultant feedback. Use the configured feedback connection as your evidence. Cite the feedback sources for factual claims and distinguish each client's experience. Do not present this synthetic training content as real customer evidence. If the requested information is not in the feedback, say that it is not available. Do not invent project dates, contact details, or financial figures. You cannot perform actions or change records.
@@ -87,14 +85,14 @@ You help review fictional Trey Research consultant feedback. Use the configured 
 
 ## 6. Verify a cited answer, then a missing-information answer
 
-1. Ask your selected agent:
+1. Copy and paste this prompt into your selected agent:
 
 ```text
 What improvements did Adatum Corporation report after Avery Howard's supply-chain work? Cite the feedback and identify which reported figures support your summary.
 ```
 
 2. Open the citation. Check that its source is the Adatum feedback, and compare the answer and numbers with `content/CF-001.md`. The expected kind of result is a concise summary supported by that document, not a generic statement about supply chains. A fluent uncited answer, another learner's connection, or an unrelated citation is not a pass.
-3. Ask:
+3. Copy and paste this prompt:
 
 ```text
 What is Avery Howard's private mobile number and next available appointment? Use only the feedback sources.
