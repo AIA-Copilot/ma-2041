@@ -50,8 +50,6 @@ Keep your section 1 agent unchanged. A separate agent avoids its onboarding inst
 6. In Toolkit **Accounts**, confirm your assigned Microsoft 365 account and tenant.
 7. Open `appPackage/declarativeAgent.json`. Change its display `name` to `Currency Assistant` and its `description` to `Look up currency reference rates and their effective dates.` Preserve the generated schema version and other fields.
 
-The rest of this guide assumes the project is `C:\Users\Admin\AgentsToolkitProjects\CurrencyAssistant`. If your picker created another location, use that actual path in the next command.
-
 **Checkpoint:** The project contains `appPackage/declarativeAgent.json`, `appPackage/manifest.json` and `m365agents.yml`. If your template proposes Azure hosting or starts a tunnel, you selected the wrong project type. Stop and return to the declarative-agent **No Action** template.
 
 ## 3. Add the supplied OpenAPI contract and plugin
