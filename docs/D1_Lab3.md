@@ -10,7 +10,9 @@ Embedded files travel with the agent package. A connector instead indexes an ext
 
 This lab covers initial ingestion and agent grounding. Ongoing refresh scheduling is outside this exercise.
 
-1. Stop other lab debugging/tasks. In VS Code use **File > Open Folder** and open:
+Keep the course instructions open in the **left window**. Use the **Lab 2 CurrencyAssistant window on the right** for this lab. If that window is closed, select **File > New Window** in VS Code and place the new window on the right.
+
+1. In the **right window**, stop any running lab debugging/tasks. Select **File > Open Folder** and open:
 
 ```text
 C:\Users\Admin\ma-2041\Day1\Lab3-CopilotConnector\connector
