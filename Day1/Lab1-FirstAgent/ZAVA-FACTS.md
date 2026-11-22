@@ -1,6 +1,6 @@
 # Zava New Hire Logistics — text transcription
 
-Fictional sample data. Do not call or email these contacts. Transcribed from the [included Microsoft document](upstream/docs/assets/docs/extend-m365-copilot-09/Zava%20New%20Hire%20Logistics.docx); line formatting normalized, facts unchanged. Import the DOCX, not this Markdown file.
+Fictional sample data. Do not call or email these contacts. Transcribed from the [Word document in this folder](Zava%20New%20Hire%20Logistics.docx); line formatting normalized, facts unchanged. Read this Markdown file in VS Code to review the source information, then import the adjacent DOCX as Embedded Knowledge.
 
 ## Document text
 
