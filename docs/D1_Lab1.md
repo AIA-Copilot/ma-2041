@@ -8,26 +8,7 @@ A new Zava employee is flying into Seattle for onboarding and needs help getting
 
 Use the Toolkit version installed by the normal **Install** button. This lab does not require a prerelease extension or preview-feature switches.
 
-## Start the VM and open the lab
-
-1. Start the VM lab.
-2. In the VM, open **Visual Studio Code**.
-3. Select **View > Command Palette**.
-4. Type **Git Clone** and select **Git: Clone**.
-5. Paste `https://github.com/AIA-Copilot/ma-2041.git` into the repository URL box.
-6. Select **Clone from URL** and press **Enter**. **Do not select Clone from GitHub.**
-7. In the folder-selection dialog, stay in the **Admin** folder that opens (`C:\Users\Admin`).
-8. Select **Select as Repository Destination**. Do not create a new folder; Git will create the `ma-2041` folder for you.
-9. Wait for cloning to finish. When VS Code asks whether to open the repository, select **Open**.
-10. In the **Restricted Mode** banner, select **Manage**.
-11. In **Workspace Trust**, select **Trust** for this course repository. Confirm that the page says **You trust this folder**, then close the Workspace Trust tab or dialog.
-12. Ignore or close any other VS Code notifications.
-13. Close the **Welcome** page and any other open editor tabs.
-14. In Explorer, expand the **docs** folder.
-15. Right-click **D1_Lab1.md** and select **Open in Preview**.
-16. Follow the lab instructions in the preview.
-
-**Checkpoint:** the course repository is open and trusted, and you can read this lab in VS Code Preview. Git creates one `ma-2041` folder directly inside **Admin**. The course repository is `C:\Users\Admin\ma-2041` on the supplied VM.
+**Starting checkpoint:** open and trust the course repository, then open this guide in VS Code Preview. If you have not done that yet, follow [Quick start in the repository README](../README.md#quick-start--start-the-vm-and-open-lab-1).
 
 ## Install Microsoft 365 Agents Toolkit
 
