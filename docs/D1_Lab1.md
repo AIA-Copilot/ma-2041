@@ -50,8 +50,6 @@ Use the Toolkit version installed by the normal **Install** button. This lab doe
 3. Set **Upload custom apps** to **On**.
 4. Select **Save**. The change can take a few hours to apply.
 
-Make this optional change only in your assigned lab tenant, not a personal or work tenant. If you cannot access the setting, ask the instructor. Global applies unless the account has another app setup policy assigned.
-
 ## Clear the workspace and check Copilot access
 
 1. Close the **Output/Terminal** pane at the bottom of VS Code using the **X** at the top-right of that pane.
