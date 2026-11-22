@@ -41,6 +41,17 @@ Use the Toolkit version installed by the normal **Install** button. This lab doe
 
 **Checkpoint:** Microsoft 365 Agents Toolkit is installed and its panel opens in VS Code.
 
+**Custom app upload notification:** This lab provisions an agent through Toolkit for use in Microsoft 365 Copilot; you do not need to manually install a custom app in Teams. If Toolkit displays **Custom app upload is disabled in your Microsoft 365 account**, dismiss the notification and continue. Check that provisioning and the agent tests succeed at the checkpoints below. If an operation fails, ask the instructor.
+
+**Optional — enable custom app uploads in your lab tenant:** If you want to enable custom app installation in Teams, use your assigned **lab administrator account**:
+
+1. Open **https://admin.teams.microsoft.com/policies/app-setup**.
+2. Select **Global (Org-wide default)**.
+3. Set **Upload custom apps** to **On**.
+4. Select **Save**. The change can take a few hours to apply.
+
+Make this optional change only in your assigned lab tenant, not a personal or work tenant. If you cannot access the setting, ask the instructor. Global applies unless the account has another app setup policy assigned.
+
 ## Clear the workspace and check Copilot access
 
 1. Close the **Output/Terminal** pane at the bottom of VS Code using the **X** at the top-right of that pane.
