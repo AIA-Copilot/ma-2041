@@ -45,12 +45,12 @@ Keep your section 1 agent unchanged. A separate agent avoids its onboarding inst
 1. Open **Microsoft 365 Agents Toolkit** in VS Code.
 2. Choose **Create a New Agent/App** (the wording can vary by Toolkit version).
 3. Choose **Declarative Agent**, then **No Action**.
-4. Select `C:\ma-2041\work` as the parent folder. Create that folder in the picker if needed.
+4. Use the default project folder: `C:\Users\Admin\AgentsToolkitProjects`.
 5. Name the project **CurrencyAssistant**. Open the generated project in VS Code.
 6. In Toolkit **Accounts**, confirm your assigned Microsoft 365 account and tenant.
 7. Open `appPackage/declarativeAgent.json`. Change its display `name` to `Currency Assistant` and its `description` to `Look up currency reference rates and their effective dates.` Preserve the generated schema version and other fields.
 
-The rest of this guide assumes the project is `C:\ma-2041\work\CurrencyAssistant`. If your picker created another location, use that actual path in the next command.
+The rest of this guide assumes the project is `C:\Users\Admin\AgentsToolkitProjects\CurrencyAssistant`. If your picker created another location, use that actual path in the next command.
 
 **Checkpoint:** The project contains `appPackage/declarativeAgent.json`, `appPackage/manifest.json` and `m365agents.yml`. If your template proposes Azure hosting or starts a tunnel, you selected the wrong project type. Stop and return to the declarative-agent **No Action** template.
 
@@ -62,7 +62,7 @@ You will wire the supplied files directly so each connection is visible. Do not 
 2. Paste and run these commands to copy the prepared files:
 
 ```powershell
-Set-Location 'C:\ma-2041\work\CurrencyAssistant'
+Set-Location 'C:\Users\Admin\AgentsToolkitProjects\CurrencyAssistant'
 $assets = 'C:\ma-2041\Day1\Section2-Currency'
 New-Item -ItemType Directory -Force '.\appPackage\apiSpecificationFile' | Out-Null
 Copy-Item "$assets\frankfurter.openapi.yaml" '.\appPackage\apiSpecificationFile\frankfurter.openapi.yaml'
