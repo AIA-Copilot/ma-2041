@@ -36,7 +36,7 @@ try {
 }
 ```
 
-**Checkpoint:** Valid requests return a rate object. Invalid `ZZZ` returns HTTP 422. If a valid request returns 403, a challenge page, or a network error, stop and show the instructor. Do not bypass network controls. A saved response can support card practice, but is not proof of a live API call.
+**Checkpoint:** Valid requests return a rate object. Invalid `ZZZ` returns HTTP 422.
 
 ## 2. Create a separate Currency Assistant
 
