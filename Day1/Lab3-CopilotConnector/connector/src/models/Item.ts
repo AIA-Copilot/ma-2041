@@ -3,7 +3,7 @@ export interface Item {
   lastModified: Date;
   title: string;
   abstract: string;
-  consultant: string;
+  owner: string;
   content: string;
   url: string;
 }

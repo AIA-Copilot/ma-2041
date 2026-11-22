@@ -1,8 +1,8 @@
-# Day 1 · Lab 2 — Currency API actions, Adaptive Cards and MCP
+# Day 1 · Lab 2 — Zava Currency Converter: API, Adaptive Cards and MCP
 
 ## Outcome
 
-Build a Currency Assistant that calls a public API for current and historical exchange rates. Test its answers in Microsoft 365 Copilot, add an Adaptive Card to display the rate and effective date, and verify that the agent handles unsupported currencies and cannot transfer money. Finally, switch the same agent from its REST action to Frankfurter MCP and test rate lookups and amount conversions.
+Build the Zava Currency Converter to help employees estimate costs for international travel using current and historical reference exchange rates. Test its answers in Microsoft 365 Copilot, add an Adaptive Card to display the rate and effective date, and verify that the agent handles unsupported currencies and cannot transfer money. Finally, switch the same agent from its REST action to Frankfurter MCP and test rate lookups and amount conversions.
 
 ## 1. Check the public API
 
@@ -38,9 +38,9 @@ try {
 
 **Checkpoint:** Valid requests return a rate object. Invalid `ZZZ` returns HTTP 422.
 
-## 2. Create a separate Currency Assistant
+## 2. Create the Zava Currency Converter
 
-Keep your section 1 agent unchanged. A separate agent avoids its onboarding instructions restricting the new currency task.
+Keep your Lab 1 travel assistant unchanged. This second Zava agent helps employees estimate international travel costs; Lab 3 will return to the travel assistant.
 
 1. Open **Microsoft 365 Agents Toolkit** in VS Code.
 2. Choose **Create a New Agent/App** (the wording can vary by Toolkit version).
@@ -48,7 +48,7 @@ Keep your section 1 agent unchanged. A separate agent avoids its onboarding inst
 4. Use the default project folder: `C:\Users\Admin\AgentsToolkitProjects`.
 5. Name the project **CurrencyAssistant**. Open the generated project in VS Code.
 6. In Toolkit **Accounts**, confirm your assigned Microsoft 365 account and tenant.
-7. Open `appPackage/declarativeAgent.json`. Change its display `name` to `Currency Assistant` and its `description` to `Look up currency reference rates and their effective dates.` Preserve the generated schema version and other fields.
+7. Open `appPackage/declarativeAgent.json`. Change its display `name` to `Zava Currency Converter` and its `description` to `Estimate international travel costs using currency reference rates and effective dates.` Preserve the generated schema version and other fields.
 
 **Checkpoint:** The project contains `appPackage/declarativeAgent.json`, `appPackage/manifest.json` and `m365agents.yml`. If your template proposes Azure hosting or starts a tunnel, you selected the wrong project type. Stop and return to the declarative-agent **No Action** template.
 
@@ -112,7 +112,7 @@ Copy-Item "$assets\currency-instructions.txt" '.\appPackage\instruction.txt'
 2. In Toolkit, select **Provision** for the dev environment. Follow sign-in prompts for the assigned training account. This registers/packages the agent in Microsoft 365, not in Azure.
 3. If validation reports a missing file or invalid JSON, correct that file and retry. If tenant policy refuses upload or requires admin approval, ask the instructor. Do not change deployment scope to bypass the refusal.
 4. Open `https://m365.cloud.microsoft/chat` in the VM browser. Sign in with the same training account. Open the agent list/conversation drawer and select the newly provisioned agent, following Microsoft's Toolkit test route.
-5. Start a new conversation with **Currency Assistant**. The picker may instead show the generated application name **CurrencyAssistant** with a dev suffix. Do not use ordinary Copilot or your section 1 agent.
+5. Start a new conversation with **Zava Currency Converter**. The picker may instead show the generated application name **CurrencyAssistant** with a dev suffix. Do not use ordinary Copilot or your section 1 agent.
 6. Enter `-developer on` in the agent chat and send it to enable developer mode.
 7. Enter:
 
@@ -199,7 +199,7 @@ Copy-Item "$assets\currency-instructions.mcp.txt" '.\appPackage\instruction.txt'
 
 6. Increase the top-level app `version` again, for example `1.0.1` to `1.0.2`. Use a value higher than your last provisioned version. Edit `appPackage/manifest.json`, not `manifest.dev.json`.
 7. Save all files and run Toolkit **Provision** for **dev**. Wait for provisioning to complete successfully.
-8. Reload `https://m365.cloud.microsoft/chat`, select the same Currency Assistant and start a fresh conversation. Send `-developer on`.
+8. Reload `https://m365.cloud.microsoft/chat`, select the same **Zava Currency Converter** and start a fresh conversation. Send `-developer on`.
 9. Ask: `Use get_rates to get the latest USD to CAD reference rate and its effective date.` If Copilot asks to connect to **Frankfurter MCP**, select **Allow**.
 10. Expand **Agent debug info**. Check that `get_rates` is selected, then inspect the returned rate and date. The old `getExchangeRate` REST action should no longer be available.
 11. Ask: `Use get_rates to get the USD to CAD reference rate for January 2, 2024.` Check the returned effective date.

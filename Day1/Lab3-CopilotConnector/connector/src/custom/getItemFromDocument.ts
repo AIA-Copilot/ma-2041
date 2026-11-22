@@ -8,7 +8,7 @@ export function getItemFromDocument(doc: GrayMatterFile<string>, config: Config)
     lastModified: new Date(doc.data.lastModified),
     title: doc.data.title,
     abstract: doc.data.abstract,
-    consultant: doc.data.consultant,
+    owner: doc.data.owner,
     content: doc.content,
     url: doc.data.url
   };

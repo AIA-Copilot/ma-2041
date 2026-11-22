@@ -1,7 +1,7 @@
-# Day 1 Lab 3 — standalone synced feedback connector
+# Day 1 Lab 3 — Zava travel guidance connector
 
-Start with the [learner guide](../../docs/D1_Lab3.md) in the repository docs folder. [One-time setup](SETUP.md) is for preparation, not repeated during the lesson.
+Start with the [learner guide](../../docs/D1_Lab3.md). [One-time setup](SETUP.md) is for preparation, not repeated during the lesson.
 
-Open `connector/` as the VS Code workspace. This project contains the complete pinned Camp connector, five synthetic content files and source license. Create a **separate** No Action declarative agent with Toolkit during the lesson; no previous API project is required.
+Open `connector/` as the VS Code workspace. It indexes five fictional Zava arrival and travel-policy documents. Then reopen the existing Lab 1 **ZavaLab1** project and add this connection alongside its official WebSearch capability. Do not create a third agent.
 
-See [provenance and adaptations](PROVENANCE.md). `upstream-reference/` preserves original lifecycle files for comparison only. Do not run its cloud lifecycle. The active connector lifecycles are local-only; no Azure subscription or public tunnel is used.
+See [provenance and adaptations](PROVENANCE.md). `upstream-reference/` preserves original lifecycle files for comparison only. Do not run its cloud lifecycle. Active connector lifecycles are local-only; no Azure subscription or public tunnel is used. Source URLs target this course's public content directory; publication and tenant indexing are separate gates.

@@ -28,9 +28,9 @@
                       },
                       {
                           "type": "TextBlock",
-                          "text": "**${consultant}** modified on ${lastModified}",
+                          "text": "**${owner}** modified on ${lastModified}",
                           "spacing": "Small",
-                          "$when": "${consultant!='' && lastModified!=''}"
+                          "$when": "${owner!='' && lastModified!=''}"
                       },
                       {
                           "type": "TextBlock",

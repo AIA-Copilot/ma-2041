@@ -15,7 +15,7 @@
     "isRetrievable": "true"
   },
   {
-    "name": "consultant",
+    "name": "owner",
     "type": "String",
     "isQueryable": "true",
     "isRetrievable": "true",

@@ -8,7 +8,7 @@ export function getExternalItemFromItem(item: Item): ExternalConnectors.External
       lastModified: item.lastModified.toISOString().slice(0, -5) + 'Z',
       title: item.title,
       abstract: item.abstract,
-      consultant: item.consultant,
+      owner: item.owner,
       url: item.url
     },
     content: {
