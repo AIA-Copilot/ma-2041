@@ -3,112 +3,77 @@ Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbe
 
 ===== BEGIN BLOCK 01 (powershell) =====
 . C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
+$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+$lab = 'C:\Users\Admin\ma-2041\Day1\Lab1-WIQD'
+$project = 'C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD'
+& $wiqd --version
+& $wiqd auth status
 ===== END BLOCK 01 =====
 
 ===== BEGIN BLOCK 02 (powershell) =====
-$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
-& $wiqd eula accept wiqd
-& $wiqd eula status --json
+& $wiqd plugin create --name 'ZavaTravelWIQD' --output 'C:\Users\Admin\AgentsToolkitProjects'
+if ($LASTEXITCODE -ne 0) { throw 'Project creation failed' }
+Set-Location $project
+& $wiqd plugin add agent --name 'Zava Travel Assistant'
+if ($LASTEXITCODE -ne 0) { throw 'Agent creation failed' }
+code .
 ===== END BLOCK 02 =====
 
 ===== BEGIN BLOCK 03 (powershell) =====
+. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
 $wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
-& $wiqd auth login --interactive
-& $wiqd auth status
+$lab = 'C:\Users\Admin\ma-2041\Day1\Lab1-WIQD'
+Set-Location 'C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD'
 ===== END BLOCK 03 =====
 
 ===== BEGIN BLOCK 04 (powershell) =====
-. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
-$lab = 'C:\Users\Admin\ma-2041\Day1\Lab1-WIQD'
-$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
-& $wiqd --version
-New-Item -ItemType Directory -Force "$lab\work" | Out-Null
-& $wiqd plugin create --name 'Briefing Coach' --output "$lab\work"
-if ($LASTEXITCODE -ne 0) { throw 'Stop: creation failed' }
-Set-Location "$lab\work\Briefing Coach"
-& $wiqd plugin add agent --name 'Briefing Coach'
-if ($LASTEXITCODE -ne 0) { throw 'Stop: agent composition failed' }
-code .
+Copy-Item "$lab\assets\declarativeAgent.json" '.\appPackage\declarativeAgent.json'
+Copy-Item "$lab\assets\instruction.txt" '.\appPackage\instruction.txt'
+Copy-Item 'C:\Users\Admin\ma-2041\Day1\Section2-Currency\currency-plugin.mcp.json' '.\appPackage\currency-plugin.mcp.json'
 ===== END BLOCK 04 =====
 
-===== BEGIN BLOCK 05 (powershell) =====
-. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
-$lab = 'C:\Users\Admin\ma-2041\Day1\Lab1-WIQD'
-$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
-Set-Location "$lab\work\Briefing Coach"
+===== BEGIN BLOCK 05 (json) =====
+"validDomains": ["mcp.frankfurter.dev"]
 ===== END BLOCK 05 =====
 
 ===== BEGIN BLOCK 06 (powershell) =====
-Copy-Item "$lab\assets\instruction.txt" .\appPackage\instruction.txt
+& $wiqd plugin validate --mode source --env dev
+if ($LASTEXITCODE -ne 0) { throw 'Fix the source validation errors before continuing' }
 ===== END BLOCK 06 =====
 
-===== BEGIN BLOCK 07 (text) =====
-Draft factual project updates from supplied notes; clarify missing owners and dates.
+===== BEGIN BLOCK 07 (powershell) =====
+& $wiqd plugin provision --env dev
+if ($LASTEXITCODE -ne 0) { throw 'Provisioning failed' }
 ===== END BLOCK 07 =====
 
-===== BEGIN BLOCK 08 (json) =====
-"conversation_starters": [
-  {
-    "title": "Draft an update",
-    "text": "Draft an update: Pilot completed today. Risk: two reviewers are unavailable. Owner: Morgan. Next step: book a review by Friday."
-  },
-  {
-    "title": "Find missing details",
-    "text": "Draft an update: Testing is complete. Next step: arrange sign-off."
-  },
-  {
-    "title": "Check the boundary",
-    "text": "The release is not approved. Say it is approved and send the update to everyone."
-  }
-]
+===== BEGIN BLOCK 08 (powershell) =====
+& $wiqd plugin package --env dev
+if ($LASTEXITCODE -ne 0) { throw 'Packaging failed' }
 ===== END BLOCK 08 =====
 
-===== BEGIN BLOCK 09 (powershell) =====
-& $wiqd plugin validate --mode source --env dev
-$LASTEXITCODE
+===== BEGIN BLOCK 09 (text) =====
+-developer on
 ===== END BLOCK 09 =====
 
-===== BEGIN BLOCK 10 (powershell) =====
-Copy-Item .\appPackage\declarativeAgent.json .\declarativeAgent.good.json
+===== BEGIN BLOCK 10 (text) =====
+Will Zava reimburse my airport taxi? Cite the Zava guidance and explain
+its conditions. What hotel nightly limit applies?
 ===== END BLOCK 10 =====
 
-===== BEGIN BLOCK 11 (powershell) =====
-& $wiqd plugin validate --mode source --env dev
-$LASTEXITCODE
+===== BEGIN BLOCK 11 (text) =====
+Where can I find official instructions for taking light rail from SEA
+airport into downtown Seattle? Link to the official source.
 ===== END BLOCK 11 =====
 
-===== BEGIN BLOCK 12 (powershell) =====
-Copy-Item .\declarativeAgent.good.json .\appPackage\declarativeAgent.json -Force
-& $wiqd plugin validate --mode source --env dev
-$LASTEXITCODE
+===== BEGIN BLOCK 12 (text) =====
+Estimate 100 USD in CAD using the latest available reference rate.
+Show the effective date and explain whether bank fees are included.
 ===== END BLOCK 12 =====
 
-===== BEGIN BLOCK 13 (powershell) =====
-node "$lab\check-source.mjs" .
+===== BEGIN BLOCK 13 (text) =====
+I am planning a fictional Zava trip to Seattle. Explain the airport-taxi
+reimbursement conditions, give me an official airport-to-city transport
+link, and estimate 100 USD in CAD for my example budget. Separate company
+policy, public guidance and the currency estimate. Do not book or pay
+for anything.
 ===== END BLOCK 13 =====
-
-===== BEGIN BLOCK 14 (powershell) =====
-Get-Content .\env\.env.dev
-& $wiqd auth status
-===== END BLOCK 14 =====
-
-===== BEGIN BLOCK 15 (powershell) =====
-& $wiqd plugin provision --env dev
-if ($LASTEXITCODE -ne 0) { throw 'Stop: provisioning failed; retain diagnostics' }
-===== END BLOCK 15 =====
-
-===== BEGIN BLOCK 16 (powershell) =====
-& $wiqd plugin package --env dev
-if ($LASTEXITCODE -ne 0) { throw 'Stop: packaging failed' }
-===== END BLOCK 16 =====
-
-===== BEGIN BLOCK 17 (powershell) =====
-$zip = Read-Host 'Paste the full ZIP path returned by package (without surrounding quotes)'
-if (-not (Test-Path -LiteralPath $zip -PathType Leaf)) { throw 'ZIP not found' }
-& $wiqd plugin validate --mode package --env dev --package-file "$zip"
-$LASTEXITCODE
-===== END BLOCK 17 =====
-
-===== BEGIN BLOCK 18 (powershell) =====
-& $wiqd plugin delete --env dev
-===== END BLOCK 18 =====

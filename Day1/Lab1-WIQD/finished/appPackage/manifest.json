@@ -14,19 +14,21 @@
     "outline": "outline.png"
   },
   "name": {
-    "short": "Briefing Coach${{APP_NAME_SUFFIX}}",
-    "full": "Full name for Briefing Coach"
+    "short": "Zava Travel Assistant${{APP_NAME_SUFFIX}}",
+    "full": "Zava Travel Assistant"
   },
   "description": {
-    "short": "Short description for Briefing Coach",
-    "full": "Full description for Briefing Coach"
+    "short": "Zava travel guidance, official transport info and currency estimates.",
+    "full": "Zava travel guidance, official transport info and currency estimates."
   },
   "accentColor": "#FFFFFF",
   "permissions": [
     "identity",
     "messageTeamMembers"
   ],
-  "validDomains": [],
+  "validDomains": [
+    "mcp.frankfurter.dev"
+  ],
   "copilotAgents": {
     "declarativeAgents": [
       {

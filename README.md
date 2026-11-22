@@ -34,7 +34,7 @@ In VS Code, right-click a guide and select **Open in Preview**.
 1. [Lab 1 — First declarative agent](docs/D1_Lab1.md)
 2. [Lab 2 — Zava Currency Converter: API, card and MCP](docs/D1_Lab2.md)
 3. [Lab 3 — Add Zava travel policies with a synced connector](docs/D1_Lab3.md)
-4. [Lab 4 — WIQD Briefing Coach](docs/D1_Lab4.md)
+4. [Lab 4 — Zava Travel Assistant with WIQD](docs/D1_Lab4.md)
 
 ### Day 2 — AI-3026 virtual labs
 

@@ -1,13 +1,10 @@
-# Lab 4 — Briefing Coach
+# Lab 4 — Zava Travel Assistant with WIQD
 
-Start with `../../docs/D1_Lab4.md` in the distributed course root (the guide is under `docs`). Work inside the provided MS-4018 VM.
+Start with [Lab 4](../../docs/D1_Lab4.md). Build a new agent combining public travel web search, the Lab 3 Zava connection and the Lab 2 currency MCP action.
 
-- `generated-baseline/`: real, unmodified WIQD 1.0.0 `plugin create` + `plugin add agent` output. Generated README/tasks mention Toolkit; they are not the instructions for this direct-CLI lab. Do not press F5.
-- `assets/`: text and conversation starters to apply to your new project.
-- `finished/`: the real scaffold with only the instruction text and declarative-agent description/starters edited. Native WIQD source validation passed. This is a recovery checkpoint, not a provisioned app.
-- `check-source.mjs`: independent local content checks. These do not replace WIQD validation.
-- `TEST-RECORD.md`: your acceptance record.
+- `assets/`: combined agent definition, instructions and conversation starters. Replace the connection placeholder with your actual Lab 3 connection ID.
+- `finished/`: source reference using the new definition and the existing WIQD-generated lifecycle. Not a provisioned app; connection placeholder must be replaced.
+- `generated-baseline/`: historical, unmodified WIQD 1.0.0 scaffold. Its Briefing Coach name and generated Toolkit/F5 instructions are not this exercise.
+- `check-source.mjs`: optional local content/reference check, not WIQD validation or tenant acceptance.
 
-The CLI is pinned to `@microsoft/wiqd@1.0.0`; Node must be 24.15.0 or later. The plugin interface is alpha even though the package is 1.0.0. No coding assistant, Python, Azure subscription, tunnel or API server is used.
-
-No installable app ZIP is supplied: WIQD refuses offline packaging when `copilotAgents` is present. The authorized tenant rehearsal must provision first and then package. No tenant credentials or consent state are included here.
+Use the course WIQD 1.0.0 installation with Node 24.15.0. Embedded-document retrieval and agent-scoped skills are not required in this exercise. Instructor feasibility notes are in the separate course runbook.
