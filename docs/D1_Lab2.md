@@ -128,15 +128,21 @@ Get the latest available USD to CAD reference rate and its effective date. Use t
 
 ## 5. Add the Adaptive Card
 
-1. Open the supplied `C:\Users\Admin\ma-2041\Day1\Section2-Currency\currency-card.json`.
-2. Find the expressions `${base}`, `${quote}`, `${rate}` and `${date}`. They bind to fields in the API response.
-3. Open `currency-plugin.with-card.json` in the same supplied folder. Find `functions[0].capabilities.response_semantics`.
-4. Notice that `data_path` is `$` because the rate response is one object at the root. The `static_template` contains the complete card. It is intentionally embedded, not a separate deployed file reference.
-5. In the project terminal, paste and run these commands to replace the no-card plugin:
+1. In the project terminal, paste and run these commands to copy the card and with-card plugin into your project for review:
 
 ```powershell
 $assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
-Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin.json'
+Copy-Item "$assets\currency-card.json" '.\appPackage\currency-card.json'
+Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin.with-card.json'
+```
+
+2. In Explorer, open `appPackage/currency-card.json`. Find the expressions `${base}`, `${quote}`, `${rate}` and `${date}`. They bind to fields in the API response.
+3. Open `appPackage/currency-plugin.with-card.json`. Find `functions[0].capabilities.response_semantics`.
+4. Notice that `data_path` is `$` because the rate response is one object at the root. The `static_template` contains the complete card. It is intentionally embedded, not a separate deployed file reference.
+5. In the project terminal, paste and run this command to replace the no-card plugin:
+
+```powershell
+Copy-Item '.\appPackage\currency-plugin.with-card.json' '.\appPackage\currency-plugin.json'
 ```
 
 6. Save all files. Run Toolkit **Provision** again for the same dev environment. Reload `https://m365.cloud.microsoft/chat`, select your agent, and start a fresh conversation.

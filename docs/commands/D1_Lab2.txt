@@ -57,10 +57,15 @@ Get the latest available USD to CAD reference rate and its effective date. Use t
 
 ===== BEGIN BLOCK 09 (powershell) =====
 $assets = 'C:\Users\Admin\ma-2041\Day1\Section2-Currency'
-Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin.json'
+Copy-Item "$assets\currency-card.json" '.\appPackage\currency-card.json'
+Copy-Item "$assets\currency-plugin.with-card.json" '.\appPackage\currency-plugin.with-card.json'
 ===== END BLOCK 09 =====
 
 ===== BEGIN BLOCK 10 (powershell) =====
+Copy-Item '.\appPackage\currency-plugin.with-card.json' '.\appPackage\currency-plugin.json'
+===== END BLOCK 10 =====
+
+===== BEGIN BLOCK 11 (powershell) =====
 $rate = Invoke-RestMethod 'https://api.frankfurter.dev/v2/rate/USD/CAD'
 [math]::Round(100 * $rate.rate, 2)
-===== END BLOCK 10 =====
+===== END BLOCK 11 =====
