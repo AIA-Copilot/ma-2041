@@ -12,7 +12,7 @@ This lab covers initial ingestion and agent grounding. Ongoing refresh schedulin
 
 Keep the course instructions open in the **left window**. Use the **Lab 2 CurrencyAssistant window on the right** for this lab. If that window is closed, select **File > New Window** in VS Code and place the new window on the right.
 
-1. In the **right window**, stop any running lab debugging/tasks. Select **File > Open Folder** and open:
+1. In the **right window**, select **File > Open Folder** and open:
 
 ```text
 C:\Users\Admin\ma-2041\Day1\Lab3-CopilotConnector\connector
