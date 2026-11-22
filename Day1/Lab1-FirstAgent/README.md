@@ -4,7 +4,7 @@ Follow the complete [learner guide](../../docs/D1_Lab1.md). Keep this course rep
 
 ## Current exercise
 
-The learner guide builds **Zava Learning Agent** using **WebSearch** scoped to `https://learn.microsoft.com`. Learners deploy and test the first version, add three `conversation_starters`, increment the app version in source `appPackage/manifest.json`, provision Dev again, and test the updated agent. Use the default installed Toolkit; no prerelease or preview switch is required by these instructions.
+The learner guide builds **Zava New-Hire Travel Assistant** using **WebSearch** scoped to `https://www.portseattle.org` and `https://www.soundtransit.org`. The business task is airport-to-city arrival planning for a new employee, with official travel guidance and a clear boundary against inventing private reimbursement policies. Learners deploy and test the first version, add three `conversation_starters`, increment the app version in source `appPackage/manifest.json`, provision Dev again, and test the updated agent. Use the default installed Toolkit; no prerelease or preview switch is required by these instructions.
 
 No document import is part of the revised lab. The retained ZAVA-FACTS.md, Word document, flow-embed.png and upstream snapshot are historical source assets, not current learner steps. Do not use them as evidence that embedded knowledge works in the training tenant. Original source files and their license remain unchanged.
 
