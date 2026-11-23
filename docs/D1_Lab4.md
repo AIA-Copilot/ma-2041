@@ -2,111 +2,78 @@
 
 ## Outcome
 
-Create a new **Zava Travel Assistant** that combines the official travel web sources from Lab 1, the currency MCP action from Lab 2 and the indexed Zava policies from Lab 3. Use WIQD to create, validate and deploy it, then test all three capabilities in Microsoft 365 Copilot.
+Use WIQD to create a new Zava Travel Assistant combining official travel web sources, the currency MCP action and the indexed Zava policies. Follow one workflow: **prepare the project → inspect → validate → provision → test**. Your earlier agents and indexed documents stay unchanged.
 
-This reuses your Lab 3 connection. It does not ingest the documents again or change your earlier agents.
+Prerequisites are prepared during Lab 1. Wait for **DAY 1 PREPARATION COMPLETE** before starting. This lab does not repeat those installs.
 
-## 1. Create the new project
+## 1. Prepare and open the project
 
-Keep the instructions in the **left window**. Reuse the **ZavaLab1 window on the right**. If it is closed, open a new VS Code window and place it on the right. Save any open work before continuing.
+1. Keep the instructions in the **left course window**. In its Terminal, run:
 
-1. In the **right window**, open the **Terminal**. Run the following commands to select Node 24 and install WIQD into the course tools folder if it is missing. These commands do not modify ZavaLab1:
+```powershell
+Set-Location C:\Users\Admin\ma-2041
+.\scripts\Start-Lab4.ps1
+```
 
+2. For a new project, the script displays the WIQD licence link. Review it. If you agree and are authorized, type **ACCEPT** and complete any further consent prompt. Otherwise, stop.
+3. Sign in with the **same Microsoft 365 lab account** used in Labs 1–3. Complete MFA if prompted. Check the account shown by the script.
+4. The script creates **ZavaTravelWIQD**, adds the Zava agent files and opens a **new VS Code window**. Place it on the right. Save and close the previous right-hand ZavaLab1 window if it is still open.
+
+**What the script did:** selected Node 24, checked WIQD 1.0.0, copied the working connection ID from your ZavaLab1 agent, added the supplied instructions and currency MCP action, and set the new app's name and MCP domain. It kept the new project's generated identity. It did **not** provision or share the agent. If a completed ZavaTravelWIQD project already exists, it reopens it without replacing your edits; an incomplete or mismatched folder stops setup for instructor review.
+
+The connection ID is copied exactly. For the rehearsed connection this is **`zavatravellocallocal`**; updated Lab 3 defaults produce **`zavatravellocal`**. Do not shorten either value to `zavatravel` or add another suffix.
+
+## 2. Inspect the combined agent
+
+Work in the **new right-hand window** from this point onward.
+
+1. Open **appPackage/declarativeAgent.json**:
+
+    - **WebSearch** uses Port of Seattle and Sound Transit.
+    - **GraphConnectors** uses the same full `connection_id` as your working Lab 3 agent. No placeholder should remain.
+    - **actions** references **currency-plugin.mcp.json** for Frankfurter.
+
+2. Open **appPackage/instruction.txt**. Notice how company-policy questions, public travel questions and currency requests use different sources.
+3. Open **m365agents.yml**. WIQD uses this lifecycle to provision the new app in **dev**. Use the following CLI commands, not F5.
+4. Open the Terminal in this project window and run:
 
 ```powershell
 . C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
 $wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
-$lab = 'C:\Users\Admin\ma-2041\Day1\Lab4-WIQD'
-$project = 'C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD'
-if (-not (Test-Path -LiteralPath $wiqd)) {
-    npm.cmd install --prefix 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0' `
-        --save-exact @microsoft/wiqd@1.0.0 --no-audit --no-fund
-    if ($LASTEXITCODE -ne 0) { throw 'WIQD installation failed' }
-}
-& $wiqd --version
-& $wiqd auth status
+Set-Location C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD
 ```
 
-2. Wait for installation to finish and confirm the version is **1.0.0**. If sign-in is needed, run `& $wiqd auth login --interactive` and use your assigned training account. If WIQD requires terms acceptance, review the terms. If you agree and are authorized to accept them, run `& $wiqd eula accept wiqd`. This exercise does not use Work IQ or Marketplace publishing.
-3. Create the project and its declarative agent:
+This selects the runtime for this new terminal. It does not reinstall WIQD. Keep WIQD **1.0.0**; ignore update notices during the lab.
 
-```powershell
-& $wiqd plugin create --name 'ZavaTravelWIQD' --output 'C:\Users\Admin\AgentsToolkitProjects'
-if ($LASTEXITCODE -ne 0) { throw 'Project creation failed' }
-Set-Location $project
-& $wiqd plugin add agent --name 'Zava Travel Assistant'
-if ($LASTEXITCODE -ne 0) { throw 'Agent creation failed' }
-code -r .
-```
+## 3. Validate and provision
 
-4. The new **ZavaTravelWIQD** project opens in the **same right window**. Open a new terminal there and set the variables again:
-
-```powershell
-. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
-$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
-$lab = 'C:\Users\Admin\ma-2041\Day1\Lab4-WIQD'
-Set-Location 'C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD'
-```
-
-5. In Explorer, open **m365agents.yml**, then **appPackage/manifest.json**. WIQD will run this project's lifecycle using the **dev** environment. Use the terminal commands below, not F5.
-
-## 2. Combine the Zava capabilities
-
-1. Copy the supplied agent definition and instructions, plus the MCP plugin used in Lab 2:
-
-```powershell
-Copy-Item "$lab\assets\declarativeAgent.json" '.\appPackage\declarativeAgent.json'
-Copy-Item "$lab\assets\instruction.txt" '.\appPackage\instruction.txt'
-Copy-Item 'C:\Users\Admin\ma-2041\Day1\Lab2-CurrencyConverter\currency-plugin.mcp.json' '.\appPackage\currency-plugin.mcp.json'
-```
-
-2. Open **appPackage/declarativeAgent.json**. Replace `REPLACE_WITH_ACTUAL_CONNECTION_ID` with the exact connection ID you verified in Lab 3.
-3. Review the three parts of the file:
-   - **WebSearch** uses Port of Seattle and Sound Transit for public transport information.
-   - **GraphConnectors** retrieves the fictional company documents already indexed in Lab 3.
-   - **actions** loads **currency-plugin.mcp.json**, which calls Frankfurter's MCP server.
-4. Open **appPackage/instruction.txt**. Notice how it directs company questions, public travel questions and currency requests to different sources. Review the three conversation starters in **declarativeAgent.json**.
-5. In **appPackage/manifest.json**, set `name.short` to `Zava Travel Assistant${{APP_NAME_SUFFIX}}`. Set `name.full` to `Zava Travel Assistant`. Set both description values to `Zava travel guidance, official transport info and currency estimates.`. Add `mcp.frankfurter.dev` to `validDomains`:
-
-```json
-"validDomains": ["mcp.frankfurter.dev"]
-```
-
-6. Keep the new project's generated identity and its `copilotAgents` reference. Save all files. This is a new app; do not copy the IDs or populated environment files from your earlier agents.
-
-**Checkpoint:** one new agent references your existing Zava connection, two public web sources and the Frankfurter MCP action.
-
-## 3. Validate and deploy with WIQD
-
-1. Run source validation:
+1. Check the source definition:
 
 ```powershell
 & $wiqd plugin validate --mode source --env dev
 if ($LASTEXITCODE -ne 0) { throw 'Fix the source validation errors before continuing' }
 ```
 
-2. Read any findings and correct the source files. Once validation passes, provision the new agent:
+**What this checks:** offline agent-source and project checks. A pass is not a full app-package validation, a successful deployment or an evaluation of agent answers. Correct any reported errors before continuing.
+
+2. Provision the agent:
 
 ```powershell
 & $wiqd plugin provision --env dev
 if ($LASTEXITCODE -ne 0) { throw 'Provisioning failed' }
 ```
 
-3. Wait for the complete lifecycle to succeed. Keep the returned **Chat install/test link** for the next section.
-4. Build the app package:
+**What this does:** runs the project's provision lifecycle using your lab account. Wait for the entire command to succeed.
 
-```powershell
-& $wiqd plugin package --env dev
-if ($LASTEXITCODE -ne 0) { throw 'Packaging failed' }
-```
+3. Open the **Chat install/test link** in that successful provisioning result. Use the lab account and open **Zava Travel Assistant**.
 
-5. Open **appPackage/build** and inspect the generated ZIP. It should include the agent definition, its resolved instructions and the currency MCP plugin. The Zava policies stay in the Microsoft 365 index; they are not embedded in this ZIP.
-
-**Checkpoint:** WIQD has provisioned the new agent and generated its package. Source validation checks the definition; the following tests check actual behavior.
+You do not need a separate package, organisation-catalogue publication or tenant-wide share for this personal test. If the Chat link is missing, show the instructor the successful provisioning result; do not invent a link or publish tenant-wide to get past it.
 
 ## 4. Test the combined assistant
 
-1. Open the **Chat install/test link** returned by WIQD using your training account. Add the app if prompted, then open **Zava Travel Assistant** in Microsoft 365 Copilot.
+These are manual behavior checks, not automated evaluations or quality scores.
+
+1. In the new **Zava Travel Assistant** opened from the provisioning link, use your lab account. Add the app if prompted.
 2. Start a new conversation and enter:
 
 ```text
@@ -152,7 +119,7 @@ for anything.
 
 Check for a Zava policy citation, an official public link and an actual currency tool result. The answer must not claim that an expense was approved or a payment was made.
 
-If you edit the agent after provisioning, increase the source **appPackage/manifest.json** app `version`, run source validation and provision again in **dev**. Rebuild the package and test in a fresh conversation. Do not edit **manifest.dev.json**.
+If you edit the agent after provisioning, increase the source **appPackage/manifest.json** app `version`, run source validation and provision again in **dev**. Test in a fresh conversation. Do not edit **manifest.dev.json**.
 
 ## Summary
 

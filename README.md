@@ -29,7 +29,7 @@ Keep the lab entry until you have finished all exercises and no longer need to s
 
 **Checkpoint:** the course repository is open and trusted, and you can read this lab in VS Code Preview. Git creates one `ma-2041` folder directly inside **Admin**. The course repository is `C:\Users\Admin\ma-2041` on the supplied VM.
 
-**Continue in Lab 1.** Follow its Toolkit installation and Copilot access steps.
+**Continue in Lab 1.** Follow its Toolkit installation, start the shared Day 1 preparation script, and continue the Copilot access steps while preparation runs.
 
 ## Lab guides
 

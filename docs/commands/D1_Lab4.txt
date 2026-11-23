@@ -2,83 +2,49 @@ D1_Lab4 — exact code and prompt blocks
 Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbered step in the guide. Copy only the required block contents, not BEGIN/END labels. Never run this whole file. PDF code is display-only because wrapping can change clipboard text.
 
 ===== BEGIN BLOCK 01 (powershell) =====
-. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
-$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
-$lab = 'C:\Users\Admin\ma-2041\Day1\Lab4-WIQD'
-$project = 'C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD'
-if (-not (Test-Path -LiteralPath $wiqd)) {
-    npm.cmd install --prefix 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0' `
-        --save-exact @microsoft/wiqd@1.0.0 --no-audit --no-fund
-    if ($LASTEXITCODE -ne 0) { throw 'WIQD installation failed' }
-}
-& $wiqd --version
-& $wiqd auth status
+Set-Location C:\Users\Admin\ma-2041
+.\scripts\Start-Lab4.ps1
 ===== END BLOCK 01 =====
 
 ===== BEGIN BLOCK 02 (powershell) =====
-& $wiqd plugin create --name 'ZavaTravelWIQD' --output 'C:\Users\Admin\AgentsToolkitProjects'
-if ($LASTEXITCODE -ne 0) { throw 'Project creation failed' }
-Set-Location $project
-& $wiqd plugin add agent --name 'Zava Travel Assistant'
-if ($LASTEXITCODE -ne 0) { throw 'Agent creation failed' }
-code -r .
+. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
+$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
+Set-Location C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD
 ===== END BLOCK 02 =====
 
 ===== BEGIN BLOCK 03 (powershell) =====
-. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
-$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
-$lab = 'C:\Users\Admin\ma-2041\Day1\Lab4-WIQD'
-Set-Location 'C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD'
+& $wiqd plugin validate --mode source --env dev
+if ($LASTEXITCODE -ne 0) { throw 'Fix the source validation errors before continuing' }
 ===== END BLOCK 03 =====
 
 ===== BEGIN BLOCK 04 (powershell) =====
-Copy-Item "$lab\assets\declarativeAgent.json" '.\appPackage\declarativeAgent.json'
-Copy-Item "$lab\assets\instruction.txt" '.\appPackage\instruction.txt'
-Copy-Item 'C:\Users\Admin\ma-2041\Day1\Lab2-CurrencyConverter\currency-plugin.mcp.json' '.\appPackage\currency-plugin.mcp.json'
-===== END BLOCK 04 =====
-
-===== BEGIN BLOCK 05 (json) =====
-"validDomains": ["mcp.frankfurter.dev"]
-===== END BLOCK 05 =====
-
-===== BEGIN BLOCK 06 (powershell) =====
-& $wiqd plugin validate --mode source --env dev
-if ($LASTEXITCODE -ne 0) { throw 'Fix the source validation errors before continuing' }
-===== END BLOCK 06 =====
-
-===== BEGIN BLOCK 07 (powershell) =====
 & $wiqd plugin provision --env dev
 if ($LASTEXITCODE -ne 0) { throw 'Provisioning failed' }
+===== END BLOCK 04 =====
+
+===== BEGIN BLOCK 05 (text) =====
+-developer on
+===== END BLOCK 05 =====
+
+===== BEGIN BLOCK 06 (text) =====
+Will Zava reimburse my airport taxi? Cite the Zava guidance and explain
+its conditions. What hotel nightly limit applies?
+===== END BLOCK 06 =====
+
+===== BEGIN BLOCK 07 (text) =====
+Where can I find official instructions for taking light rail from SEA
+airport into downtown Seattle? Link to the official source.
 ===== END BLOCK 07 =====
 
-===== BEGIN BLOCK 08 (powershell) =====
-& $wiqd plugin package --env dev
-if ($LASTEXITCODE -ne 0) { throw 'Packaging failed' }
+===== BEGIN BLOCK 08 (text) =====
+Estimate 100 USD in CAD using the latest available reference rate.
+Show the effective date and explain whether bank fees are included.
 ===== END BLOCK 08 =====
 
 ===== BEGIN BLOCK 09 (text) =====
--developer on
-===== END BLOCK 09 =====
-
-===== BEGIN BLOCK 10 (text) =====
-Will Zava reimburse my airport taxi? Cite the Zava guidance and explain
-its conditions. What hotel nightly limit applies?
-===== END BLOCK 10 =====
-
-===== BEGIN BLOCK 11 (text) =====
-Where can I find official instructions for taking light rail from SEA
-airport into downtown Seattle? Link to the official source.
-===== END BLOCK 11 =====
-
-===== BEGIN BLOCK 12 (text) =====
-Estimate 100 USD in CAD using the latest available reference rate.
-Show the effective date and explain whether bank fees are included.
-===== END BLOCK 12 =====
-
-===== BEGIN BLOCK 13 (text) =====
 I am planning a fictional Zava trip to Seattle. Explain the airport-taxi
 reimbursement conditions, give me an official airport-to-city transport
 link, and estimate 100 USD in CAD for my example budget. Separate company
 policy, public guidance and the currency estimate. Do not book or pay
 for anything.
-===== END BLOCK 13 =====
+===== END BLOCK 09 =====

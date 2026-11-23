@@ -10,40 +10,13 @@ Run before class, after the root course setup. Learners do not clone or install 
 - Microsoft 365 training tenant, licensed Copilot account able to use declarative agents, custom-app upload allowed, app-registration permission, and an assigned administrator who can grant Microsoft Graph **application** permissions. No Azure subscription is required. Microsoft 365 service/network access is required; this is not an offline tenant lab.
 - Administrator approval to ingest the five **synthetic public** Zava travel/arrival/policy documents with the sample's tenant-wide `everyone` ACL. Never replace them with confidential material.
 
-### Prepare Node and the Windows Core Tools host
+### Prepare the Day 1 tools once
 
-Run the existing course preparation command in the VS Code terminal:
+Start `scripts/Prepare-Day1.ps1` from the course repository during Lab 1. It prepares the pinned Node runtimes, verified interactive Core Tools v4 installer, Azure Functions extension, connector dependencies/build, and WIQD 1.0.0. See [Start Day 1 preparation](../../docs/D1_Lab1.md#start-day-1-preparation).
 
-```powershell
-Set-Location C:\Users\Admin\ma-2041
-.\scripts\Prepare-Node.ps1
-```
+Complete normal installer prompts and wait for `DAY 1 PREPARATION COMPLETE`. Before Lab 3, close all VS Code windows and reopen the app. Verify `func --version` reports `4.x`. The connector uses Node 22; WIQD uses Node 24. New manual npm terminals must select their runtime with `scripts/Use-Node.ps1`.
 
-The script reuses the pinned Node runtimes if already present. It also reuses working Core Tools v4. If Core Tools is missing, it downloads the pinned Microsoft x64 installer, verifies its checksum and Microsoft signature, and opens the normal installer. Complete its license and administrator prompts. The download is about 474 MB.
-
-After a new installation, save your work, close all VS Code windows and reopen them. Run `func --version`; it must report `4.x` before debugging. If the installer requests a VM restart, save your work and restart first. The script does not replace another Core Tools major version or restart the VM automatically.
-
-### Prepare dependencies
-
-Run once in PowerShell after Core Tools installation:
-
-```powershell
-Set-Location C:\Users\Admin\ma-2041
-. .\scripts\Use-Node.ps1 -Version 22
-node.exe --version
-func --version
-code --install-extension TeamsDevApp.ms-teams-vscode-extension
-code --install-extension ms-azuretools.vscode-azurefunctions
-Set-Location .\Day1\Lab3-CopilotConnector\connector
-npm.cmd ci --ignore-scripts --no-audit --no-fund
-npm.cmd run build
-```
-
-Expected: Node `v22.22.2`, Core Tools `4.x`, TypeScript build exits zero. `--ignore-scripts` is intentional: the retained dependencies compile without lifecycle downloads; Core Tools is supplied globally. Azurite is included in the lockfile and starts locally during the lesson. Do not run `npm audit fix` or refresh dependencies during class. Scott accepted the temporary Day 1 sample dependency risk; this is not a production certification or a waiver for Day 2.
-
-Open **connector**, not its parent folder, as the VS Code workspace. Tasks explicitly prepend `${workspaceFolder}/../../../tools/node-v22.22.2-win-x64` to Windows `Path`; they do not rely on the integrated terminal's selected Node. This relative path resolves to the repository's tools directory.
-
-No tenant provisioning or Functions host startup is part of these preparation commands. The lesson performs the authorized registration/consent/ingestion interactively. Never commit generated `local.settings.json`, `.env.local`, `.env.local.user`, credentials, or `appPackage/build`.
+The connector install retains `npm ci --ignore-scripts --no-audit --no-fund`. Do not run `npm audit fix` or refresh dependencies during class. No tenant provisioning, authentication, terms acceptance or Functions host startup occurs in preparation. Open the `connector` folder itself in the right window when starting Lab 3.
 
 ## Delivery boundary
 

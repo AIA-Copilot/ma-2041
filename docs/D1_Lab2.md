@@ -224,29 +224,10 @@ Copy-Item "$assets\currency-instructions.mcp.txt" '.\appPackage\instruction.txt'
 
 These instructions are original course material. The creation/testing route follows [Microsoft’s Toolkit tutorial](https://learn.microsoft.com/plugins/build-declarative-agents). Runtime behavior follows [Frankfurter v2](https://frankfurter.dev/), the [Microsoft plugin manifest](https://learn.microsoft.com/microsoft-365/copilot/extensibility/plugin-manifest-2.4) and [Microsoft Adaptive Card response templates](https://learn.microsoft.com/plugins/api-plugin-adaptive-cards). The MCP activity uses the [Frankfurter MCP server](https://frankfurter.dev/mcp/) and Microsoft’s [MCP plugin guidance](https://learn.microsoft.com/plugins/build-mcp-plugins). All required learner files are supplied locally; these links are references, not extra exercises.
 
-## Prepare for Lab 3
+## Before Lab 3
 
-Start the connector setup now so its dependencies can install while you read Lab 3.
+In the **left course window**, check that the preparation started in Lab 1 shows **DAY 1 PREPARATION COMPLETE**. If it is still running, let it finish. If it failed or was not started, return to [Start Day 1 preparation](D1_Lab1.md#start-day-1-preparation); do not start a second installer alongside it.
 
-1. In the **left course window**, open the Terminal and run:
-
-```powershell
-Set-Location C:\Users\Admin\ma-2041
-.\scripts\Prepare-Node.ps1
-```
-
-If the Core Tools installer opens, complete its license and administrator prompts. The script reuses existing Node runtimes and working Core Tools v4.
-
-2. In **Extensions**, install **Azure Functions** published by **Microsoft**.
-3. If Core Tools was newly installed, save your work, close **all VS Code windows**, and reopen VS Code from Start. **Reload Window is not enough.** Reopen the course repository on the left and `CurrencyAssistant` on the right.
-4. In a new terminal in the **left course window**, run:
-
-```powershell
-. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 22
-Set-Location C:\Users\Admin\ma-2041\Day1\Lab3-CopilotConnector\connector
-npm.cmd ci --ignore-scripts --no-audit --no-fund
-```
-
-Leave that terminal running while you read Lab 3. Wait for installation to finish successfully before starting the connector. Do not run a second installation in the right window. Selecting Node applies only to that terminal; run `Use-Node.ps1 -Version 22` again in any new terminal where you need npm.
+After preparation finishes, save your work, close **all VS Code windows**, and reopen VS Code from Start. **Reload Window is not enough.** Reopen the course repository on the left and `CurrencyAssistant` on the right. No separate npm installation is needed here.
 
 When you are ready to go on to Lab 3, [click here](D1_Lab3.md).

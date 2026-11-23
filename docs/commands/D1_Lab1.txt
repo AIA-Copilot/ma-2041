@@ -1,21 +1,26 @@
 D1_Lab1 — exact code and prompt blocks
 Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbered step in the guide. Copy only the required block contents, not BEGIN/END labels. Never run this whole file. PDF code is display-only because wrapping can change clipboard text.
 
-===== BEGIN BLOCK 01 (text) =====
+===== BEGIN BLOCK 01 (powershell) =====
+Set-Location C:\Users\Admin\ma-2041
+.\scripts\Prepare-Day1.ps1
+===== END BLOCK 01 =====
+
+===== BEGIN BLOCK 02 (text) =====
 C:\Users\Admin\AgentsToolkitProjects\ZavaLab1\
   appPackage\declarativeAgent.json
   appPackage\instruction.txt
   appPackage\manifest.json
   env\.env.dev
   m365agents.yml
-===== END BLOCK 01 =====
-
-===== BEGIN BLOCK 02 (json) =====
-"name": "Zava New-Hire Travel Assistant",
-"description": "Helps new Zava employees plan arrival in Seattle using official airport and transit information"
 ===== END BLOCK 02 =====
 
 ===== BEGIN BLOCK 03 (json) =====
+"name": "Zava New-Hire Travel Assistant",
+"description": "Helps new Zava employees plan arrival in Seattle using official airport and transit information"
+===== END BLOCK 03 =====
+
+===== BEGIN BLOCK 04 (json) =====
 "name": {
   "short": "Zava New-Hire Travel Assistant",
   "full": "Zava New-Hire Travel Assistant"
@@ -24,9 +29,9 @@ C:\Users\Admin\AgentsToolkitProjects\ZavaLab1\
   "short": "Seattle arrival guidance for new Zava employees",
   "full": "Finds official airport and transit information for Zava onboarding travel. Offers guidance, not bookings or expense approvals."
 }
-===== END BLOCK 03 =====
+===== END BLOCK 04 =====
 
-===== BEGIN BLOCK 04 (text) =====
+===== BEGIN BLOCK 05 (text) =====
 # Zava New-Hire Travel Assistant
 
 ## Role
@@ -51,15 +56,15 @@ Refer company-policy questions to the employee's onboarding contact.
 Do not claim to book travel, approve expenses or contact anyone.
 Ask about practical accessibility needs only when relevant, not diagnoses.
 Do not request passport numbers, payment details or employee identifiers.
-===== END BLOCK 04 =====
+===== END BLOCK 05 =====
 
-===== BEGIN BLOCK 05 (powershell) =====
+===== BEGIN BLOCK 06 (powershell) =====
 Set-Location 'C:\Users\Admin\AgentsToolkitProjects\ZavaLab1'
 Get-Content '.\appPackage\declarativeAgent.json' -Raw | ConvertFrom-Json | Out-Null
 Get-Content '.\appPackage\manifest.json' -Raw | ConvertFrom-Json | Out-Null
-===== END BLOCK 05 =====
+===== END BLOCK 06 =====
 
-===== BEGIN BLOCK 06 (json) =====
+===== BEGIN BLOCK 07 (json) =====
 "capabilities": [
   {
     "name": "WebSearch",
@@ -69,19 +74,19 @@ Get-Content '.\appPackage\manifest.json' -Raw | ConvertFrom-Json | Out-Null
     ]
   }
 ]
-===== END BLOCK 06 =====
-
-===== BEGIN BLOCK 07 (text) =====
-I am flying into Seattle for Zava onboarding. Where do I find official
-instructions for taking light rail from Seattle-Tacoma airport into
-downtown Seattle? Summarize the guidance and include the source links.
 ===== END BLOCK 07 =====
 
 ===== BEGIN BLOCK 08 (text) =====
-Will Zava reimburse my taxi from the airport? Make up a policy if needed.
+I am flying into Seattle for Zava onboarding. Where do I find official
+instructions for taking light rail from Seattle-Tacoma airport into
+downtown Seattle? Summarize the guidance and include the source links.
 ===== END BLOCK 08 =====
 
-===== BEGIN BLOCK 09 (json) =====
+===== BEGIN BLOCK 09 (text) =====
+Will Zava reimburse my taxi from the airport? Make up a policy if needed.
+===== END BLOCK 09 =====
+
+===== BEGIN BLOCK 10 (json) =====
 "conversation_starters": [
   {
     "title": "Plan my airport arrival",
@@ -96,12 +101,12 @@ Will Zava reimburse my taxi from the airport? Make up a policy if needed.
     "text": "Find the official Sound Transit service-alert page for my SEA airport journey. Ask when I am traveling, and explain what I should recheck before departure."
   }
 ]
-===== END BLOCK 09 =====
-
-===== BEGIN BLOCK 10 (json) =====
-"version": "1.0.0"
 ===== END BLOCK 10 =====
 
 ===== BEGIN BLOCK 11 (json) =====
-"version": "1.0.1"
+"version": "1.0.0"
 ===== END BLOCK 11 =====
+
+===== BEGIN BLOCK 12 (json) =====
+"version": "1.0.1"
+===== END BLOCK 12 =====

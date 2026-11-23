@@ -85,14 +85,3 @@ Copy-Item "$assets\currency-instructions.mcp.txt" '.\appPackage\instruction.txt'
 ===== BEGIN BLOCK 13 (json) =====
 "validDomains": ["api.frankfurter.dev", "mcp.frankfurter.dev"]
 ===== END BLOCK 13 =====
-
-===== BEGIN BLOCK 14 (powershell) =====
-Set-Location C:\Users\Admin\ma-2041
-.\scripts\Prepare-Node.ps1
-===== END BLOCK 14 =====
-
-===== BEGIN BLOCK 15 (powershell) =====
-. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 22
-Set-Location C:\Users\Admin\ma-2041\Day1\Lab3-CopilotConnector\connector
-npm.cmd ci --ignore-scripts --no-audit --no-fund
-===== END BLOCK 15 =====

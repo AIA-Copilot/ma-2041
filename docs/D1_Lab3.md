@@ -44,7 +44,7 @@ CONNECTOR_NAME=Zava Travel
 
 ## 3. Provision locally, then grant admin consent
 
-**Before debugging:** Complete [Prepare for Lab 3](D1_Lab2.md#prepare-for-lab-3), including the Azure Functions extension. Wait for the dependency installation in the left window to finish successfully. In the right window's terminal, run `func --version`; it must report `4.x`. If Core Tools was just installed, close **all VS Code windows** and restart the app before checking again.
+**Before debugging:** Complete the [Before Lab 3](D1_Lab2.md#before-lab-3) check: the setup started during Lab 1 must show **DAY 1 PREPARATION COMPLETE**, followed by a full restart of all VS Code windows. In the right window's terminal, run `func --version`; it must report `4.x`. The setup has already installed the Azure Functions extension and connector dependencies.
 
 **Phone required:** Have Microsoft Authenticator installed and your phone available. If Entra asks you to set up MFA, add the supplied lab account as a **Work or school account** and complete the on-screen registration. This adds a separate entry for the lab account. Keep it until all exercises and sign-ins with that account are finished, then remove only that lab entry. Leave existing personal and work entries unchanged.
 

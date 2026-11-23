@@ -2,7 +2,8 @@
 
 Start with [Lab 4](../../docs/D1_Lab4.md). Build a new agent combining public travel web search, the Lab 3 Zava connection and the Lab 2 currency MCP action.
 
-- `assets/`: combined agent definition, instructions and conversation starters. Replace the connection placeholder with your actual Lab 3 connection ID.
+- `../../scripts/Start-Lab4.ps1`: prepares the project with the working Lab 3 connection ID and opens a new VS Code window. Prerequisites must already be installed.
+- `assets/`: combined agent definition, instructions and conversation starters used by the startup script.
 - `finished/`: source reference using the new definition and the existing WIQD-generated lifecycle. Not a provisioned app; connection placeholder must be replaced.
 - `generated-baseline/`: historical, unmodified WIQD 1.0.0 scaffold. Its Briefing Coach name and generated Toolkit/F5 instructions are not this exercise.
 - `check-source.mjs`: optional local content/reference check, not WIQD validation or tenant acceptance.

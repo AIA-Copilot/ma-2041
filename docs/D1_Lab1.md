@@ -31,6 +31,19 @@ Use the Toolkit version installed by the normal **Install** button. This lab doe
 3. Set **Upload custom apps** to **On**.
 4. Select **Save**. The change can take a few hours to apply.
 
+## Start Day 1 preparation
+
+In this **course window**, open the Terminal and run:
+
+```powershell
+Set-Location C:\Users\Admin\ma-2041
+.\scripts\Prepare-Day1.ps1
+```
+
+Leave the terminal running while you continue Lab 1. It prepares Node, Azure Functions Core Tools, the Azure Functions extension, the Lab 3 connector dependencies and WIQD for Lab 4. Complete any Microsoft installer prompts when they appear. Do not start another installation in a second terminal.
+
+You can hide the terminal panel with **X**; do not use its trash-can button or close this window while preparation is running. Wait for **DAY 1 PREPARATION COMPLETE** before closing VS Code. If an error appears, show the instructor the output. Sign-in, tenant permissions and WIQD terms remain part of their labs, not this preparation.
+
 ## Clear the workspace and check Copilot access
 
 1. Close the **Output/Terminal** pane at the bottom of VS Code using the **X** at the top-right of that pane.
