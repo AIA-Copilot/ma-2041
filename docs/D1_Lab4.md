@@ -4,7 +4,7 @@
 
 Use WIQD to create a new Zava Travel Assistant combining official travel web sources, the currency MCP action and the indexed Zava policies. Follow one workflow: **prepare the project → inspect → validate → provision → test → evaluation demo**. Your earlier agents and indexed documents stay unchanged.
 
-Prerequisites are prepared during Lab 1. Wait for **DAY 1 PREPARATION COMPLETE** before starting. This lab does not repeat those installs.
+Prerequisites are prepared during Lab 1. The launcher checks Node 24 and WIQD 1.0.0 before opening the project. It does not reinstall them.
 
 ## 1. Prepare and open the project
 
@@ -14,6 +14,8 @@ Prerequisites are prepared during Lab 1. Wait for **DAY 1 PREPARATION COMPLETE**
 Set-Location C:\Users\Admin\ma-2041
 .\scripts\Start-Lab4.ps1
 ```
+
+If the launcher reports **DAY 1 CHECK FAILED**, run `.\scripts\Prepare-Day1.ps1 -Target Lab4` in the same terminal. Wait for **DAY 1 PREPARATION COMPLETE (Lab4)**, then run `.\scripts\Start-Lab4.ps1` again. This repairs Lab 4 tools without reinstalling the connector or Azure Functions. Do not start it while another preparation script is running.
 
 2. For a new project, the script displays the WIQD licence link. Review it. If you agree and are authorized, type **ACCEPT** and complete any further consent prompt. Otherwise, stop.
 3. Sign in with the **same Microsoft 365 lab account** used in Labs 1–3. Complete MFA if prompted. Check the account shown by the script.

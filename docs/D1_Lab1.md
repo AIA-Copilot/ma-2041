@@ -42,7 +42,7 @@ Set-Location C:\Users\Admin\ma-2041
 
 Leave the terminal running while you continue Lab 1. It prepares Node, Azure Functions Core Tools, the Azure Functions extension, the Lab 3 connector dependencies and WIQD for Lab 4. Complete any Microsoft installer prompts when they appear. Do not start another installation in a second terminal.
 
-You can hide the terminal panel with **X**; do not use its trash-can button or close this window while preparation is running. Wait for **DAY 1 PREPARATION COMPLETE** before closing VS Code. If an error appears, show the instructor the output. Sign-in, tenant permissions and WIQD terms remain part of their labs, not this preparation.
+You can hide the terminal panel with **X**; do not use its trash-can button or close this window while preparation is running. Wait for **DAY 1 PREPARATION COMPLETE** before closing VS Code. If **DAY 1 PREPARATION FAILED** appears, stop at that stage and show the instructor the first error. After resolving it, rerun the command; do not assume later tools were installed. Sign-in, tenant permissions and WIQD terms remain part of their labs, not this preparation.
 
 ## Clear the workspace and check Copilot access
 

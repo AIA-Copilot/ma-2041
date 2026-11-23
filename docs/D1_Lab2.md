@@ -228,6 +228,13 @@ These instructions are original course material. The creation/testing route foll
 
 In the **left course window**, check that the preparation started in Lab 1 shows **DAY 1 PREPARATION COMPLETE**. If it is still running, let it finish. If it failed or was not started, return to [Start Day 1 preparation](D1_Lab1.md#start-day-1-preparation); do not start a second installer alongside it.
 
-After preparation finishes, save your work, close **all VS Code windows**, and reopen VS Code from Start. **Reload Window is not enough.** Reopen the course repository on the left and `CurrencyAssistant` on the right. No separate npm installation is needed here.
+After preparation finishes, save your work, close **all VS Code windows**, and reopen VS Code from Start. **Reload Window is not enough.** Reopen the course repository on the left and `CurrencyAssistant` on the right. Then, in the left course-window Terminal, check the local connector tools:
+
+```powershell
+Set-Location C:\Users\Admin\ma-2041
+.\scripts\Test-Day1.ps1 -Target Lab3
+```
+
+Wait for **DAY 1 LOCAL TOOL CHECKS PASSED (Lab3)**. If this fails, run `.\scripts\Prepare-Day1.ps1 -Target Lab3` in that terminal, wait for completion, then close all VS Code windows and reopen them. Do not run two preparation scripts at once.
 
 When you are ready to go on to Lab 3, [click here](D1_Lab3.md).

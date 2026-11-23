@@ -31,6 +31,12 @@ Keep the lab entry until you have finished all exercises and no longer need to s
 
 **Continue in Lab 1.** Follow its Toolkit installation, start the shared Day 1 preparation script, and continue the Copilot access steps while preparation runs.
 
+## Check Day 1 setup
+
+After the Lab 1 preparation finishes, run `.\scripts\Test-Day1.ps1` in the course-window Terminal. It must report **DAY 1 LOCAL TOOL CHECKS PASSED (All)**. This checks local TypeScript, Azurite and WIQD, not tenant permissions or agent responses.
+
+If a check fails, use `.\scripts\Prepare-Day1.ps1 -Target Lab3` or `-Target Lab4` for that lab. Wait for completion before retrying. Do not run preparation scripts in parallel.
+
 ## Lab guides
 
 In VS Code, right-click a guide and select **Open in Preview**.

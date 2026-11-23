@@ -8,10 +8,7 @@ $assets = Join-Path $root 'Day1\Lab4-WIQD\assets'
 $currency = Join-Path $root 'Day1\Lab2-CurrencyConverter\currency-plugin.mcp.json'
 $wiqd = Join-Path $root 'tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
 
-if (-not (Test-Path -LiteralPath $wiqd)) { throw 'Complete Prepare-Day1.ps1 before starting Lab 4.' }
-. (Join-Path $PSScriptRoot 'Use-Node.ps1') -Version 24
-$version = (& $wiqd --version | Out-String).Trim()
-if ($LASTEXITCODE -ne 0 -or $version -ne '1.0.0') { throw 'This lab requires the prepared WIQD 1.0.0 installation.' }
+& (Join-Path $PSScriptRoot 'Test-Day1.ps1') -Target Lab4
 $code = Get-Command code.cmd -CommandType Application -ErrorAction Stop | Select-Object -First 1
 if (-not (Test-Path -LiteralPath $lab1)) { throw 'Open your working ZavaLab1 project and complete Lab 3 first.' }
 $sourceAgent = Get-Content -LiteralPath $lab1 -Raw | ConvertFrom-Json

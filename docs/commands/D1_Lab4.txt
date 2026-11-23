@@ -48,3 +48,14 @@ link, and estimate 100 USD in CAD for my example budget. Separate company
 policy, public guidance and the currency estimate. Do not book or pay
 for anything.
 ===== END BLOCK 09 =====
+
+===== BEGIN BLOCK 10 (powershell) =====
+$stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+$report = ".evals/zava-demo-$stamp.html"
+& $wiqd agent eval --env dev --config evals/zava-demo.json `
+    --judge-backend azure --concurrency 1 --eval-log-level info `
+    --output $report
+if ($LASTEXITCODE -ne 0) { throw 'Evaluation did not complete; inspect the error' }
+if (-not (Test-Path $report)) { throw 'No scorecard was produced' }
+Start-Process $report
+===== END BLOCK 10 =====

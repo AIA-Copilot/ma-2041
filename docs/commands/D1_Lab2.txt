@@ -85,3 +85,8 @@ Copy-Item "$assets\currency-instructions.mcp.txt" '.\appPackage\instruction.txt'
 ===== BEGIN BLOCK 13 (json) =====
 "validDomains": ["api.frankfurter.dev", "mcp.frankfurter.dev"]
 ===== END BLOCK 13 =====
+
+===== BEGIN BLOCK 14 (powershell) =====
+Set-Location C:\Users\Admin\ma-2041
+.\scripts\Test-Day1.ps1 -Target Lab3
+===== END BLOCK 14 =====

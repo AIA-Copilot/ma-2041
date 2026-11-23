@@ -1,4 +1,5 @@
-# Prepare pinned portable Node runtimes and the Core Tools v4 Windows installer.
+# Prepare pinned portable Node runtimes and, unless skipped, Core Tools v4.
+param([switch]$SkipFunctions)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $tools = Join-Path $root 'tools'
@@ -16,7 +17,7 @@ foreach ($version in @('22.22.2','24.15.0')) {
         continue
     }
     $zip = Join-Path $tools $pin.file
-    Invoke-WebRequest "https://nodejs.org/dist/v$version/$($pin.file)" -OutFile $zip
+    Invoke-WebRequest "https://nodejs.org/dist/v$version/$($pin.file)" -UseBasicParsing -OutFile $zip
     if ((Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pin.sha256) {
         throw "Node archive checksum mismatch: $version. Do not extract or execute it."
     }
@@ -25,5 +26,5 @@ foreach ($version in @('22.22.2','24.15.0')) {
     if ($LASTEXITCODE -ne 0 -or $actual -ne "v$version") { throw "Node runtime check failed: $version" }
     Write-Host "Prepared: $actual"
 }
-& (Join-Path $PSScriptRoot 'Prepare-Functions.ps1')
+if (-not $SkipFunctions) { & (Join-Path $PSScriptRoot 'Prepare-Functions.ps1') }
 Write-Host 'Use . .\scripts\Use-Node.ps1 -Version 22 for connector setup; -Version 24 for WIQD.'
