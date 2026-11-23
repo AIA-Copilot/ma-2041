@@ -8,18 +8,26 @@ This reuses your Lab 3 connection. It does not ingest the documents again or cha
 
 ## 1. Create the new project
 
-1. Open the **Terminal** in VS Code. Paste and run:
+Keep the instructions in the **left window**. Reuse the **ZavaLab1 window on the right**. If it is closed, open a new VS Code window and place it on the right. Save any open work before continuing.
+
+1. In the **right window**, open the **Terminal**. Run the following commands to select Node 24 and install WIQD into the course tools folder if it is missing. These commands do not modify ZavaLab1:
+
 
 ```powershell
 . C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
 $wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
 $lab = 'C:\Users\Admin\ma-2041\Day1\Lab4-WIQD'
 $project = 'C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD'
+if (-not (Test-Path -LiteralPath $wiqd)) {
+    npm.cmd install --prefix 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0' `
+        --save-exact @microsoft/wiqd@1.0.0 --no-audit --no-fund
+    if ($LASTEXITCODE -ne 0) { throw 'WIQD installation failed' }
+}
 & $wiqd --version
 & $wiqd auth status
 ```
 
-2. Use the supplied **WIQD 1.0.0** installation. If sign-in is needed, run `& $wiqd auth login --interactive` and use your assigned training account. If WIQD requires terms acceptance, review the terms. If you agree and are authorized to accept them, run `& $wiqd eula accept wiqd`. This exercise does not use Work IQ or Marketplace publishing.
+2. Wait for installation to finish and confirm the version is **1.0.0**. If sign-in is needed, run `& $wiqd auth login --interactive` and use your assigned training account. If WIQD requires terms acceptance, review the terms. If you agree and are authorized to accept them, run `& $wiqd eula accept wiqd`. This exercise does not use Work IQ or Marketplace publishing.
 3. Create the project and its declarative agent:
 
 ```powershell
@@ -28,10 +36,10 @@ if ($LASTEXITCODE -ne 0) { throw 'Project creation failed' }
 Set-Location $project
 & $wiqd plugin add agent --name 'Zava Travel Assistant'
 if ($LASTEXITCODE -ne 0) { throw 'Agent creation failed' }
-code .
+code -r .
 ```
 
-4. In the new project window, open a terminal and set the variables again:
+4. The new **ZavaTravelWIQD** project opens in the **same right window**. Open a new terminal there and set the variables again:
 
 ```powershell
 . C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24

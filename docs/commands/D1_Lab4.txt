@@ -6,6 +6,11 @@ Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbe
 $wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
 $lab = 'C:\Users\Admin\ma-2041\Day1\Lab4-WIQD'
 $project = 'C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD'
+if (-not (Test-Path -LiteralPath $wiqd)) {
+    npm.cmd install --prefix 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0' `
+        --save-exact @microsoft/wiqd@1.0.0 --no-audit --no-fund
+    if ($LASTEXITCODE -ne 0) { throw 'WIQD installation failed' }
+}
 & $wiqd --version
 & $wiqd auth status
 ===== END BLOCK 01 =====
@@ -16,7 +21,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Project creation failed' }
 Set-Location $project
 & $wiqd plugin add agent --name 'Zava Travel Assistant'
 if ($LASTEXITCODE -ne 0) { throw 'Agent creation failed' }
-code .
+code -r .
 ===== END BLOCK 02 =====
 
 ===== BEGIN BLOCK 03 (powershell) =====
