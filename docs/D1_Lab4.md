@@ -2,7 +2,7 @@
 
 ## Outcome
 
-Use WIQD to create a new Zava Travel Assistant combining official travel web sources, the currency MCP action and the indexed Zava policies. Follow one workflow: **prepare the project → inspect → validate → provision → test**. Your earlier agents and indexed documents stay unchanged.
+Use WIQD to create a new Zava Travel Assistant combining official travel web sources, the currency MCP action and the indexed Zava policies. Follow one workflow: **prepare the project → inspect → validate → provision → test → evaluation demo**. Your earlier agents and indexed documents stay unchanged.
 
 Prerequisites are prepared during Lab 1. Wait for **DAY 1 PREPARATION COMPLETE** before starting. This lab does not repeat those installs.
 
@@ -121,8 +121,32 @@ Check for a Zava policy citation, an official public link and an actual currency
 
 If you edit the agent after provisioning, increase the source **appPackage/manifest.json** app `version`, run source validation and provision again in **dev**. Test in a fresh conversation. Do not edit **manifest.dev.json**.
 
+## 5. Instructor demo: evaluate the agent
+
+**Watch the instructor; do not run these commands on your lab VM.** The instructor uses a prepared evaluation environment and an approved Azure judge model. Students need no Azure resources, GitHub account or additional installation.
+
+1. Open `Day1/Lab4-WIQD/evals/zava-demo.json` in the **left instructions window**. The four scenarios cover taxi reimbursement, the missing hotel limit, receipt requirements and currency-estimate boundaries. Each has a reference answer and source context.
+2. Watch the instructor run the supplied set against the deployed Zava Travel Assistant. From the prepared instructor project's terminal:
+
+```powershell
+$stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+$report = ".evals/zava-demo-$stamp.html"
+& $wiqd agent eval --env dev --config evals/zava-demo.json `
+    --judge-backend azure --concurrency 1 --eval-log-level info `
+    --output $report
+if ($LASTEXITCODE -ne 0) { throw 'Evaluation did not complete; inspect the error' }
+if (-not (Test-Path $report)) { throw 'No scorecard was produced' }
+Start-Process $report
+```
+
+3. Read one scorecard result together: the prompt, actual answer, reference answer, evaluator score, threshold and explanation. **Relevance** checks the answer addresses the request; **Coherence** checks clarity; **Groundedness** checks support against the reference; **Similarity** checks agreement with it. The configured threshold is **4 out of 5** for each evaluator. A judge score is evidence to inspect, not a guarantee.
+4. Compare the actual answer with the source. A wrong answer may need better instructions or grounding. A sign-in, permission or judge error is a failed evaluation run, not proof of a poor agent. Missing scores are not passes.
+5. If a genuine agent defect appears, the instructor makes a focused correction, increases the source app version, validates and provisions again, then reruns the **unchanged** evaluation set to compare scorecards. Do not lower thresholds or remove difficult cases to improve the score.
+
+This small demo evaluates answer quality. It does **not** score citation correctness, live exchange-rate accuracy or actual MCP execution. Keep the manual action checks from Step 4. If live evaluation is unavailable, the instructor may show a previously captured real scorecard, clearly labelled as a prior run; do not claim a new run succeeded.
+
 ## Summary
 
-You used WIQD to deploy a new agent that combines company knowledge, public web information and an MCP action. WIQD manages the project lifecycle; Microsoft 365 Copilot runs the agent. The existing connection continues to supply the Zava documents without embedding them in the package.
+You used WIQD to deploy a new agent that combines company knowledge, public web information and an MCP action. WIQD manages the project lifecycle; Microsoft 365 Copilot runs the agent. The instructor demo shows how a repeatable evaluation set supports an inspect, improve and rerun cycle. The existing connection continues to supply the Zava documents without embedding them in the package.
 
 Keep the project and Lab 3 connection available for the course demonstration. Cleanup follows the instructor's instructions.
