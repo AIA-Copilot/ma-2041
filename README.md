@@ -44,9 +44,6 @@ In VS Code, right-click a guide and select **Open in Preview**.
 
 ### Day 2 — AI-3026 virtual labs
 
-1. [Lab 1 — Foundry agent](docs/D2_Lab1.md)
-2. [Lab 2 — Grounding and evaluation](docs/D2_Lab2.md)
-3. [Lab 3 — C# bridge](docs/D2_Lab3.md)
-4. [Lab 4 — Microsoft 365 integration architecture (read-only)](docs/D2_Lab4.md)
+Complete Microsoft's **AI-3026 Agent Framework lab** first and defer its cleanup. Then follow the single [Python agent extension — Teams and Copilot](docs/D2_Lab1.md).
 
 For PDF copies, open the **Labs** folder.

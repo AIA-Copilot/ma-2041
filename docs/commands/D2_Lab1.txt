@@ -2,17 +2,36 @@ D2_Lab1 — exact code and prompt blocks
 Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbered step in the guide. Copy only the required block contents, not BEGIN/END labels. Never run this whole file. PDF code is display-only because wrapping can change clipboard text.
 
 ===== BEGIN BLOCK 01 (text) =====
-You are Contoso's fictional IT policy learning assistant.
-Answer questions about IT policies and support procedures.
-Use attached policy documents as evidence when available.
-Distinguish documented policy from general advice.
-If a requested fact is not in the supplied policy, say it is not documented.
-Do not invent policy limits, approvals, contacts, or completed actions.
-You cannot reset passwords, install software, or create tickets.
-Never ask for a password, token, or security answer.
-Keep answers concise and explain what the employee should do next.
+C:\Users\Admin\ma-2041\Day2\Lab1-AgentFramework-Extension
 ===== END BLOCK 01 =====
 
-===== BEGIN BLOCK 02 (text) =====
-https://<resource>.services.ai.azure.com/api/projects/<project>
+===== BEGIN BLOCK 02 (powershell) =====
+py -3.13 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.lock.txt
+python -m pytest -q
+az login
+python console.py
 ===== END BLOCK 02 =====
+
+===== BEGIN BLOCK 03 (powershell) =====
+devtunnel --version
+devtunnel user login
+devtunnel user show
+===== END BLOCK 03 =====
+
+===== BEGIN BLOCK 04 (powershell) =====
+devtunnel user login -d
+===== END BLOCK 04 =====
+
+===== BEGIN BLOCK 05 (powershell) =====
+Copy-Item env/.env.local.example env/.env.local
+===== END BLOCK 05 =====
+
+===== BEGIN BLOCK 06 (powershell) =====
+curl.exe -i -X POST http://127.0.0.1:3978/api/messages -H "Content-Type: application/json" -d "{}"
+===== END BLOCK 06 =====
+
+===== BEGIN BLOCK 07 (text) =====
+Submit an expense claim
+===== END BLOCK 07 =====

@@ -1,0 +1,43 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1 Start approved DevTunnel",
+      "type": "teamsfx",
+      "command": "debug-start-local-tunnel",
+      "args": {
+        "type": "dev-tunnel",
+        "ports": [
+          {
+            "portNumber": 3978,
+            "protocol": "http",
+            "access": "public",
+            "writeToEnvironmentFile": {
+              "endpoint": "BOT_ENDPOINT",
+              "domain": "BOT_DOMAIN"
+            }
+          }
+        ],
+        "env": "local"
+      },
+      "isBackground": true,
+      "problemMatcher": "$teamsfx-local-tunnel-watch"
+    },
+    {
+      "label": "2 Provision assigned lab resources",
+      "type": "teamsfx",
+      "command": "provision",
+      "args": {
+        "env": "local"
+      }
+    },
+    {
+      "label": "3 Write private channel configuration",
+      "type": "teamsfx",
+      "command": "deploy",
+      "args": {
+        "env": "local"
+      }
+    }
+  ]
+}

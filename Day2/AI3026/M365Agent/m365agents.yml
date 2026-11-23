@@ -1,3 +1,0 @@
-# Default lifecycle intentionally has no cloud actions. Use local explicitly after Lab 4 gates.
-version: v1.11
-environmentFolderPath: ./env

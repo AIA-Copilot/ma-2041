@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "botName": {
+      "value": "${{BOT_SERVICE_NAME}}"
+    },
+    "botId": {
+      "value": "${{BOT_ID}}"
+    },
+    "tenantId": {
+      "value": "${{BOT_TENANT_ID}}"
+    },
+    "botEndpoint": {
+      "value": "${{BOT_ENDPOINT}}"
+    }
+  }
+}

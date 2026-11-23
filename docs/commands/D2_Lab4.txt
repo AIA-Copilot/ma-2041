@@ -1,2 +1,0 @@
-D2_Lab4 — exact code and prompt blocks
-Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbered step in the guide. Copy only the required block contents, not BEGIN/END labels. Never run this whole file. PDF code is display-only because wrapping can change clipboard text.
