@@ -18,6 +18,8 @@ Keep the course instructions open in the **left window**. Use the **Lab 2 Curren
 C:\Users\Admin\ma-2041\Day1\Lab3-CopilotConnector\connector
 ```
 
+If VS Code asks whether to open the Git repository in the parent folder, select **Never**. If the **left instructions window** asks to initialize `ma-2041` as an Azure Functions project, select **Don't warn again**, not **Yes**. The connector already has its project configuration. Changing a terminal directory does not change the folder opened in VS Code.
+
 2. Open `content/CF-001.md` through `CF-005.md`. These five documents cover arrival/office check-in, hotels, ground transport reimbursement, accessibility and support. All are fictional training content, not real company policy. Note each document's `id`, `title`, `lastModified`, `owner`, `abstract` and body. Read CF-003's taxi conditions; you will check the answer against this file later.
 3. Open `src/custom/getExternalItemFromItem.ts`. The `everyone` ACL makes the indexed synthetic items visible tenant-wide; it does not implement confidential per-client access. Do not add private documents.
 4. Open `aad.manifest.json`. The connector requires Microsoft Graph **application** permissions `ExternalConnection.ReadWrite.OwnedBy` and `ExternalItem.ReadWrite.OwnedBy`. They let its app identity manage connections it owns and their items, not all tenant connections. An authorized tenant administrator must grant consent; a student sign-in alone does not grant it.
@@ -35,15 +37,19 @@ CONNECTOR_ID=zavatravel
 CONNECTOR_NAME=Zava Travel
 ```
 
-3. The code appends `local`, so the actual connection ID is **`zavatravellocal`**. Keep `TEAMSFX_ENV=local` and the other settings unchanged.
+3. The code appends `local`, so the actual connection ID is **`zavatravellocal`**. Do not add `local` to `CONNECTOR_ID`; the code adds it once. Keep `TEAMSFX_ENV=local` and the other settings unchanged. If you already created a connection during rehearsal, keep its existing settings and use the actual ID from its log.
 4. The supplied `CONNECTOR_BASE_URL` points to the public AIA course content directory. The adapter adds `.md` to each item ID, so a citation can open the actual fictional Zava file. This is a source link, not a server the student must start. Leave it unchanged for the supplied data.
 
 **Checkpoint:** confirm your base ID and expected combined ID. Never share passwords or client secrets.
 
 ## 3. Provision locally, then grant admin consent
 
+**Before debugging:** Complete [Prepare for Lab 3](D1_Lab2.md#prepare-for-lab-3), including the Azure Functions extension. Wait for the dependency installation in the left window to finish successfully. In the right window's terminal, run `func --version`; it must report `4.x`. If Core Tools was just installed, close **all VS Code windows** and restart the app before checking again.
+
+**Phone required:** Have Microsoft Authenticator installed and your phone available. If Entra asks you to set up MFA, add the supplied lab account as a **Work or school account** and complete the on-screen registration. This adds a separate entry for the lab account. Keep it until all exercises and sign-ins with that account are finished, then remove only that lab entry. Leave existing personal and work entries unchanged.
+
 1. In Agents Toolkit confirm the assigned Microsoft 365 training account/tenant. Select **Run and Debug > Debug Connector**, then press **F5**. Use the **local** environment only. Do not select Deploy to Azure or a `dev` environment. If asked for an Azure subscription, cancel: that is not this lab's path.
-2. The tasks start Azurite locally, provision the Entra app, generate ignored local settings, compile TypeScript, and start the local Functions host with the debugger. Task runtime is explicitly Node 22; changing a terminal to Node 24 does not change this task configuration.
+2. The tasks start Azurite locally, provision the Entra app, generate ignored local settings, compile TypeScript, and start the local Functions host with the debugger. Task runtime is explicitly Node 22; changing a terminal to Node 24 does not change this task configuration. Startup and first-time schema creation can take several minutes. If VS Code offers **Debug Anyway** while startup is still progressing, wait rather than bypassing the task. If output stops or an error appears, show the instructor the terminal output.
 3. Open the task terminal **func: host start**. The startup ingestion attempts app-only authentication. If consent is absent it prints an Entra app-permissions link. Have the authorized administrator open that link in their own signed-in browser, verify the app/client ID against `env/.env.local`, inspect the two **application** permissions from step 1, then select **Grant admin consent** for the training tenant.
 4. Verify the portal shows both permissions **Granted for** the correct tenant. Do not share the generated secret, `local.settings.json`, or `.env.local.user`. If the runtime's ten-minute consent window expired, stop debugging and restart **after** consent. Do not create another registration just because consent took time.
 
@@ -53,22 +59,22 @@ CONNECTOR_NAME=Zava Travel
 
 1. In the Functions task terminal look for `Creating connection <id>` / `Connection <id> was created` (or `already exists`), then schema creation and search-settings update on the first run. Copy the **actual** connection ID from the log, not just your predicted value.
 2. Watch `Loading CF-001...` through `Loading CF-005...`. There must be no `Failed to load` messages. **Loading is an attempt, not proof of success:** the upstream sample catches item errors and can finish the function even when an item failed. A successful timer invocation by itself is not your pass condition.
-3. Open [Microsoft 365 admin center — connectors](https://admin.cloud.microsoft/#/copilot/connectors). Find **your** named connection and confirm its ID and **Ready** state. If a required action offers **Include Connector Results**, have the authorized administrator review/enable it. Use the connection's status/item information to check successful ingestion where available; a zero-item connection is not complete.
-4. Open [Microsoft 365 Search](https://m365.cloud.microsoft/search). Copy and paste this search:
+3. After all five files load without errors and `Functions.deployConnection` reports success, select **Stop** in the debug toolbar or press **Shift+F5**. If Azurite remains running, use **Terminal > Terminate Task** to stop it. Uploaded content remains in Microsoft 365; indexing can continue after the local host stops.
+4. Open [Microsoft 365 admin center — connectors](https://admin.cloud.microsoft/#/copilot/connectors). Find **your** named connection and confirm its ID and **Ready** state. If a required action offers **Include Connector Results**, have the authorized administrator review/enable it. Use the connection's status/item information to check successful ingestion where available; a zero-item connection is not complete.
+5. Open [Microsoft 365 Search](https://m365.cloud.microsoft/search). Copy and paste this search:
 
 ```text
 Zava ground transport reimbursement policy
 ```
 
-5. Verify the returned title/source belongs to your Zava Travel connection. Open the source link and compare it with `content/CF-003.md`. The public GitHub page alone proves only source reachability, not tenant ingestion. Check a distinctive title or phrase from each of the other four supplied files as well, using the source/connection filter if available so another learner's duplicate content does not count as your proof.
-6. Indexing is asynchronous. **Ready**, item upload, search visibility and Copilot grounding may occur at different times. Allow propagation and recheck; do not loop F5 or delete/recreate the connection to force indexing. If the lesson window expires, distinguish **ingested / search pending** as appropriate and complete the agent authoring step while keeping the live-answer gate open.
-7. Once ingestion is verified, stop debugging and terminate the Azurite/host tasks. Synced content stays in Microsoft 365; an agent query does not require this local host to remain running.
+6. Verify the returned title/source belongs to your Zava Travel connection. Open the source link and compare it with `content/CF-003.md`. The public GitHub page alone proves only source reachability, not tenant ingestion. Check a distinctive title or phrase from each of the other four supplied files as well, using the source/connection filter if available so another learner's duplicate content does not count as your proof.
+7. Indexing is asynchronous. **Ready**, item upload, search visibility and Copilot grounding may occur at different times. Allow propagation and recheck; do not loop F5 or delete/recreate the connection to force indexing. If the lesson window expires, distinguish **ingested / search pending** as appropriate and complete the agent authoring step while keeping the live-answer gate open.
 
 **Checkpoint:** actual connection ID, Ready status, all five upload attempts without errors, and search evidence for your indexed source. Separate any unverified condition explicitly.
 
 ## 5. Extend your Lab 1 Zava agent
 
-1. In a second VS Code window, use **File > Open Folder** to reopen your existing project:
+1. In the same **right window**, use **File > Open Folder** to reopen your existing project:
 
 ```text
 C:\Users\Admin\AgentsToolkitProjects\ZavaLab1
@@ -76,8 +82,7 @@ C:\Users\Admin\AgentsToolkitProjects\ZavaLab1
 
 Do not create another agent or open the Lab 2 CurrencyAssistant project. If ZavaLab1 is missing, ask the instructor to recover your Lab 1 project first.
 
-2. Open `appPackage/declarativeAgent.json` (or the file referenced by `copilotAgents.declarativeAgents[].file` in `appPackage/manifest.json`). Preserve its display name **Zava New-Hire Travel Assistant**, schema/version, instructions file reference, conversation starters and other properties. Keep the app IDs, names, icons and agent references in `manifest.json` unchanged.
-3. Open `appPackage/instruction.txt`, the instruction file used in Lab 1. **Replace** its contents with the following text. Do not append it to the old instruction that refused all company-policy questions:
+2. Open `appPackage/instruction.txt`, the instruction file used in Lab 1. **Replace** its contents with the following text. Do not append it to the old instruction that refused all company-policy questions:
 
 ```text
 # Zava New-Hire Travel Assistant
@@ -113,7 +118,7 @@ Ask about practical accessibility needs, not diagnoses. Do not request
 passport numbers, payment details or employee identifiers.
 ```
 
-4. In the declarative-agent JSON, replace only the `capabilities` array with the following. Keep Lab 1's **WebSearch** and add **GraphConnectors** alongside it. Replace the connection placeholder with your **actual** verified connection ID from section 4. This is a property fragment, not a complete file:
+3. Open `appPackage/declarativeAgent.json` and replace only the `capabilities` array with the following. This keeps **WebSearch** and adds **GraphConnectors**. Keep a comma between adjacent properties and only one `capabilities` property. This is a property fragment, not a complete file:
 
 ```json
 "capabilities": [
@@ -127,15 +132,15 @@ passport numbers, payment details or employee identifiers.
   {
     "name": "GraphConnectors",
     "connections": [
-      { "connection_id": "REPLACE_WITH_ACTUAL_CONNECTION_ID" }
+      { "connection_id": "zavatravellocal" }
     ]
   }
 ]
 ```
 
-5. Keep a comma between adjacent properties and only one `capabilities` property. This remains a **No Action** agent: do not add an API plugin, actions or a tunnel. Instructions guide behavior; the connector ACL and tenant permissions control access.
-6. In the source **appPackage/manifest.json**, increase the top-level app `version` above your last published Lab 1 version (for example `1.0.1` to `1.0.2`). **Do not edit manifest.dev.json** or generated files under `appPackage/build`. If the source version references `${{APP_VERSION}}`, increase that variable in `env/.env.dev`. Leave `manifestVersion`, the declarative schema/version and all identities unchanged.
-7. Save all files and resolve JSON diagnostics. In the agent project's PowerShell terminal, run:
+4. **Set `connection_id` to the exact connection ID you copied from the connector log in section 4.** The supplied settings produce `zavatravellocal`, as shown above. If your log shows a different ID, replace the example with that exact value. This must be the full connection ID, not the shorter search-template ID. The agent cannot use the documents if this value points to a different connection.
+5. In the source **appPackage/manifest.json**, increase the top-level app `version` above your last published Lab 1 version (for example `1.0.1` to `1.0.2`). **Do not edit manifest.dev.json** or generated files under `appPackage/build`. If the source version references `${{APP_VERSION}}`, increase that variable in `env/.env.dev`. Leave `manifestVersion`, the declarative schema/version and all identities unchanged.
+6. Save all files and resolve JSON diagnostics. In the agent project's PowerShell terminal, run:
 
 ```powershell
 Set-Location 'C:\Users\Admin\AgentsToolkitProjects\ZavaLab1'
@@ -143,8 +148,8 @@ Get-Content '.\appPackage\declarativeAgent.json' -Raw | ConvertFrom-Json | Out-N
 Get-Content '.\appPackage\manifest.json' -Raw | ConvertFrom-Json | Out-Null
 ```
 
-8. Use **Toolkit > Lifecycle > Provision > Dev** in **ZavaLab1**, updating the same Lab 1 environment. Confirm the complete run succeeds, including **copilotAgent/publish**. This agent's Dev package lifecycle is separate from the connector's Local host. Cancel any unexpected Azure-hosting or API-exposure prompt and ask the instructor.
-9. Refresh `https://m365.cloud.microsoft/chat`, select **Zava New-Hire Travel Assistant** using the same training account, and start a **new conversation**.
+7. Use **Toolkit > Lifecycle > Provision > Dev** in **ZavaLab1**, updating the same Lab 1 environment. Confirm the complete run succeeds, including **copilotAgent/publish**. This agent's Dev package lifecycle is separate from the connector's Local host. Cancel any unexpected Azure-hosting or API-exposure prompt and ask the instructor.
+8. Refresh `https://m365.cloud.microsoft/chat`, select **Zava New-Hire Travel Assistant** using the same training account, and start a **new conversation**.
 
 **Checkpoint:** the same agent has retained its identity and official WebSearch sites, added your scoped connection, and published a higher app version.
 
@@ -187,10 +192,11 @@ Transit sources. Distinguish that public guidance from fictional Zava policy.
 
 | Symptom | Check / recovery |
 |---|---|
-| `func` missing or wrong Node | Stop and return to the one-time setup owner. Core Tools must be global v4; workspace tasks use the supplied Node 22 path. |
+| `func` missing after installation | Save your work, close all VS Code windows, reopen the app from Start, and create a new terminal. Reload Window is not enough. |
+| `npm` or `npm.cmd` missing in a new terminal | Run `. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 22`, then retry the command. No reinstall is needed if Node was already prepared. |
 | Azurite port already occupied | Stop the previous lab's tasks; do not start another emulator or kill unrelated processes. |
 | 401/403 or consent timeout | Confirm the exact app, tenant, application permissions and admin grant; restart after correction. |
-| Connection ID conflict / not owned | Ask instructor to verify ownership; use a fresh assigned base ID rather than deleting another learner's connection. |
+| Connection ID conflict / not owned | Ask the instructor to verify the connection and app ownership. Do not delete or rename an existing connection to bypass the error. |
 | `Loading` appears but no items/search | Check `Failed to load`, schema errors and connection status first; then allow indexing. |
 | Search works, agent has no answer | Check actual `connection_id`, installed version/account/agent, fresh chat, and Copilot propagation. |
 | Citation opens localhost or 404 | Verify supplied base URL and `.md` URL adaptation; rerun ingestion only after fixing configuration. |

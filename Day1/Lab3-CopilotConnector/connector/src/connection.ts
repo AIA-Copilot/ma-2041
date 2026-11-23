@@ -39,7 +39,8 @@ export async function setSearchSettings(config: Config) {
       searchSettings: {
         searchResultTemplates: [
           {
-            id: config.connector.id,
+            // Display-template IDs have a separate 16-character limit.
+            id: 'zavatravel',
             layout: config.connector.template,
             priority: 1
           }

@@ -2,6 +2,12 @@
 
 Use the provided MS-4018 virtual lab machines for Day 1, and AI-3026 virtual labs for Day 2.
 
+## Before class
+
+Have **Microsoft Authenticator installed on your phone** and keep the phone available during the labs. If prompted during sign-in, add the supplied lab account as a **Work or school account**. This creates a separate Authenticator entry for this lab account; keep your existing personal and work entries unchanged.
+
+Keep the lab entry until you have finished all exercises and no longer need to sign in to that account. You can then remove **only the lab account entry** from Authenticator. You do not need to uninstall the app.
+
 ## Quick start — start the VM and open Lab 1
 
 1. Start the VM lab.

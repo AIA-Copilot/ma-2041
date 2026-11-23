@@ -10,21 +10,18 @@ Run before class, after the root course setup. Learners do not clone or install 
 - Microsoft 365 training tenant, licensed Copilot account able to use declarative agents, custom-app upload allowed, app-registration permission, and an assigned administrator who can grant Microsoft Graph **application** permissions. No Azure subscription is required. Microsoft 365 service/network access is required; this is not an offline tenant lab.
 - Administrator approval to ingest the five **synthetic public** Zava travel/arrival/policy documents with the sample's tenant-wide `everyone` ACL. Never replace them with confidential material.
 
-### Install the Windows Core Tools host
+### Prepare Node and the Windows Core Tools host
 
-If `func --version` already reports v4, record the installed version and use it for rehearsal. Otherwise download the pinned Microsoft x64 MSI inside the VM:
+Run the existing course preparation command in the VS Code terminal:
 
 ```powershell
-$msi = Join-Path $env:TEMP 'func-cli-4.16.1-x64.msi'
-Invoke-WebRequest 'https://github.com/Azure/azure-functions-core-tools/releases/download/4.16.1/func-cli-4.16.1-x64.msi' -OutFile $msi
-$expected = 'a1f7afdc4422f10988604d1ad004cac18123e6339856e3efafc446bc93d63838'
-if ((Get-FileHash $msi -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { throw 'Core Tools download checksum mismatch' }
-$signature = Get-AuthenticodeSignature $msi
-if ($signature.Status -ne 'Valid') { throw 'Core Tools signature is not trusted' }
-$signature.SignerCertificate.Subject
+Set-Location C:\Users\Admin\ma-2041
+.\scripts\Prepare-Node.ps1
 ```
 
-Confirm the displayed publisher is Microsoft Corporation. Open that verified MSI in the VM, review its license and complete the normal installer with the permitted administrator credentials if requested. Do not install from an unverified download or silently replace another major version. Close all VS Code windows and reopen from Start after installation; if `func` is still missing, sign out of and back into the VM after saving work.
+The script reuses the pinned Node runtimes if already present. It also reuses working Core Tools v4. If Core Tools is missing, it downloads the pinned Microsoft x64 installer, verifies its checksum and Microsoft signature, and opens the normal installer. Complete its license and administrator prompts. The download is about 474 MB.
+
+After a new installation, save your work, close all VS Code windows and reopen them. Run `func --version`; it must report `4.x` before debugging. If the installer requests a VM restart, save your work and restart first. The script does not replace another Core Tools major version or restart the VM automatically.
 
 ### Prepare dependencies
 

@@ -64,7 +64,7 @@ passport numbers, payment details or employee identifiers.
   {
     "name": "GraphConnectors",
     "connections": [
-      { "connection_id": "REPLACE_WITH_ACTUAL_CONNECTION_ID" }
+      { "connection_id": "zavatravellocal" }
     ]
   }
 ]

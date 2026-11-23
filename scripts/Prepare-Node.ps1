@@ -1,4 +1,4 @@
-# Download two pinned portable Windows x64 Node runtimes. No system PATH changes.
+# Prepare pinned portable Node runtimes and the Core Tools v4 Windows installer.
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $tools = Join-Path $root 'tools'
@@ -25,4 +25,5 @@ foreach ($version in @('22.22.2','24.15.0')) {
     if ($LASTEXITCODE -ne 0 -or $actual -ne "v$version") { throw "Node runtime check failed: $version" }
     Write-Host "Prepared: $actual"
 }
+& (Join-Path $PSScriptRoot 'Prepare-Functions.ps1')
 Write-Host 'Use . .\scripts\Use-Node.ps1 -Version 22 for connector setup; -Version 24 for WIQD.'
