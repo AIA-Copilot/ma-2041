@@ -37,7 +37,7 @@ CONNECTOR_ID=zavatravel
 CONNECTOR_NAME=Zava Travel
 ```
 
-3. The code appends `local`, so the actual connection ID is **`zavatravellocal`**. Do not add `local` to `CONNECTOR_ID`; the code adds it once. Keep `TEAMSFX_ENV=local` and the other settings unchanged. If you already created a connection during rehearsal, keep its existing settings and use the actual ID from its log.
+3. The code appends `local`, so the actual connection ID is **`zavatravellocal`**. Do not add `local` to `CONNECTOR_ID`; the code adds it once.
 4. The supplied `CONNECTOR_BASE_URL` points to the public AIA course content directory. The adapter adds `.md` to each item ID, so a citation can open the actual fictional Zava file. This is a source link, not a server the student must start. Leave it unchanged for the supplied data.
 
 **Checkpoint:** confirm your base ID and expected combined ID. Never share passwords or client secrets.
