@@ -65,7 +65,10 @@ def preflight(cfg):
     if account['tenantId'].lower() != cfg['BOT_TENANT_ID'].lower():
         raise RuntimeError('Azure CLI tenant differs from the assigned bot tenant. Stop.')
     runtimes = az('webapp', 'list-runtimes', '--os', 'linux')
-    if 'PYTHON:3.13' not in runtimes and 'PYTHON|3.13' not in runtimes:
+    # CLI output can be runtime strings or objects with a config field.
+    runtime_configs = [item.get('config') if isinstance(item, dict) else item
+                       for item in runtimes]
+    if 'PYTHON:3.13' not in runtime_configs and 'PYTHON|3.13' not in runtime_configs:
         raise RuntimeError('Python 3.13 is unavailable. Stop; no runtime or paid fallback.')
 
 

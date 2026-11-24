@@ -87,6 +87,40 @@ def test_bad_settings_refused(field, value):
     ops = load_ops()
     with pytest.raises(ValueError): ops.settings({**config(), field:value})
 
+@pytest.mark.parametrize('runtimes', [
+    ['PYTHON:3.13'],
+    ['PYTHON|3.13'],
+    [{'config': 'NODE|24-lts'}, {'config': 'PYTHON|3.13', 'os': 'Linux',
+      'runtime': 'Python', 'support': 'Active', 'version': '3.13',
+      'end_of_life': '2029-10-31'}],
+])
+def test_preflight_accepts_runtime_output_formats(monkeypatch, runtimes):
+    ops = load_ops()
+    def fake(*args):
+        if args == ('version',): return {'azure-cli': '2.80.0'}
+        if args[0] == 'account': return {'tenantId': config()['BOT_TENANT_ID']}
+        if args == ('webapp', 'list-runtimes', '--os', 'linux'): return runtimes
+        pytest.fail('Unexpected cloud operation')
+    monkeypatch.setattr(ops, 'az', fake)
+    ops.preflight(config())
+
+@pytest.mark.parametrize('runtimes', [
+    [], ['PYTHON|3.12'], [{'config': 'PYTHON|3.12'}],
+    [{'runtime': 'Python', 'version': '3.13'}],
+    [None, 313, {'config': None}],
+    ['PYTHON|3.130'],
+])
+def test_preflight_requires_exact_runtime_config(monkeypatch, runtimes):
+    ops = load_ops()
+    def fake(*args):
+        if args == ('version',): return {'azure-cli': '2.80.0'}
+        if args[0] == 'account': return {'tenantId': config()['BOT_TENANT_ID']}
+        if args == ('webapp', 'list-runtimes', '--os', 'linux'): return runtimes
+        pytest.fail('Unexpected cloud operation')
+    monkeypatch.setattr(ops, 'az', fake)
+    with pytest.raises(RuntimeError, match='Python 3.13 is unavailable'):
+        ops.preflight(config())
+
 @pytest.mark.parametrize('failure', ['version','tenant','runtime'])
 def test_preflight_fails_before_deployment(monkeypatch, failure):
     ops=load_ops(); calls=[]
