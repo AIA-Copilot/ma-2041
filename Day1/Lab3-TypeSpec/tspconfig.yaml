@@ -1,0 +1,11 @@
+emit:
+  - "@typespec/openapi3"
+  - "@microsoft/typespec-m365-copilot"
+options:
+  "@typespec/openapi3":
+    emitter-output-dir: "{project-root}/appPackage/.generated/specs"
+    file-type: json
+  "@microsoft/typespec-m365-copilot":
+    emitter-output-dir: "{project-root}/appPackage/.generated"
+    output-file: declarativeAgent.json
+    file-type: json

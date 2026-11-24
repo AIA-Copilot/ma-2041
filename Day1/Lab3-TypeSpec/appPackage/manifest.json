@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.30/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.30",
+  "version": "${{APP_VERSION}}",
+  "id": "${{TEAMS_APP_ID}}",
+  "developer": {
+    "name": "My App, Inc.",
+    "websiteUrl": "https://www.example.com",
+    "privacyUrl": "https://www.example.com/privacy",
+    "termsOfUseUrl": "https://www.example.com/termofuse"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "ZavaTripCoach",
+    "full": "ZavaTripCoach"
+  },
+  "description": {
+    "short": "Seattle arrival coaching for fictional Zava new hires.",
+    "full": "Plan a Seattle airport arrival using official Port of Seattle and Sound Transit web sources. Training agent; not company policy."
+  },
+  "accentColor": "#FFFFFF",
+  "supportsChannelFeatures": "tier1",
+  "composeExtensions": [],
+  "permissions": [],
+  "validDomains": [],
+  "copilotAgents": {
+    "declarativeAgents": [
+      {
+        "id": "declarativeAgent",
+        "file": ".generated/declarativeAgent.json"
+      }
+    ]
+  }
+}

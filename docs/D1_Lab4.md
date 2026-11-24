@@ -1,154 +1,99 @@
-# Day 1 · Lab 4 — Build Zava Travel Assistant with WIQD
+# Day 1 · Lab 4 — Build an agent with PowerShell and WIQD
 
 ## Outcome
 
-Use WIQD to create a new Zava Travel Assistant combining official travel web sources, the currency MCP action and the indexed Zava policies. Follow one workflow: **prepare the project → inspect → validate → provision → test → evaluation demo**. Your earlier agents and indexed documents stay unchanged.
+Edit **Build-Agent.ps1** to define your own Seattle travel guide, then run its visible create → configure → validate → provision steps. Change the configuration and run again to update the **same agent**. This lab uses **WebSearch only**: no connector, connection ID, previous lab project, MCP service or Azure resource is required.
 
-Prerequisites are prepared during Lab 1. The launcher checks Node 24 and WIQD 1.0.0 before opening the project. It does not reinstall them.
+Use the supplied VM with **Node 24** and **WIQD 1.0.0** prepared. Do not upgrade the tools. Provisioning requires your licensed Microsoft 365 lab account and the tenant's permissions; complete MFA if requested.
 
-## 1. Prepare and open the project
+## 1. Edit your build script
 
-1. Keep the instructions in the **left course window**. In its Terminal, run:
+In the course folder open in **VS Code**, open:
+
+```text
+Day1/Lab4-WIQD/Build-Agent.ps1
+```
+
+Edit the clearly marked configuration at the top:
+
+- **AgentDisplayName:** give your guide a recognizable name, at most 25 characters.
+- **Instructions:** describe its purpose, source requirements and boundaries.
+- **ConversationStarters:** write the title and prompt text learners will see.
+- **ApprovedWebSearchSites:** choose 1–4 official HTTPS sites. Keep Port of Seattle and Sound Transit for the first build.
+
+Leave **ProjectName = 'ZavaScriptAgent'** unchanged so repeat runs use the same project. Save the file. Read the numbered sections below the configuration: you should be able to find `plugin create`, `plugin add agent`, the JSON writes, source validation and provisioning.
+
+## 2. Run the build
+
+In the **left course-window Terminal**, run:
 
 ```powershell
 Set-Location C:\Users\Admin\ma-2041
-.\scripts\Start-Lab4.ps1
+.\Day1\Lab4-WIQD\Build-Agent.ps1
 ```
 
-If the launcher reports **DAY 1 CHECK FAILED**, run `.\scripts\Prepare-Day1.ps1 -Target Lab4` in the same terminal. Wait for **DAY 1 PREPARATION COMPLETE (Lab4)**, then run `.\scripts\Start-Lab4.ps1` again. This repairs Lab 4 tools without reinstalling the connector or Azure Functions. Do not start it while another preparation script is running.
-
-2. For a new project, the script displays the WIQD licence link. Review it. If you agree and are authorized, type **ACCEPT** and complete any further consent prompt. Otherwise, stop.
-3. Sign in with the **same Microsoft 365 lab account** used in Labs 1–3. Complete MFA if prompted. Check the account shown by the script.
-4. The script creates **ZavaTravelWIQD**, adds the Zava agent files and opens a **new VS Code window**. Place it on the right. Save and close the previous right-hand ZavaLab1 window if it is still open.
-
-**What the script did:** selected Node 24, checked WIQD 1.0.0, copied the working connection ID from your ZavaLab1 agent, added the supplied instructions and currency MCP action, and set the new app's name and MCP domain. It kept the new project's generated identity. It did **not** provision or share the agent. If a completed ZavaTravelWIQD project already exists, it reopens it without replacing your edits; an incomplete or mismatched folder stops setup for instructor review.
-
-The connection ID is copied exactly. For the rehearsed connection this is **`zavatravellocallocal`**; updated Lab 3 defaults produce **`zavatravellocal`**. Do not shorten either value to `zavatravel` or add another suffix.
-
-## 2. Inspect the combined agent
-
-Work in the **new right-hand window** from this point onward.
-
-1. Open **appPackage/declarativeAgent.json**:
-
-    - **WebSearch** uses Port of Seattle and Sound Transit.
-    - **GraphConnectors** uses the same full `connection_id` as your working Lab 3 agent. No placeholder should remain.
-    - **actions** references **currency-plugin.mcp.json** for Frankfurter.
-
-2. Open **appPackage/instruction.txt**. Notice how company-policy questions, public travel questions and currency requests use different sources.
-3. Open **m365agents.yml**. WIQD uses this lifecycle to provision the new app in **dev**. Use the following CLI commands, not F5.
-4. Open the Terminal in this project window and run:
+The script finds the repository relative to its own location, selects the prepared Node 24 runtime and checks the pinned WIQD installation. If the prerequisite check fails, run the following from the course root, wait for completion, then retry the build:
 
 ```powershell
-. C:\Users\Admin\ma-2041\scripts\Use-Node.ps1 -Version 24
-$wiqd = 'C:\Users\Admin\ma-2041\tools\wiqd-1.0.0\node_modules\.bin\wiqd.cmd'
-Set-Location C:\Users\Admin\AgentsToolkitProjects\ZavaTravelWIQD
+.\scripts\Prepare-Day1.ps1 -Target Lab4
 ```
 
-This selects the runtime for this new terminal. It does not reinstall WIQD. Keep WIQD **1.0.0**; ignore update notices during the lab.
+Do not run preparation concurrently in another terminal.
 
-## 3. Validate and provision
+1. If the current WIQD licence is not already accepted, review the displayed terms. Type **ACCEPT** only if you agree and are authorized, then complete any further WIQD prompt. Any other response stops the build before sign-in or project creation. Previously accepted current terms do not prompt again.
+2. Sign in interactively with your Microsoft 365 lab account. Check the account shown by `auth status`.
+3. WIQD creates `Day1/Lab4-WIQD/ZavaScriptAgent` and adds an agent. The script writes your configuration into that generated project.
+4. Source validation must succeed before `plugin provision --env dev` runs. Source validation is not deployment or an answer-quality test.
+5. Wait for **BUILD COMPLETE**, then open the **Chat install/test link printed by WIQD's successful provisioning result**. If the link is missing, show the instructor the result; do not construct a URL or publish tenant-wide.
 
-1. Check the source definition:
+This provisions for the lab's personal test. No separate package, organisation catalogue publication or sharing step is required. Do not use F5 for this lab.
 
-```powershell
-& $wiqd plugin validate --mode source --env dev
-if ($LASTEXITCODE -ne 0) { throw 'Fix the source validation errors before continuing' }
-```
+## 3. Inspect and test
 
-**What this checks:** offline agent-source and project checks. A pass is not a full app-package validation, a successful deployment or an evaluation of agent answers. Correct any reported errors before continuing.
+In the VS Code Explorer, inspect the generated files under `Day1/Lab4-WIQD/ZavaScriptAgent`:
 
-2. Provision the agent:
+- `appPackage/declarativeAgent.json`: your name, instructions, starters and WebSearch sites.
+- `appPackage/manifest.json`: the source app manifest, including its version and generated identity reference.
+- `m365agents.yml`: the generated provisioning lifecycle.
+- `env/`: generated environment values; do not delete or change the app IDs.
 
-```powershell
-& $wiqd plugin provision --env dev
-if ($LASTEXITCODE -ne 0) { throw 'Provisioning failed' }
-```
-
-**What this does:** runs the project's provision lifecycle using your lab account. Wait for the entire command to succeed.
-
-3. Open the **Chat install/test link** in that successful provisioning result. Use the lab account and open **Zava Travel Assistant**.
-
-You do not need a separate package, organisation-catalogue publication or tenant-wide share for this personal test. If the Chat link is missing, show the instructor the successful provisioning result; do not invent a link or publish tenant-wide to get past it.
-
-## 4. Test the combined assistant
-
-These are manual behavior checks, not automated evaluations or quality scores.
-
-1. In the new **Zava Travel Assistant** opened from the provisioning link, use your lab account. Add the app if prompted.
-2. Start a new conversation and enter:
-
-```text
--developer on
-```
-
-3. Test company knowledge:
-
-```text
-Will Zava reimburse my airport taxi? Cite the Zava guidance and explain
-its conditions. What hotel nightly limit applies?
-```
-
-Check that the answer cites the indexed Zava document, explains the taxi conditions and does not invent a hotel limit.
-
-4. Test public travel guidance:
+In the agent opened from the returned link, start a fresh conversation:
 
 ```text
 Where can I find official instructions for taking light rail from SEA
-airport into downtown Seattle? Link to the official source.
+airport into downtown Seattle? Link to the official source and tell me
+where to check current service information.
 ```
 
-Open the Port of Seattle or Sound Transit link and compare it with the answer.
-
-5. Test the MCP action:
+Open the source link and compare it with the answer. Then ask:
 
 ```text
-Estimate 100 USD in CAD using the latest available reference rate.
-Show the effective date and explain whether bank fees are included.
+Will my employer reimburse an airport taxi? Can you approve the expense?
 ```
 
-Choose **Allow** when Copilot asks to contact Frankfurter. Check developer output for the `convert` tool and compare its returned amount, rate and date with the answer.
+The guide should explain that it has no company policy source and cannot approve expenses. These are manual behavior checks, not automated scores or a guarantee that every answer is correct.
 
-6. Test the capabilities together:
+## 4. Change and rebuild the same agent
 
-```text
-I am planning a fictional Zava trip to Seattle. Explain the airport-taxi
-reimbursement conditions, give me an official airport-to-city transport
-link, and estimate 100 USD in CAD for my example budget. Separate company
-policy, public guidance and the currency estimate. Do not book or pay
-for anything.
-```
-
-Check for a Zava policy citation, an official public link and an actual currency tool result. The answer must not claim that an expense was approved or a payment was made.
-
-If you edit the agent after provisioning, increase the source **appPackage/manifest.json** app `version`, run source validation and provision again in **dev**. Test in a fresh conversation. Do not edit **manifest.dev.json**.
-
-## 5. Instructor demo: evaluate the agent
-
-**Watch the instructor; do not run these commands on your lab VM.** The instructor uses a prepared evaluation environment and an approved Azure judge model. Students need no Azure resources, GitHub account or additional installation.
-
-1. Open `Day1/Lab4-WIQD/evals/zava-demo.json` in the **left instructions window**. The four scenarios cover taxi reimbursement, the missing hotel limit, receipt requirements and currency-estimate boundaries. Each has a reference answer and source context.
-2. Watch the instructor run the supplied set against the deployed Zava Travel Assistant. From the prepared instructor project's terminal:
+1. Return to **Build-Agent.ps1**, not the generated JSON. Change a starter and add an instruction such as “End travel answers with a reminder to check current service notices.” Save.
+2. Run the same command again:
 
 ```powershell
-$stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-$report = ".evals/zava-demo-$stamp.html"
-& $wiqd agent eval --env dev --config evals/zava-demo.json `
-    --judge-backend azure --concurrency 1 --eval-log-level info `
-    --output $report
-if ($LASTEXITCODE -ne 0) { throw 'Evaluation did not complete; inspect the error' }
-if (-not (Test-Path $report)) { throw 'No scorecard was produced' }
-Start-Process $report
+Set-Location C:\Users\Admin\ma-2041
+.\Day1\Lab4-WIQD\Build-Agent.ps1
 ```
 
-3. Read one scorecard result together: the prompt, actual answer, reference answer, evaluator score, threshold and explanation. **Relevance** checks the answer addresses the request; **Coherence** checks clarity; **Groundedness** checks support against the reference; **Similarity** checks agreement with it. The configured threshold is **4 out of 5** for each evaluator. A judge score is evidence to inspect, not a guarantee.
-4. Compare the actual answer with the source. A wrong answer may need better instructions or grounding. A sign-in, permission or judge error is a failed evaluation run, not proof of a poor agent. Missing scores are not passes.
-5. If a genuine agent defect appears, the instructor makes a focused correction, increases the source app version, validates and provisions again, then reruns the **unchanged** evaluation set to compare scorecards. Do not lower thresholds or remove difficult cases to improve the score.
+3. Inspect `appPackage/manifest.json`: the source app patch version increases, while the generated identity and environment IDs are retained. The script skips create/add on repeat runs and validates before provisioning again.
+4. Open the returned Chat link and test in a **new conversation**. Check the changed behavior and starter after the service refreshes.
 
-This small demo evaluates answer quality. It does **not** score citation correctness, live exchange-rate accuracy or actual MCP execution. Keep the manual action checks from Step 4. If live evaluation is unavailable, the instructor may show a previously captured real scorecard, clearly labelled as a prior run; do not claim a new run succeeded.
+The top configuration is the source of truth: reruns replace those generated agent settings. Never edit `manifest.dev.json`. A failed validation/provision can leave your updated source and increased version in place; fix the error and rerun. Skipped version numbers are harmless.
+
+**Safety:** only the new, marked `ZavaScriptAgent` project is updated. Existing unmarked or incomplete folders stop the script without an automatic reset. Do not delete the ownership marker, rename folders, change IDs or use `--force` to bypass this. Ask the instructor. Existing `ZavaTravelWIQD` and earlier lab projects are not used or modified. Linked/junction project paths are refused; use the supplied local course folder, not a synced or linked folder.
+
+## Optional instructor demonstration
+
+Your instructor may demonstrate evaluation in a separately prepared environment. No Azure judge model, evaluation configuration or extra account is required for this student lab. A prior scorecard must be identified as a prior run; it is not evidence that your agent was evaluated.
 
 ## Summary
 
-You used WIQD to deploy a new agent that combines company knowledge, public web information and an MCP action. WIQD manages the project lifecycle; Microsoft 365 Copilot runs the agent. The instructor demo shows how a repeatable evaluation set supports an inspect, improve and rerun cycle. The existing connection continues to supply the Zava documents without embedding them in the package.
-
-Keep the project and Lab 3 connection available for the course demonstration. Cleanup follows the instructor's instructions.
+You authored an agent in an editable PowerShell configuration, followed the WIQD lifecycle, inspected the generated source, and rebuilt the same identity with a higher app version. Keep the script and its generated project for the course; follow the instructor's cleanup instructions.

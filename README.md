@@ -4,9 +4,7 @@ Use the provided MS-4018 virtual lab machines for Day 1, and AI-3026 virtual lab
 
 ## Before class
 
-Have **Microsoft Authenticator installed on your phone** and keep the phone available during the labs. If prompted during sign-in, add the supplied lab account as a **Work or school account**. This creates a separate Authenticator entry for this lab account; keep your existing personal and work entries unchanged.
-
-Keep the lab entry until you have finished all exercises and no longer need to sign in to that account. You can then remove **only the lab account entry** from Authenticator. You do not need to uninstall the app.
+Use the Microsoft 365 account supplied with your lab. Sign-in requirements depend on the tenant's policy. The optional connector exercise includes its own administrator-permission and Microsoft Authenticator preparation.
 
 ## Quick start — start the VM and open Lab 1
 
@@ -33,7 +31,7 @@ Keep the lab entry until you have finished all exercises and no longer need to s
 
 ## Check Day 1 setup
 
-After the Lab 1 preparation finishes, run `.\scripts\Test-Day1.ps1` in the course-window Terminal. It must report **DAY 1 LOCAL TOOL CHECKS PASSED (All)**. This checks local TypeScript, Azurite and WIQD, not tenant permissions or agent responses.
+After the Lab 1 preparation finishes, run `.\scripts\Test-Day1.ps1` in the course-window Terminal. It must report **DAY 1 LOCAL TOOL CHECKS PASSED (All)**. This checks the local TypeSpec compiler and WIQD, not tenant permissions or agent responses. The required setup does not install Azure Functions or Azurite.
 
 If a check fails, use `.\scripts\Prepare-Day1.ps1 -Target Lab3` or `-Target Lab4` for that lab. Wait for completion before retrying. Do not run preparation scripts in parallel.
 
@@ -45,8 +43,10 @@ In VS Code, right-click a guide and select **Open in Preview**.
 
 1. [Lab 1 — First declarative agent](docs/D1_Lab1.md)
 2. [Lab 2 — Zava Currency Converter: API, card and MCP](docs/D1_Lab2.md)
-3. [Lab 3 — Add Zava travel policies with a synced connector](docs/D1_Lab3.md)
-4. [Lab 4 — Zava Travel Assistant with WIQD](docs/D1_Lab4.md)
+3. [Lab 3 — Author an agent with TypeSpec](docs/D1_Lab3.md)
+4. [Lab 4 — Build an agent with an editable WIQD script](docs/D1_Lab4.md)
+
+**Optional:** [Index Zava policies with a connector](docs/D1_Optional_Connector.md). This separate exercise installs its own tools and needs administrator consent. It is not a prerequisite for Labs 3 or 4.
 
 ### Day 2 — AI-3026 virtual labs
 

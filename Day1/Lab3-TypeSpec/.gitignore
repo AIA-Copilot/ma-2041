@@ -1,0 +1,6 @@
+node_modules/
+appPackage/.generated/
+appPackage/build/
+.env*
+!env/.env.dev
+env/.env.*.user

@@ -1,0 +1,72 @@
+// Offline only: no host, credentials, Graph calls or tenant writes.
+const assert = require('node:assert/strict');
+const Module = require('node:module');
+const path = require('node:path');
+const fs = require('node:fs');
+process.chdir(path.resolve(__dirname, '..'));
+const root = process.cwd();
+const registered = [];
+const originalLoad = Module._load;
+Module._load = function(request, parent, isMain) {
+  if (request === '@azure/functions') return { app: { timer: (name, settings) => registered.push({name, settings}) } };
+  if (request.endsWith('graphClient')) return {getClient: () => ({api: () => {throw new Error('NETWORK FORBIDDEN in offline verification');}})};
+  return originalLoad.call(this, request, parent, isMain);
+};
+process.env.CONNECTOR_ID = 'zavatravel';
+process.env.TEAMSFX_ENV = 'local';
+process.env.CONNECTOR_BASE_URL = 'https://github.com/AIA-Copilot/ma-2041/blob/main/Day1/Optional-Connector/connector/content/';
+const {initConfig} = require(path.join(root, 'dist/src/config.js'));
+const {getAllItems} = require(path.join(root, 'dist/src/services/itemsService.js'));
+const {getExternalItemFromItem} = require(path.join(root, 'dist/src/custom/getExternalItemFromItem.js'));
+const config = initConfig({log(){},warn(){},error(){}});
+assert.equal(config.connector.id, 'zavatravellocal');
+const items = getAllItems(config);
+assert.deepEqual(items.map(i=>i.id).sort(), ['CF-001','CF-002','CF-003','CF-004','CF-005']);
+for (const item of items) {
+  assert.ok(item.title && item.content && item.owner);
+  assert.equal(item.url, process.env.CONNECTOR_BASE_URL + `${item.id}.md`);
+  assert.ok(fs.existsSync(path.join(root, 'content', `${item.id}.md`)));
+  assert.match(item.content, /Fictional training content/);
+  assert.match(item.title, /^Zava /);
+  assert.ok(item.abstract && !Number.isNaN(item.lastModified.getTime()));
+  assert.doesNotMatch(item.content, /Trey|Adatum|Avery Howard/);
+  for (const email of item.content.match(/[\w.-]+@[\w.-]+/g) || []) {
+    assert.ok(email.replace(/\.$/, '').endsWith('@example.com'));
+  }
+  const external = getExternalItemFromItem(item);
+  assert.equal(external.acl[0].type, 'everyone');
+  assert.equal(external.content.type, 'text');
+  assert.equal(external.properties.url, item.url);
+  assert.equal(external.properties.owner, item.owner);
+  assert.equal(external.properties.title, item.title);
+  assert.equal(external.properties.abstract, item.abstract);
+  assert.equal(external.properties.lastModified, '2026-11-22T00:00:00Z');
+  assert.equal(external.content.value, item.content);
+  assert.deepEqual(external.acl, [{accessType: 'grant', type: 'everyone', value: 'everyone'}]);
+  assert.deepEqual(Object.keys(external.properties).sort(), config.connector.schema.map(p => p.name).sort());
+}
+const envExample = fs.readFileSync(path.join(root, 'env/.env.local.example'), 'utf8');
+assert.ok(envExample.includes('CONNECTOR_BASE_URL=' + process.env.CONNECTOR_BASE_URL));
+assert.match(envExample, /^CONNECTOR_ID=zavatravel$/m);
+assert.match(envExample, /^CONNECTOR_NAME=Zava Travel$/m);
+assert.ok(!envExample.includes('YOURSEAT'));
+assert.ok(config.connector.schema.find(p => p.name === 'owner').labels.includes('createdBy'));
+assert.match(JSON.stringify(config.connector.template), /\$\{owner/);
+assert.doesNotMatch(JSON.stringify(config.connector.template), /consultant/);
+const fixture = JSON.parse(fs.readFileSync(path.join(root, 'src/references/template.data.json'), 'utf8'));
+const first = items.find(i => i.id === fixture.id);
+for (const key of ['title', 'owner', 'abstract', 'url']) assert.equal(fixture[key], first[key]);
+const taxi = items.find(i => i.id === 'CF-003').content;
+assert.match(taxi, /30 calendar days/);
+assert.match(taxi, /reimbursement is not automatic/);
+assert.match(items.find(i => i.id === 'CF-002').content, /No nightly spending limit/);
+process.env.CONNECTOR_ID = 'x'.repeat(28);
+assert.throws(()=>initConfig({}), /1-32/);
+process.env.CONNECTOR_ID = 'ztc-bad';
+assert.throws(()=>initConfig({}), /1-32/);
+process.env.CONNECTOR_ID = 'zavatravel';
+process.env.AZURE_FUNCTIONS_ENVIRONMENT = 'Development';
+require(path.join(root, 'dist/src/functions/connections.js'));
+assert.deepEqual(registered.map(t=>t.name), ['deployConnection']);
+assert.equal(registered[0].settings.runOnStartup, true);
+console.log('PASS: five fictional Zava records; exact course citation URLs and local files; parser/adapter/schema/owner/card mapping; reserved contacts; policy boundaries; everyone ACL; ID guard; deploy-only timer registration. No handler invoked or network used.');

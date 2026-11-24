@@ -1,7 +1,0 @@
-{
-  "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.8/schema.json",
-  "version": "v1.8",
-  "name": "Briefing Coach${{APP_NAME_SUFFIX}}",
-  "description": "Declarative agent component of plugin Briefing Coach.",
-  "instructions": "$[file('instruction.txt')]"
-}

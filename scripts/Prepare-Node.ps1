@@ -1,11 +1,12 @@
-# Prepare pinned portable Node runtimes and, unless skipped, Core Tools v4.
-param([switch]$SkipFunctions)
+# Prepare portable Node. Core Tools is opt-in for the optional connector only.
+param([ValidateSet('22','24')][string]$Runtime = '24', [switch]$IncludeFunctions)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $tools = Join-Path $root 'tools'
 New-Item -ItemType Directory -Force $tools | Out-Null
 $pins = Get-Content (Join-Path $PSScriptRoot 'node-pins.json') -Raw | ConvertFrom-Json
-foreach ($version in @('22.22.2','24.15.0')) {
+$requestedVersion = if ($Runtime -eq '22') { '22.22.2' } else { '24.15.0' }
+foreach ($version in @($requestedVersion)) {
     $pin = $pins.PSObject.Properties[$version].Value
     $folder = Join-Path $tools "node-v$version-win-x64"
     if (Test-Path $folder) {
@@ -26,5 +27,5 @@ foreach ($version in @('22.22.2','24.15.0')) {
     if ($LASTEXITCODE -ne 0 -or $actual -ne "v$version") { throw "Node runtime check failed: $version" }
     Write-Host "Prepared: $actual"
 }
-if (-not $SkipFunctions) { & (Join-Path $PSScriptRoot 'Prepare-Functions.ps1') }
-Write-Host 'Use . .\scripts\Use-Node.ps1 -Version 22 for connector setup; -Version 24 for WIQD.'
+if ($IncludeFunctions) { & (Join-Path $PSScriptRoot 'Prepare-Functions.ps1') }
+Write-Host 'Use Node 24 for TypeSpec and WIQD; Node 22 only for the optional connector.'
