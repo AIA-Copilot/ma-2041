@@ -31,3 +31,17 @@ Primary references:
 - https://learn.microsoft.com/en-us/azure/templates/microsoft.botservice/2022-09-15/botservices
 
 Dependencies: original core==1.12.1, foundry==1.10.3, identity==1.25.3 retained. requirements.txt pins direct dependencies; requirements.lock.txt records the complete locally installed dependency graph. This is a version lock, not wheel-hash or cross-platform certification. License notices for copied official assets are retained in THIRD_PARTY_NOTICES.md.
+
+## Azure App Service candidate (supersedes the local tunnel lifecycle above)
+
+Base course commit: 69047cd6a6c045a96cc70a23f889da65e63f469d. App manifest, icons, synthetic data and all dependency lock pins are retained. The active lifecycle is now m365agents.yml, environment dev. Removed the local lifecycle, tunnel task and local launch entry. Model credential selection is explicit: ManagedIdentityCredential under WEBSITE_INSTANCE_ID, AzureCliCredential locally. Instructions move into an editable text file; simulated tool receipt behavior is unchanged.
+
+ATK 6.20 installed source inspection found the registered action is `azureAppService/zipDeploy`, NOT `appService/zipDeploy`. It first requests a Microsoft Entra token; publishing credentials are a fallback unless `TEAMSFX_AAD_DEPLOY_ONLY=true`. It also logs remote deployment failure as a warning in checkDeployStatus and serializes request/response objects at verbose level. This candidate therefore uses the supported ATK `script` action to run the scoped Azure CLI helper, not an assumed native driver. The helper suppresses raw CLI output, checks disabled SCM/FTP publishing auth, enforces F1 and fails closed on deployment/health/fingerprint/401 failure. This is one selected path, not an optional second architecture. No credentials enter command arguments or the ZIP. Keep Toolkit logs at normal level and private; never capture verbose environment/HTTP diagnostics during a credential-bearing lifecycle.
+
+Primary documentation (retrieved for this candidate; internal evidence retains snapshots):
+- [Disable basic auth / CLI 2.48.1+ Entra fallback](https://learn.microsoft.com/en-us/azure/app-service/configure-basic-auth-disable)
+- [App Service Python custom startup and Oryx requirements](https://learn.microsoft.com/en-us/azure/app-service/configure-language-python)
+- [Agents SDK: manual Azure Bot hosting](https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/deploy-azure-bot-service-manually)
+- [Built-in Foundry User role](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/ai-machine-learning#foundry-user): 53ca6127-db72-4b80-b1b0-d745d6d5456d. Use project scope, not subscription scope.
+
+Installed extension inspection is not proof of the supplied VM's active extension or unmodified Marketplace bits. Bicep compilation, Linux Python tests and source-supported Entra deployment are not Azure F1/Oryx/Teams/Copilot acceptance. Those remain explicit live rehearsal gates.

@@ -2,41 +2,19 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "1 Start approved DevTunnel",
-      "type": "teamsfx",
-      "command": "debug-start-local-tunnel",
-      "args": {
-        "type": "dev-tunnel",
-        "ports": [
-          {
-            "portNumber": 3978,
-            "protocol": "http",
-            "access": "public",
-            "writeToEnvironmentFile": {
-              "endpoint": "BOT_ENDPOINT",
-              "domain": "BOT_DOMAIN"
-            }
-          }
-        ],
-        "env": "local"
-      },
-      "isBackground": true,
-      "problemMatcher": "$teamsfx-local-tunnel-watch"
-    },
-    {
-      "label": "2 Provision assigned lab resources",
+      "label": "1 Provision Azure expense agent",
       "type": "teamsfx",
       "command": "provision",
       "args": {
-        "env": "local"
+        "env": "dev"
       }
     },
     {
-      "label": "3 Write private channel configuration",
+      "label": "2 Deploy Azure expense agent",
       "type": "teamsfx",
       "command": "deploy",
       "args": {
-        "env": "local"
+        "env": "dev"
       }
     }
   ]

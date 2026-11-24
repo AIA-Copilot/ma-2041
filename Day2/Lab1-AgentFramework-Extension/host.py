@@ -1,5 +1,6 @@
 """Authenticated Microsoft 365 Agents SDK host; no anonymous mode."""
 import os
+import hashlib
 from pathlib import Path
 from uuid import UUID
 from aiohttp import web
@@ -48,14 +49,33 @@ def create_app(env=None):
         await handle_message(context)
     async def entry(request):
         return await start_agent_process(request, agent, adapter)
-    app = web.Application(middlewares=[jwt_authorization_middleware], client_max_size=64 * 1024)
+    @web.middleware
+    async def channel_auth(request, handler):
+        # Only this read-only liveness endpoint is anonymous. All other paths
+        # still go through the real SDK JWT middleware.
+        if request.method in ("GET", "HEAD") and request.path == "/health":
+            return await handler(request)
+        return await jwt_authorization_middleware(request, handler)
+    async def health(_request):
+        digest = hashlib.sha256((ROOT / "expense-instructions.txt").read_bytes()).hexdigest()
+        return web.json_response({"status": "ok", "instructions_sha256": digest})
+    app = web.Application(middlewares=[channel_auth], client_max_size=64 * 1024)
+    app.router.add_get("/health", health)
     app["agent_configuration"] = config
     app["agent_app"] = agent
     app["adapter"] = adapter
     app.router.add_post("/api/messages", entry)
     return app
 
+def startup_options(env=None):
+    env = os.environ if env is None else env
+    port = int(env.get("PORT", "8000"))
+    if not 1 <= port <= 65535:
+        raise ValueError("Invalid PORT")
+    return {"host": "0.0.0.0", "port": port, "access_log": None}
+
+
 if __name__ == "__main__":
     load_dotenv(ROOT / ".env")
     load_dotenv(ROOT / ".env.channel")
-    web.run_app(create_app(), host="127.0.0.1", port=3978, access_log=None)
+    web.run_app(create_app(), **startup_options())

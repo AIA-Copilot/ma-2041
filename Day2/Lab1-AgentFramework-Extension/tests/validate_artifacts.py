@@ -5,7 +5,7 @@ from jsonschema import Draft7Validator
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "tests/fixtures"
 schema = json.loads((EVIDENCE / "lifecycle-v1.12.schema.json").read_text())
-for file in ("m365agents.yml", "m365agents.local.yml"):
+for file in ("m365agents.yml",):
     Draft7Validator(schema).validate(yaml.safe_load((ROOT / file).read_text()))
     print(file + ": schema PASS")
 manifest = (ROOT / "appPackage/manifest.json").read_text()

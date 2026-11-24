@@ -1,8 +1,10 @@
 .env
 .env.channel
 env/.env.*
-!env/.env.local.example
+!env/.env.dev.example
 .venv/
 __pycache__/
 .pytest_cache/
 appPackage/build/
+.build/
+infra/*.parameters.*.json

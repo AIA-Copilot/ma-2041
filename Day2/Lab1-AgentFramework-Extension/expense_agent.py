@@ -5,10 +5,16 @@ import os
 from typing import Annotated
 from agent_framework import Agent, tool
 from agent_framework.foundry import FoundryChatClient
-from azure.identity import AzureCliCredential
+from pathlib import Path
+from azure.identity import AzureCliCredential, ManagedIdentityCredential
 from pydantic import Field
 
 ABOUT = "ExpenseClaimAgent v1 — SIMULATED claims only. No email was sent."
+
+def model_credential():
+    # Never fall back to a developer identity on the hosted app.
+    return ManagedIdentityCredential() if os.getenv("WEBSITE_INSTANCE_ID") else AzureCliCredential()
+
 
 async def process_expenses_data(prompt, expenses_data, *, client=None):
     # Turn-local receipts and Agent: no cross-user/global chat history.
@@ -28,18 +34,13 @@ async def process_expenses_data(prompt, expenses_data, *, client=None):
         endpoint, model = os.getenv("PROJECT_ENDPOINT"), os.getenv("MODEL_DEPLOYMENT_NAME")
         if not endpoint or not model:
             raise ValueError("Retain Lab07 PROJECT_ENDPOINT and MODEL_DEPLOYMENT_NAME")
-        credential = AzureCliCredential()
+        credential = model_credential()
         client = FoundryChatClient(project_endpoint=endpoint, model=model, credential=credential)
     try:
         async with Agent(
             client=client,
             name="ExpenseClaimAgent",
-            instructions="""You are an AI assistant for expense claim submission.
-At the user's request, create an expense claim and use submit_claim to simulate an
-email to expenses@contoso.com with subject 'Expense Claim' and a body containing
-itemized expenses with a total. Use only the supplied data; do not ask for more.
-The tool is a simulation: never claim that an email, payment, or real submission
-was sent or completed. Confirm only that a simulated claim was prepared.""",
+            instructions=Path(__file__).with_name("expense-instructions.txt").read_text(encoding="utf-8"),
             tools=[submit_claim],
         ) as agent:
             response = await agent.run([f"{prompt}: {expenses_data}"])

@@ -5,33 +5,11 @@ Open this file in VS Code INSIDE the provided VM. Follow the corresponding numbe
 C:\Users\Admin\ma-2041\Day2\Lab1-AgentFramework-Extension
 ===== END BLOCK 01 =====
 
-===== BEGIN BLOCK 02 (powershell) =====
-py -3.13 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.lock.txt
-python -m pytest -q
-az login
-python console.py
+===== BEGIN BLOCK 02 (text) =====
+Submit an expense claim
 ===== END BLOCK 02 =====
 
-===== BEGIN BLOCK 03 (powershell) =====
-devtunnel --version
-devtunnel user login
-devtunnel user show
+===== BEGIN BLOCK 03 (text) =====
+In the simulated email body, group expenses by category, show a subtotal for each
+category and a grand total, and finish with: Review required before reimbursement.
 ===== END BLOCK 03 =====
-
-===== BEGIN BLOCK 04 (powershell) =====
-devtunnel user login -d
-===== END BLOCK 04 =====
-
-===== BEGIN BLOCK 05 (powershell) =====
-Copy-Item env/.env.local.example env/.env.local
-===== END BLOCK 05 =====
-
-===== BEGIN BLOCK 06 (powershell) =====
-curl.exe -i -X POST http://127.0.0.1:3978/api/messages -H "Content-Type: application/json" -d "{}"
-===== END BLOCK 06 =====
-
-===== BEGIN BLOCK 07 (text) =====
-Submit an expense claim
-===== END BLOCK 07 =====
